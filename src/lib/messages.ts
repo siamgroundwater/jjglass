@@ -90,9 +90,9 @@ const englishMessages = {
   "For demonstration only. No actual payment.": "For demonstration only. No actual payment.",
   "Please enter a value, not only spaces.": "Please enter a value, not only spaces.",
   "Please enter a phone number with at least 7 digits.": "Please enter a phone number with at least 7 digits.",
-  "FORM PREVIEW": "FORM PREVIEW",
-  "Tell us a little more.": "Tell us a little more.",
-  "Try the form to preview your inquiry. This demo does not send or store your information.": "Try the form to preview your inquiry. This demo does not send or store your information.",
+  "Send Us a Message": "Send Us a Message",
+  "How Can We Help?": "How Can We Help?",
+  "Tell us what you’re looking for,\nand our team will get back to you using the contact details provided.": "Tell us what you’re looking for,\nand our team will get back to you using the contact details provided.",
   "Your name": "Your name",
   "What can we help with?": "What can we help with?",
   "Choose a topic": "Choose a topic",
@@ -340,10 +340,10 @@ export const messages = {
       'กรุณากรอกข้อมูล ไม่ใช้เฉพาะช่องว่าง',
     'Please enter a phone number with at least 7 digits.':
       'กรุณาระบุเบอร์โทรศัพท์ที่มีตัวเลขอย่างน้อย 7 หลัก',
-    'FORM PREVIEW': 'แบบฟอร์มตัวอย่าง',
-    'Tell us a little more.': 'เล่าให้เราฟัง',
-    'Try the form to preview your inquiry. This demo does not send or store your information.':
-      'ทดลองกรอกเพื่อดูตัวอย่างข้อความ ระบบนี้ยังไม่ส่งหรือบันทึกข้อมูล',
+    'Send Us a Message': 'ส่งข้อความถึงเรา',
+    'How Can We Help?': 'ให้เราช่วยคุณ',
+    'Tell us what you’re looking for,\nand our team will get back to you using the contact details provided.':
+      'กรอกรายละเอียดที่ต้องการสอบถาม\nทีมงานจะติดต่อกลับผ่านข้อมูลที่คุณระบุ',
     'Your name': 'ชื่อของคุณ',
     'What can we help with?': 'เรื่องที่ต้องการสอบถาม',
     'Choose a topic': 'เลือกหัวข้อ',

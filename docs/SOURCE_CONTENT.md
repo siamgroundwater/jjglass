@@ -4,7 +4,7 @@ This frontend presentation uses the local legacy website snapshots supplied by t
 
 ## Scope and translation
 
-- 36 products come from Home.txt and the five product category snapshots, with source WooCommerce IDs, SKUs and THB prices. Brand associations follow each product's `product_tag-*` classes.
+- 84 products come from Home.txt, shop.txt, and the five product category snapshots, with source WooCommerce IDs, SKUs and THB prices. The 48 additional records and exact source image URLs are indexed in `src/lib/legacy-products-data.json`; the original 36 are listed below. Brand associations follow each product's source category classes.
 - Thai display names are natural translations; model codes and source values are retained. English display names remove redundant leading manufacturer codes and repeated category terms for readability; meaningful capacity, dimensions, color and model distinctions remain. Original source wording and ounce specifications remain in descriptions and the provenance table. Legacy model spellings are preserved. Descriptions deliberately add no material, durability or care claims absent from the snapshot.
 - Ten category cards follow Home.txt. Its `steamware` typo is normalized to `stemware`. Categories without supplied product records retain an empty presentation collection.
 - Logos and brand names come from brand.txt / Home.txt. Ocean appears in the supplied products' explicit brand taxonomy.
@@ -14,6 +14,10 @@ This frontend presentation uses the local legacy website snapshots supplied by t
 - The existing source promotes glassware for cafes, homes, florists, weddings and terrariums. It mentions hundreds of vase and drinking-glass designs and over a thousand glassware designs. No company history is supplied.
 
 ## Product provenance
+
+The original 36 products are listed below. The 48 additional first-page products from the five category snapshots are recorded in `src/lib/legacy-products-data.json`, including source file, exact product URL, source image URL, source title, SKU, and historical price. Their local photographs are `/images/product-<WooCommerce ID>.jpg`. These archive pages expose one product thumbnail per card; responsive `srcset` entries are resolutions of the same photo, not separate gallery views. Later gallery views use genuine photos from the matching public product page when available.
+
+Product page galleries were checked against the old public site and recorded in `src/lib/existing-product-photos.json` and `src/lib/new-product-photos.json`. Another 114 distinct photos were saved locally. Only 23 of the 84 source galleries contained at least three distinct photographs. Every presentation product shows three or four gallery views; when fewer than three source photos exist, the remaining view is an explicitly labeled CSS detail crop (`#detail` or `#detail-base`) of that product's actual photo. These views are not extra product photography and do not appear as separate files in the CMS media library. Replace them with new client photos before treating the gallery as a complete production asset set.
 
 | SKU | Legacy product | Price (THB) | Snapshot |
 | --- | --- | ---: | --- |

@@ -55,6 +55,13 @@
 .visual:hover>img.detailImage {
   transform: scale(1.29);
 }
+.visual>img.detailBase {
+  object-position: center 80%;
+  transform: scale(1.55);
+}
+.visual:hover>img.detailBase {
+  transform: scale(1.59);
+}
 .galleryArrow {
   position: absolute;
   z-index: 2;
@@ -127,6 +134,10 @@
 .thumbnail img.detailImage {
   object-fit: cover;
   transform: scale(1.2);
+}
+.thumbnail img.detailBase {
+  object-position: center 80%;
+  transform: scale(1.5);
 }
 .detailBadge {
   position: absolute;

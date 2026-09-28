@@ -75,6 +75,9 @@ function publicAssetFilename(src, label) {
   assert.ok(filename.startsWith(`${path.join(root, 'public')}${path.sep}`), `${label}: image path escapes public folder: ${src}`);
   return filename;
 }
+function sourcePhoto(src) {
+  return src.split('#', 1)[0];
+}
 
 check('seed and JSON storage round trip satisfy the runtime contract', () => {
   assert.equal(isCmsData(seed), true);
@@ -91,10 +94,13 @@ check('every seeded product has three to five distinct gallery views with its co
     assert.equal(gallery[0], product.image, `${product.id}: cover is not the first image`);
     assert.equal(new Set(gallery).size, gallery.length, `${product.id}: duplicate gallery image`);
     for (const src of gallery) {
-      assert.ok(media.has(src), `${product.id}: gallery image missing from media library: ${src}`);
+      assert.ok(media.has(sourcePhoto(src)), `${product.id}: source photo missing from media library: ${src}`);
       assert.ok(fs.existsSync(publicAssetFilename(src, product.id)), `${product.id}: gallery file missing: ${src}`);
     }
   }
+});
+check('seed media contains source photos rather than CSS gallery views', () => {
+  for (const item of seed.media) assert.equal(item.src.includes('#'), false, `${item.id}: fragment view stored as media: ${item.src}`);
 });
 
 check('presentation trash sample is restorable, removable, and isolated from fresh seeds', () => {
@@ -553,7 +559,7 @@ check('all referenced images exist in the media library and local public assets'
     ...seed.brands.map(item => item.image), ...seed.content.map(item => item.image),
     ...seed.stores.flatMap(item => item.images), ...seed.orders.flatMap(order => order.items.map(item => item.image)),
   ].filter(Boolean);
-  const missing = [...new Set(references.filter(src => !media.has(src)))];
+  const missing = [...new Set(references.filter(src => !media.has(sourcePhoto(src))))];
   assert.deepEqual(missing, [], `Referenced images absent from media library: ${missing.join(', ')}`);
   for (const item of seed.media) {
     assert.ok(fs.existsSync(publicAssetFilename(item.src, item.id)), `Missing asset: ${item.src}`);
@@ -605,8 +611,9 @@ check('media usage protects images referenced only by historical orders or store
 check('media usage protects a non-cover product image in the catalog and trash', () => {
   const source = structuredClone(seed);
   const photo = '/images/check-gallery-reference.jpg';
+  const galleryView = `${photo}#detail`;
   const product = source.products[0];
-  product.images = [product.image, photo];
+  product.images = [product.image, galleryView];
   source.media.push({ id: 'media-gallery-reference', name: 'Gallery photo', src: photo, alt: { th: 'ภาพสินค้า', en: 'Product photo' }, uploaded: true, created: '2026-09-26T09:00:00.000Z' });
   assert.equal(isCmsData(source), true);
   assert.equal(mediaIsUsed(source, photo), true, 'active product did not protect its alternate photo');
@@ -615,6 +622,10 @@ check('media usage protects a non-cover product image in the catalog and trash',
   assert.ok(moved);
   assert.equal(mediaIsUsed(moved, photo), true, 'product in trash did not protect its alternate photo');
   assert.equal(moveToTrash(moved, 'media', 'media-gallery-reference'), null, 'restorable product photo entered trash');
+  const removed = permanentlyDeleteFromTrash(moved, moved.trash.find(item => item.kind === 'product' && item.record.id === product.id).id);
+  assert.ok(removed);
+  assert.equal(mediaIsUsed(removed, photo), false, 'permanently deleted product kept its alternate photo referenced');
+  assert.ok(moveToTrash(removed, 'media', 'media-gallery-reference'), 'unreferenced alternate photo could not be removed');
 });
 check('fresh seeds do not share mutable data with previous demo sessions', () => {
   const first = createCmsSeed();

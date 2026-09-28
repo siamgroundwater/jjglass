@@ -3,9 +3,10 @@
 import { useEffect, useState, type FormEvent, type ReactNode } from 'react';
 import { cmsCopy } from '@/lib/cms-copy';
 import { cmsContentCopy } from '@/lib/cms-content-copy';
+import { withPreparedCmsMedia } from '@/lib/cms-image';
 import { moveToTrash } from '@/lib/cms-trash';
 import { isLocale, languageConfig, localizedPath, type Locale, type LocalizedText } from '@/lib/i18n';
-import { cmsId, type CmsPanelProps, type CmsContent as ContentItem, type CmsStore, type CmsStatus, type CmsSettings as SettingsValue } from '@/lib/cms-types';
+import { cmsId, type CmsPanelProps, type CmsContent as ContentItem, type CmsMedia, type CmsStore, type CmsStatus, type CmsSettings as SettingsValue } from '@/lib/cms-types';
 import { CmsActionPage, CmsDialog, CmsImagePicker, CmsBadge, CmsEmpty, CmsPagination } from './CmsUI';
 import ui from './CmsUI.module.css';
 import styles from './CmsContent.module.css';
@@ -91,6 +92,8 @@ export function CmsContent({ locale, data, save, routeAction, routeItemId, openA
     return item ? { ...item, title: { ...item.title }, subtitle: { ...item.subtitle }, body: { ...item.body }, seoTitle: { ...item.seoTitle }, seoDescription: { ...item.seoDescription } } : null;
   });
   const [editorPreview, setEditorPreview] = useState(false);
+  const [pendingImages, setPendingImages] = useState<CmsMedia[]>([]);
+  const [preparingImage, setPreparingImage] = useState(false);
   const [preview, setPreview] = useState<ContentItem | null>(null);
   const [deleting] = useState<ContentItem | null>(() => routeAction === 'delete' ? data.content.find(content => content.id === routeItemId) || null : null);
   const [error, setError] = useState('');
@@ -101,13 +104,13 @@ export function CmsContent({ locale, data, save, routeAction, routeItemId, openA
   const create = () => openAction('new');
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    if (!draft) return;
+    if (!draft || preparingImage) return;
     if (!hasText(draft.title)) { setError(t.invalidTitle); return; }
     if (!safeLink(draft.link)) { setError(t.invalidUrl); return; }
     const item = { ...draft, title: trimText(draft.title), subtitle: trimText(draft.subtitle), body: trimText(draft.body), link: draft.link.trim(), seoTitle: trimText(draft.seoTitle), seoDescription: trimText(draft.seoDescription) };
     const exists = data.content.some(content => content.id === item.id);
     const content = exists ? data.content.map(content => content.id === item.id ? item : content) : [...data.content, item];
-    if (save({ ...data, content }, activityText('contentSaved'))) {
+    if (save({ ...data, content, media: withPreparedCmsMedia(data.media, pendingImages, [item.image], item.title) }, activityText('contentSaved'))) {
       setError(''); closeAction();
     } else setError(t.saveError);
   };
@@ -151,10 +154,10 @@ export function CmsContent({ locale, data, save, routeAction, routeItemId, openA
         <LocalizedFields label={t.title} locale={locale} value={draft.title} onChange={title => setDraft({ ...draft, title })} required maxLength={180} />
         <LocalizedFields label={t.subtitle} locale={locale} value={draft.subtitle} onChange={subtitle => setDraft({ ...draft, subtitle })} maxLength={300} />
         <LocalizedFields label={t.body} locale={locale} value={draft.body} onChange={body => setDraft({ ...draft, body })} multiline maxLength={15000} />
-        <section className={styles.formSection}><h3>{t.image}</h3><CmsImagePicker locale={locale} media={data.media} value={draft.image} onChange={image => setDraft({ ...draft, image })} /><Field label={t.destination} hint={t.destinationHint}><input className={ui.input} value={draft.link} maxLength={2000} onChange={event => setDraft({ ...draft, link: event.target.value })} /></Field></section>
+        <section className={styles.formSection}><h3>{t.image}</h3><CmsImagePicker locale={locale} media={data.media} value={draft.image} onChange={(image, prepared) => { setDraft(current => current ? { ...current, image } : current); setPendingImages(prepared ? [prepared] : []); }} onBusyChange={setPreparingImage} /><Field label={t.destination} hint={t.destinationHint}><input className={ui.input} value={draft.link} maxLength={2000} onChange={event => setDraft({ ...draft, link: event.target.value })} /></Field></section>
         <section className={styles.formSection}><div><h3>{t.seo}</h3><p className={styles.help}>{t.seoHint}</p></div><LocalizedFields label={t.seoTitle} locale={locale} value={draft.seoTitle} onChange={seoTitle => setDraft({ ...draft, seoTitle })} maxLength={120} /><LocalizedFields label={t.seoDescription} locale={locale} value={draft.seoDescription} onChange={seoDescription => setDraft({ ...draft, seoDescription })} multiline maxLength={320} /></section>
         {error && <p className={ui.error} role="alert">{error}</p>}
-        <div className={styles.editorActions}><button type="button" className={ui.secondary} onClick={() => setEditorPreview(true)}>{c.preview}</button><div className={ui.actions}><button type="button" className={ui.secondary} onClick={closeAction}>{c.cancel}</button><button className={ui.primary} type="submit">{t.saveContent}</button></div></div>
+        <div className={styles.editorActions}><button type="button" className={ui.secondary} disabled={preparingImage} onClick={() => setEditorPreview(true)}>{c.preview}</button><div className={ui.actions}><button type="button" className={ui.secondary} onClick={closeAction}>{c.cancel}</button><button className={ui.primary} type="submit" disabled={preparingImage}>{t.saveContent}</button></div></div>
       </form>}
     </CmsActionPage>}
     {preview && <CmsDialog title={t.previewTitle} locale={locale} onClose={() => setPreview(null)} wide><ContentPreview item={preview} locale={locale} /></CmsDialog>}
@@ -191,24 +194,34 @@ export function CmsStores({ locale, data, save, routeAction, routeItemId, openAc
   });
   const [preview, setPreview] = useState<CmsStore | null>(null);
   const [editorPreview, setEditorPreview] = useState(false);
+  const [pendingImages, setPendingImages] = useState<CmsMedia[]>([]);
+  const [preparingCount, setPreparingCount] = useState(0);
   const [deleting] = useState<CmsStore | null>(() => routeAction === 'delete' ? data.stores.find(store => store.id === routeItemId) || null : null);
   const [error, setError] = useState('');
+  useEffect(() => {
+    setPendingImages(current => {
+      const referenced = current.filter(item => draft?.images.includes(item.src));
+      return referenced.length === current.length ? current : referenced;
+    });
+  }, [draft?.images]);
   const stores = data.stores.filter(store => (status === 'all' || status === store.status) && `${Object.values(store.name).join(' ')} ${Object.values(store.address).join(' ')}`.toLocaleLowerCase().includes(query.trim().toLocaleLowerCase()));
   const create = () => openAction('new');
   const submit = (event: FormEvent) => {
     event.preventDefault();
-    if (!draft) return;
+    if (!draft || preparingCount) return;
     if (!hasText(draft.name) || !hasText(draft.address)) { setError(t.invalidStore); return; }
     if (!safeLink(draft.mapUrl)) { setError(t.invalidUrl); return; }
-    const item = { ...draft, name: trimText(draft.name), address: trimText(draft.address), hours: trimText(draft.hours), phone: draft.phone.trim(), lineId: draft.lineId?.trim() || '', mapUrl: draft.mapUrl.trim(), images: [...new Set(draft.images.filter(Boolean))] };
+    const images = draft.images.filter(Boolean);
+    if (new Set(images).size !== images.length) { setError(t.duplicatePhoto); return; }
+    const item = { ...draft, name: trimText(draft.name), address: trimText(draft.address), hours: trimText(draft.hours), phone: draft.phone.trim(), lineId: draft.lineId?.trim() || '', mapUrl: draft.mapUrl.trim(), images };
     const exists = data.stores.some(store => store.id === item.id);
     const nextStores = exists ? data.stores.map(store => store.id === item.id ? item : store) : [...data.stores, item];
-    if (save({ ...data, stores: nextStores }, activityText('storeSaved'))) {
+    if (save({ ...data, stores: nextStores, media: withPreparedCmsMedia(data.media, pendingImages, item.images, item.name) }, activityText('storeSaved'))) {
       setError(''); closeAction();
     } else setError(t.saveError);
   };
   const moveImage = (index: number, direction: -1 | 1) => {
-    if (!draft || index + direction < 0 || index + direction >= draft.images.length) return;
+    if (!draft || preparingCount || index + direction < 0 || index + direction >= draft.images.length) return;
     const images = [...draft.images];
     [images[index], images[index + direction]] = [images[index + direction], images[index]];
     setDraft({ ...draft, images });
@@ -232,9 +245,25 @@ export function CmsStores({ locale, data, save, routeAction, routeItemId, openAc
         <LocalizedFields label={t.hours} locale={locale} value={draft.hours} onChange={hours => setDraft({ ...draft, hours })} maxLength={300} />
         <div className={ui.formGrid}><Field label={t.phone}><input className={ui.input} type="tel" value={draft.phone} maxLength={80} onChange={event => setDraft({ ...draft, phone: event.target.value })} /></Field><Field label={t.lineId}><input className={ui.input} value={draft.lineId || ''} maxLength={80} onChange={event => setDraft({ ...draft, lineId: event.target.value })} /></Field></div>
         <Field label={t.mapUrl} hint={t.destinationHint}><input className={ui.input} value={draft.mapUrl} maxLength={2000} onChange={event => setDraft({ ...draft, mapUrl: event.target.value })} /></Field>
-        <section className={styles.formSection}><div><h3>{t.gallery}</h3><p className={styles.help}>{t.galleryHint}</p></div>{draft.images.length > 0 ? <div className={styles.storeGallery}>{draft.images.map((image, index) => <div className={styles.galleryItem} key={index}><header><strong>{index === 0 ? t.cover : `${t.photo} ${index + 1}`}</strong><span className={ui.muted}>{index + 1}</span></header><CmsImagePicker locale={locale} media={data.media} value={image} onChange={value => setDraft({ ...draft, images: draft.images.map((current, currentIndex) => currentIndex === index ? value : current) })} /><footer><div className={styles.orderControls}><button type="button" disabled={index === 0} aria-label={`${t.moveUp}: ${t.photo} ${index + 1}`} onClick={() => moveImage(index, -1)}>↑</button><button type="button" disabled={index === draft.images.length - 1} aria-label={`${t.moveDown}: ${t.photo} ${index + 1}`} onClick={() => moveImage(index, 1)}>↓</button></div><button type="button" className={ui.danger} onClick={() => setDraft({ ...draft, images: draft.images.filter((_, currentIndex) => currentIndex !== index) })}>{t.removePhoto}</button></footer></div>)}</div> : <p className={ui.muted}>{t.noGallery}</p>}<div><button type="button" className={ui.secondary} onClick={() => setDraft({ ...draft, images: [...draft.images, ''] })}>{t.addPhoto}</button></div></section>
+        <section className={styles.formSection}>
+          <div><h3>{t.gallery}</h3><p className={styles.help}>{t.galleryHint}</p></div>
+          {draft.images.length > 0 ? <div className={styles.storeGallery}>{draft.images.map((image, index) => <div className={styles.galleryItem} key={index}>
+            <header><strong>{index === 0 ? t.cover : `${t.photo} ${index + 1}`}</strong><span className={ui.muted}>{index + 1}</span></header>
+            <CmsImagePicker locale={locale} media={data.media} value={image} onChange={(value, prepared) => {
+              if (value && draft.images.some((existing, currentIndex) => currentIndex !== index && existing === value)) { setError(t.duplicatePhoto); return; }
+              setError('');
+              setDraft(current => current ? { ...current, images: current.images.map((existing, currentIndex) => currentIndex === index ? value : existing) } : current);
+              if (prepared) setPendingImages(current => [...current.filter(item => item.src !== prepared.src), prepared]);
+            }} onBusyChange={busy => setPreparingCount(count => count + (busy ? 1 : -1))} />
+            <footer><div className={styles.orderControls}>
+              <button type="button" disabled={preparingCount > 0 || index === 0} aria-label={`${t.moveUp}: ${t.photo} ${index + 1}`} onClick={() => moveImage(index, -1)}>↑</button>
+              <button type="button" disabled={preparingCount > 0 || index === draft.images.length - 1} aria-label={`${t.moveDown}: ${t.photo} ${index + 1}`} onClick={() => moveImage(index, 1)}>↓</button>
+            </div><button type="button" className={ui.danger} disabled={preparingCount > 0} onClick={() => setDraft({ ...draft, images: draft.images.filter((_, currentIndex) => currentIndex !== index) })}>{t.removePhoto}</button></footer>
+          </div>)}</div> : <p className={ui.muted}>{t.noGallery}</p>}
+          <div><button type="button" className={ui.secondary} disabled={preparingCount > 0} onClick={() => setDraft({ ...draft, images: [...draft.images, ''] })}>{t.addPhoto}</button></div>
+        </section>
         {error && <p className={ui.error} role="alert">{error}</p>}
-        <div className={styles.editorActions}><button type="button" className={ui.secondary} onClick={() => setEditorPreview(true)}>{c.preview}</button><div className={ui.actions}><button type="button" className={ui.secondary} onClick={closeAction}>{c.cancel}</button><button type="submit" className={ui.primary}>{c.save}</button></div></div>
+        <div className={styles.editorActions}><button type="button" className={ui.secondary} disabled={preparingCount > 0} onClick={() => setEditorPreview(true)}>{c.preview}</button><div className={ui.actions}><button type="button" className={ui.secondary} onClick={closeAction}>{c.cancel}</button><button type="submit" className={ui.primary} disabled={preparingCount > 0}>{c.save}</button></div></div>
       </form>}
     </CmsActionPage>}
     {preview && <CmsDialog title={t.storePreview} locale={locale} onClose={() => setPreview(null)} wide><StorePreview item={preview} locale={locale} /></CmsDialog>}

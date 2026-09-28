@@ -76,14 +76,7 @@
 .imagePicker { min-width: 0; }
 .imageSelection { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
 .imageSelection>img,.imageSelection>span { width: 90px; height: 75px; border: 1px solid var(--line); border-radius: 7px; object-fit: contain; display: grid; place-items: center; background: var(--paper); }
-.pickerPanel { margin-top: 18px; padding: 18px; border: 1px solid var(--line); border-radius: 12px; background: #f8f9f5; }
-.pickerPanel>header { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 14px; }
-.pickerPanel>.search { background: var(--white); }
-.pickerGrid { display: grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap: 15px; margin-top: 24px; }
-.pickerItem { min-width: 0; padding: 8px; border: 1px solid var(--line); border-radius: 9px; text-align: left; }
-.pickerItem:hover { border-color: var(--orange); }
-.pickerItem img { width: 100%; height: 100px; object-fit: contain; background: var(--paper); }
-.pickerItem span { display: block; font-size: var(--text-xs); margin-top: 8px; overflow-wrap: anywhere; }
-@media(max-width:650px) { .formGrid { grid-template-columns: 1fr; } .panelHead,.toolbar { padding: 18px; } .dialogBody { padding: 20px; } .dialogHead { padding: 16px 20px; } .pickerGrid { grid-template-columns: repeat(2,minmax(0,1fr)); } .recordGrid,.recordGridCompact { grid-template-columns: 1fr; padding: 16px; gap: 14px; } .recordCard { padding: 18px; } .actions>* { flex: 1; } .search { min-width: 0; flex-basis: 100%; } .actionPage { border-radius: 12px; } .actionPageHeader,.actionPageBody { padding: 22px 18px; } .actionPageHeader { gap: 20px; } .actionPageHeader h1 { font-size: var(--text-2xl); } }
+.imagePicker > .muted,.imagePicker > .error { margin-top: 10px; }
+@media(max-width:650px) { .formGrid { grid-template-columns: 1fr; } .panelHead,.toolbar { padding: 18px; } .dialogBody { padding: 20px; } .dialogHead { padding: 16px 20px; } .recordGrid,.recordGridCompact { grid-template-columns: 1fr; padding: 16px; gap: 14px; } .recordCard { padding: 18px; } .actions>* { flex: 1; } .search { min-width: 0; flex-basis: 100%; } .actionPage { border-radius: 12px; } .actionPageHeader,.actionPageBody { padding: 22px 18px; } .actionPageHeader { gap: 20px; } .actionPageHeader h1 { font-size: var(--text-2xl); } }
 @media(max-width:430px) { .recordCardBody { grid-template-columns: 1fr; gap: 13px; } .recordCardHeader { flex-wrap: wrap; gap: 12px; } }
 @media(max-width:650px) { .toolbar>select.select { width: 100%; } }

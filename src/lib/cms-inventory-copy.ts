@@ -15,7 +15,7 @@ const en = {
   help: '1. Find a product · 2. Enter quantity and reason · 3. Review and save',
   pendingHint: 'Changes stay pending while you search or change pages. Nothing is saved until you review and confirm.',
   changed: 'Unsaved changes', clean: 'No unsaved changes', leave: 'You have unsaved changes. Leave this page and discard them?',
-  guide: 'Product checklist', guideHint: 'Complete both names, choose an image, then set the SKU, price, stock, category and brand. Save as a draft until ready.',
+  guide: 'Product checklist', guideHint: 'Complete both names and add 3–5 images, then set the SKU, price, stock, category and brand. Save as a draft until ready.',
   stockLink: 'Manage stock', savedStock: 'Saved stock', noChange: 'No stock change', results: '{count} matching products',
 };
 const th: Record<keyof typeof en, string> = {
@@ -33,7 +33,7 @@ const th: Record<keyof typeof en, string> = {
   help: '1. ค้นหาสินค้า · 2. กรอกจำนวนและเหตุผล · 3. ตรวจสอบและบันทึก',
   pendingHint: 'ค้นหาหรือเปลี่ยนหน้าได้โดยรายการยังรอบันทึก ข้อมูลจะบันทึกเมื่อคุณตรวจสอบและยืนยันแล้วเท่านั้น',
   changed: 'มีการเปลี่ยนแปลงที่ยังไม่บันทึก', clean: 'ไม่มีการเปลี่ยนแปลงที่รอบันทึก', leave: 'มีการเปลี่ยนแปลงที่ยังไม่บันทึก ต้องการออกจากหน้านี้และยกเลิกการเปลี่ยนแปลงหรือไม่?',
-  guide: 'ข้อมูลที่ต้องเตรียม', guideHint: 'กรอกชื่อทั้งสองภาษา เลือกรูป แล้วระบุรหัส SKU ราคา สต็อก หมวดหมู่ และแบรนด์ บันทึกเป็นฉบับร่างได้จนกว่าจะพร้อมเผยแพร่',
+  guide: 'ข้อมูลที่ต้องเตรียม', guideHint: 'กรอกชื่อทั้งสองภาษา เพิ่มรูป 3–5 รูป แล้วระบุรหัส SKU ราคา สต็อก หมวดหมู่ และแบรนด์ บันทึกเป็นฉบับร่างได้จนกว่าจะพร้อมเผยแพร่',
   stockLink: 'จัดการสต็อก', savedStock: 'สต็อกที่บันทึกแล้ว', noChange: 'สต็อกไม่เปลี่ยนแปลง', results: 'พบ {count} สินค้า',
 };
 export const cmsInventoryCopy: Record<Locale, Record<keyof typeof en, string>> = { th, en };

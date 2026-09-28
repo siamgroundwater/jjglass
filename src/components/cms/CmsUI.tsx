@@ -1,7 +1,8 @@
 'use client';
 
-import { createContext, useContext, useEffect, useId, useRef, useState, type ReactNode } from 'react';
+import { createContext, useContext, useEffect, useId, useRef, useState, type ChangeEvent, type ReactNode } from 'react';
 import { cmsCopy } from '@/lib/cms-copy';
+import { prepareCmsImage } from '@/lib/cms-image';
 import type { Locale } from '@/lib/i18n';
 import type { CmsMedia } from '@/lib/cms-types';
 import Icon from '../Icon';
@@ -75,18 +76,40 @@ export function CmsPagination({ page, pages, onChange, locale }: { page: number;
   </nav>;
 }
 
-export function CmsImagePicker({ locale, media, value, onChange }: { locale: Locale; media: CmsMedia[]; value: string; onChange: (src: string) => void }) {
+export function CmsImagePicker({ locale, media, value, onChange, onBusyChange }: { locale: Locale; media: CmsMedia[]; value: string; onChange: (src: string, prepared?: CmsMedia) => void; onBusyChange?: (busy: boolean) => void }) {
   const c = cmsCopy[locale];
-  const [open, setOpen] = useState(false);
-  const [query, setQuery] = useState('');
-  const matches = media.filter(item => `${item.name} ${item.alt.th} ${item.alt.en}`.toLowerCase().includes(query.trim().toLowerCase()));
+  const fileInput = useRef<HTMLInputElement>(null);
+  const version = useRef(0);
+  const busyRef = useRef(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  useEffect(() => () => { version.current += 1; if (busyRef.current) onBusyChange?.(false); }, []);
+  async function selectDeviceImage(event: ChangeEvent<HTMLInputElement>) {
+    const file = event.currentTarget.files?.[0];
+    event.currentTarget.value = '';
+    if (!file) return;
+    const currentVersion = ++version.current;
+    busyRef.current = true;
+    setBusy(true);
+    onBusyChange?.(true);
+    setError('');
+    try {
+      const prepared = await prepareCmsImage(file, { maxDataUrlLength: 500_000 });
+      if (currentVersion === version.current) onChange(prepared.src, prepared);
+    } catch {
+      if (currentVersion === version.current) setError(c.uploadError);
+    } finally {
+      if (currentVersion === version.current) {
+        busyRef.current = false;
+        setBusy(false);
+        onBusyChange?.(false);
+      }
+    }
+  }
   return <div className={u.imagePicker}>
-    <div className={u.imageSelection}>{value ? <img src={value} width={90} height={75} alt={media.find(item => item.src === value)?.alt[locale] || c.image} /> : <span><Icon name="grid" /></span>}<button className={u.secondary} type="button" onClick={() => setOpen(true)}>{c.chooseImage}</button>{value && <button className={u.textButton} type="button" onClick={() => onChange('')}>{c.remove}</button>}</div>
-    {open && <section className={u.pickerPanel} aria-label={c.imageLibrary}>
-      <header><strong>{c.imageLibrary}</strong><button type="button" className={u.iconButton} onClick={() => setOpen(false)} aria-label={c.close}><Icon name="close" size={20} /></button></header>
-      <label className={u.search}><Icon name="search" size={18} /><input value={query} onChange={event => setQuery(event.target.value)} onKeyDown={event => { if (event.key === 'Enter') event.preventDefault(); }} placeholder={c.imageSearch} aria-label={c.imageSearch} /></label>
-      <div className={u.pickerGrid}>{matches.map(item => <button type="button" key={item.id} className={u.pickerItem} aria-label={`${c.select}: ${item.name}`} onClick={() => { onChange(item.src); setOpen(false); }}><img src={item.src} alt={item.alt[locale]} width={140} height={100} loading="lazy" /><span>{item.name}</span></button>)}</div>
-      {!matches.length && <CmsEmpty title={c.noResults} />}
-    </section>}
+    <div className={u.imageSelection}>{value ? <img src={value} width={90} height={75} alt={media.find(item => item.src === value)?.alt[locale] || c.image} /> : <span><Icon name="grid" /></span>}<button className={u.secondary} type="button" disabled={busy} onClick={() => fileInput.current?.click()}>{c.chooseDeviceImage}</button>{value && <button className={u.textButton} type="button" disabled={busy} onClick={() => onChange('')}>{c.remove}</button>}</div>
+    <input ref={fileInput} type="file" accept="image/jpeg,image/png,image/webp" hidden onChange={selectDeviceImage} disabled={busy} />
+    {busy && <p className={u.muted} role="status">{c.uploading}</p>}
+    {error && <p className={u.error} role="alert">{error}</p>}
   </div>;
 }

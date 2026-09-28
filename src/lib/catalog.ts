@@ -1,6 +1,9 @@
 // Presentation catalog adapted from the supplied legacy HTML. See docs/SOURCE_CONTENT.md.
 import type { LocalizedText } from './i18n';
 import { createDemoPriceTiers, type PriceTier } from './pricing';
+import { legacyCatalogProducts } from './legacy-products';
+import existingProductPhotos from './existing-product-photos.json';
+import newProductPhotos from './new-product-photos.json';
 export type { Locale, LocalizedText } from './i18n';
 export type Product = {
   id: string;
@@ -19,6 +22,9 @@ export type Product = {
 };
 export function productGallery(product: Pick<Product, 'image' | 'images'>): string[] {
   return product.images?.length ? product.images : product.image ? [product.image] : [];
+}
+export function productImageAsset(src: string): string {
+  return src.split('#', 1)[0];
 }
 export type Category = {
   id: string;
@@ -705,8 +711,39 @@ const catalogProducts: Omit<Product, 'priceTiers'>[] = [{
   "image": "/images/product-27557.jpg",
   "capacity": "300 ml"
 }];
-export const products: Product[] = catalogProducts.map(product => ({
+const sourcedSizeGroups: Record<string, string> = {
+  // Separate WooCommerce SKUs with explicit capacities. Different Pop Jar
+  // model suffixes retain independent size families and prices.
+  '15270': 'pop-jar-g0000', '15271': 'pop-jar-g0000', '15272': 'pop-jar-g0000', '15273': 'pop-jar-g0000', '15274': 'pop-jar-g0000',
+  '15275': 'pop-jar-g0001', '15276': 'pop-jar-g0001', '15277': 'pop-jar-g0001', '15278': 'pop-jar-g0001', '15279': 'pop-jar-g0001',
+  '13172': 'lexngtion-red-wine', '13173': 'lexngtion-red-wine',
+  '19813': 'apothecary-bottle-wc', '19814': 'apothecary-bottle-wc', '19815': 'apothecary-bottle-wc', '19816': 'apothecary-bottle-wc', '19817': 'apothecary-bottle-wc',
+  '19727': 'boro-bt-wc', '19728': 'boro-bt-wc',
+  '13215': 'long-cool-tumbler', '13217': 'long-cool-tumbler',
+  '13218': 'top-drink-tumbler', '13219': 'top-drink-tumbler', '13221': 'top-drink-tumbler', '13222': 'top-drink-tumbler',
+  '13223': 'san-marino-tumbler', '13225': 'san-marino-tumbler', '13227': 'san-marino-tumbler', '13228': 'san-marino-tumbler',
+};
+
+type PhotoManifest = Record<string, { images: { path: string }[] }>;
+const existingPhotos = existingProductPhotos.products as PhotoManifest;
+const additionalPhotos = newProductPhotos.products as PhotoManifest;
+
+function presentationGallery(product: Omit<Product, 'priceTiers'>): string[] {
+  const originals = [product.image, ...(existingPhotos[product.id]?.images.map(image => image.path) || []), ...(additionalPhotos[product.id]?.images.map(image => image.path) || []), ...(product.images || [])];
+  const images = [...new Set(originals)].slice(0, 5);
+  // Some source product pages have fewer than three photographs. These entries
+  // intentionally display labeled detail crops of a genuine source photo.
+  for (const view of ['#detail', '#detail-base']) {
+    if (images.length >= 3) break;
+    images.push(`${product.image}${view}`);
+  }
+  return images;
+}
+
+export const products: Product[] = [...catalogProducts, ...legacyCatalogProducts].map(product => ({
   ...product,
+  images: presentationGallery(product),
+  sizeGroup: sourcedSizeGroups[product.id],
   priceTiers: createDemoPriceTiers(product.price)
 }));
 export const brands: string[] = ["LYNX", "AMORN", "NUK", "LUCE", "FAWLES", "STONE ISLAND", "GREEN APPLE", "IDELITA", "KING CRYSTAL", "KING DEALAY", "Ocean"];

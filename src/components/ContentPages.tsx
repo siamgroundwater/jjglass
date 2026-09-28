@@ -134,9 +134,9 @@ function ContactForm({
     });
   }
   return <div className={styles.formCard}>
-    <span className={styles.smallTag}>{t(locale, "FORM PREVIEW")}</span>
-    <h2>{t(locale, "Tell us a little more.")}</h2>
-    <p className={styles.formNote}>{t(locale, "Try the form to preview your inquiry. This demo does not send or store your information.")}</p>
+    <span className={styles.smallTag}>{t(locale, "Send Us a Message")}</span>
+    <h2>{t(locale, "How Can We Help?")}</h2>
+    <p className={styles.formNote}>{t(locale, "Tell us what you’re looking for,\nand our team will get back to you using the contact details provided.")}</p>
     <form onSubmit={previewInquiry} onInput={event => {
       const input = event.target as HTMLInputElement;
       input.setCustomValidity?.('');

@@ -264,16 +264,16 @@ export const pageIntro: Record<ContentPage, PageIntroduction> = {
   },
   contact: {
     eyebrow: {
-      th: 'ยินดีพูดคุยกับคุณ',
-      en: 'LET’S TALK'
+      th: 'พร้อมช่วยตอบทุกคำถาม',
+      en: 'Here to Help'
     },
     title: {
-      th: 'ชิ้นที่ใช่ เริ่มจากการพูดคุย',
-      en: 'Something in mind?'
+      th: 'ติดต่อเรา',
+      en: 'Contact Us'
     },
     description: {
-      th: 'สอบถามสินค้า ราคา หรือเลือกเครื่องแก้วสำหรับธุรกิจของคุณ ติดต่อทีมงานได้ตามช่องทางด้านล่าง',
-      en: 'A question about a product, an order or glassware for your business? Here is how to reach our team.'
+      th: 'สอบถามสินค้า ราคา การสั่งซื้อ หรือสินค้าสำหรับธุรกิจของคุณ',
+      en: 'For product inquiries, pricing, orders, or business requirements,\ncontact the JJGLASS team through your preferred channel.'
     }
   },
   inspiration: {

@@ -32,3 +32,14 @@ export async function prepareCmsImage(file: File, options: { maxDataUrlLength?: 
     URL.revokeObjectURL(objectUrl);
   }
 }
+
+export function withPreparedCmsMedia(media: CmsMedia[], pending: CmsMedia[], sources: Iterable<string>, alt: CmsMedia['alt']): CmsMedia[] {
+  const referenced = new Set(sources);
+  const saved = new Set(media.map(item => item.src));
+  const additions = pending.filter(item => {
+    if (!referenced.has(item.src) || saved.has(item.src)) return false;
+    saved.add(item.src);
+    return true;
+  });
+  return [...additions.map(item => ({ ...item, alt: { ...alt } })), ...media];
+}

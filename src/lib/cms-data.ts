@@ -1,4 +1,4 @@
-import { brands, categories, contact, productGallery, products, stores } from './catalog';
+import { brands, categories, contact, productGallery, productImageAsset, products, stores } from './catalog';
 import { brandImages, catalogs, pageIntro, stories, storePreviewGalleries } from './content';
 import { messages } from './messages';
 import { createStoreIllustrationMedia, enrichStoreIllustrations } from './store-art';
@@ -71,7 +71,7 @@ export function createCmsSeed(): CmsData {
     ...stories.map((story): CmsContent => ({ id: `story-${story.id}`, kind: 'story', title: { ...story.title }, subtitle: { ...story.label }, body: { ...story.text }, image: story.image, link: `/products?category=${story.category}`, status: 'published', seoTitle: { ...story.title }, seoDescription: { ...story.text } })),
     ...catalogs.map((catalog, index): CmsContent => ({ id: `catalog-${index + 1}`, kind: 'catalog', title: { th: catalog.title, en: catalog.title }, subtitle: { ...catalog.description }, body: { ...catalog.description }, image: catalog.image, link: catalog.url, status: 'published', seoTitle: { th: catalog.title, en: catalog.title }, seoDescription: { ...catalog.description } }))
   ];
-  const sourceImages = [...products.flatMap(p => productGallery(p).map(src => ({ src, alt: p.name }))), ...categories.map(p => ({ src: p.image, alt: p.name })), ...content.filter(p => p.image).map(p => ({ src: p.image, alt: p.title })), ...Object.entries(brandImages).map(([brand, image]) => ({ src: `/images/${image}`, alt: { th: brand, en: brand } }))];
+  const sourceImages = [...products.flatMap(p => productGallery(p).map(image => ({ src: productImageAsset(image), alt: p.name }))), ...categories.map(p => ({ src: p.image, alt: p.name })), ...content.filter(p => p.image).map(p => ({ src: p.image, alt: p.title })), ...Object.entries(brandImages).map(([brand, image]) => ({ src: `/images/${image}`, alt: { th: brand, en: brand } }))];
   const media: CmsMedia[] = Array.from(new Map(sourceImages.map(item => [item.src, item])).values()).map((item, index) => ({ id: `media-${index + 1}`, name: item.src.split('/').pop() || 'Image', src: item.src, alt: { ...item.alt }, uploaded: false, created: '2026-09-01T09:00:00+07:00' }));
   return {
     version: 3,
@@ -89,7 +89,8 @@ export function createCmsSeed(): CmsData {
 }
 
 export function mediaIsUsed(data: CmsData, src: string): boolean {
-  return data.products.some(item => productGallery(item).includes(src)) || data.categories.some(item => item.image === src) || data.brands.some(item => item.image === src) || data.content.some(item => item.image === src) || data.stores.some(item => item.images.includes(src)) || data.orders.some(item => item.items.some(product => product.image === src)) || data.trash.some(item => item.kind === 'product' ? productGallery(item.record).includes(src) : item.kind === 'content' ? item.record.image === src : item.kind === 'store' ? item.record.images.includes(src) : false);
+  const productUses = (item: { image: string; images?: string[] }) => [item.image, ...productGallery(item)].some(image => image === src || productImageAsset(image) === src);
+  return data.products.some(productUses) || data.categories.some(item => item.image === src) || data.brands.some(item => item.image === src) || data.content.some(item => item.image === src) || data.stores.some(item => item.images.includes(src)) || data.orders.some(item => item.items.some(product => product.image === src)) || data.trash.some(item => item.kind === 'product' ? productUses(item.record) : item.kind === 'content' ? item.record.image === src : item.kind === 'store' ? item.record.images.includes(src) : false);
 }
 
 export function normalizeCmsData(value: unknown): CmsData | null {
@@ -162,7 +163,12 @@ function enrichProductCatalog(data: CmsData): CmsData {
   const existingMedia = new Set(data.media.map(item => item.src));
   const newMedia: CmsMedia[] = [];
   for (const product of nextProducts) {
-    for (const [index, src] of productGallery(product).entries()) {
+    const source = catalogById.get(product.id);
+    if (!source) continue;
+    const sourcedAssets = new Set(productGallery(source).map(productImageAsset));
+    for (const [index, image] of productGallery(product).entries()) {
+      const src = productImageAsset(image);
+      if (!sourcedAssets.has(src)) continue;
       if (existingMedia.has(src)) continue;
       existingMedia.add(src);
       newMedia.push({

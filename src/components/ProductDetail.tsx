@@ -22,7 +22,8 @@ export function ProductDetail({
   const [gallerySelection, setGallerySelection] = useState({ productId: product.id, index: 0 });
   const images = product.images?.length ? product.images : [product.image];
   const activeImage = gallerySelection.productId === product.id ? Math.min(gallerySelection.index, images.length - 1) : 0;
-  const isDetailImage = images[activeImage].endsWith('#detail');
+  const isDetailImage = images[activeImage].includes('#detail');
+  const isBaseDetail = images[activeImage].endsWith('#detail-base');
   const sizeChoices = product.sizeGroup
     ? products.filter(item => item.sizeGroup === product.sizeGroup).sort((a, b) => {
       const sizeA = Number.parseFloat(a.capacity?.replaceAll(',', '') ?? '');
@@ -76,7 +77,7 @@ export function ProductDetail({
           <span className={styles.imageBrand}>{product.brand}</span>
           <img
             src={images[activeImage]}
-            className={isDetailImage ? styles.detailImage : undefined}
+            className={isDetailImage ? `${styles.detailImage} ${isBaseDetail ? styles.detailBase : ''}` : undefined}
             alt={`${product.name[locale]}${isDetailImage ? ` — ${galleryCopy.detailView}` : ''} (${activeImage + 1}/${images.length})`}
             width={800}
             height={800}
@@ -99,11 +100,11 @@ export function ProductDetail({
             type="button"
             className={`${styles.thumbnail} ${index === activeImage ? styles.thumbnailActive : ''}`}
             onClick={() => setGallerySelection({ productId: product.id, index })}
-            aria-label={`${galleryCopy.show(index + 1)}: ${product.name[locale]}${image.endsWith('#detail') ? ` — ${galleryCopy.detailView}` : ''}`}
+            aria-label={`${galleryCopy.show(index + 1)}: ${product.name[locale]}${image.includes('#detail') ? ` — ${galleryCopy.detailView}` : ''}`}
             aria-pressed={index === activeImage}
           >
-            <img src={image} className={image.endsWith('#detail') ? styles.detailImage : undefined} alt="" width={120} height={120} loading="lazy" />
-            {image.endsWith('#detail') && <span className={styles.detailBadge} aria-hidden="true">{galleryCopy.detailBadge}</span>}
+            <img src={image} className={image.includes('#detail') ? `${styles.detailImage} ${image.endsWith('#detail-base') ? styles.detailBase : ''}` : undefined} alt="" width={120} height={120} loading="lazy" />
+            {image.includes('#detail') && <span className={styles.detailBadge} aria-hidden="true">{galleryCopy.detailBadge}</span>}
           </button>)}
         </div>}
       </div>
@@ -124,7 +125,7 @@ export function ProductDetail({
         <div className={styles.priceSummary} aria-live="polite">
           <p className={styles.price}>{money(unitPrice)} <span>/ {priceCopy.each}</span></p>
           {unitPrice < product.price && <del>{money(product.price)}</del>}
-          <p className={styles.selectionTotal}><span>{priceCopy.currentTotal} · {pricingQuantity} {priceCopy.pieces}</span><strong>{money(lineTotal)}</strong></p>
+          <p className={styles.selectionTotal}><span>{priceCopy.currentTotal} · {pricingQuantity} {locale === 'en' && pricingQuantity === 1 ? 'piece' : priceCopy.pieces}</span><strong>{money(lineTotal)}</strong></p>
           {savings > 0 && <p className={styles.savings}>{priceCopy.saved} {money(savings)}</p>}
         </div>
         <p className={styles.description}>{product.description[locale]}</p>

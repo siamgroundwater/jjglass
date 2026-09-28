@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ChangeEvent, type FormEvent, type ReactNode } from 'react';
 import { cmsCopy } from '../../lib/cms-copy';
-import { prepareCmsImage } from '../../lib/cms-image';
+import { prepareCmsImage, withPreparedCmsMedia } from '../../lib/cms-image';
 import { cmsProductsCopy } from '../../lib/cms-products-copy';
 import { cmsInventoryCopy } from '../../lib/cms-inventory-copy';
 import { downloadProductCsv, matchesStock } from '../../lib/cms-inventory';
@@ -149,15 +149,6 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
       if (version === imageVersion.current) setPreparingImage(false);
     }
   }
-  function selectLibraryImage(image: string) {
-    if (!draft || !image || preparingImage) return;
-    if (draft.images.length >= 5) { setError(t.galleryLimit); return; }
-    if (draft.images.includes(image)) { setError(t.imageAlreadyAdded); return; }
-    const images = [...draft.images, image];
-    updateDraft({ images, image: images[0] });
-    if (!previewImage) setPreviewImage(images[0]);
-    setError('');
-  }
   function reorderImage(from: number, to: number) {
     if (!draft || preparingImage || to < 0 || to >= draft.images.length) return;
     const images = [...draft.images];
@@ -249,11 +240,11 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
         <div className={`${s.editorSide} ${u.formStack}`}>
           <div className={s.galleryHeading}><div><h3 className={s.sectionTitle}>{t.galleryTitle} *</h3><p>{t.galleryHint}</p></div><span>{draft.images.length} / 5</span></div>
           {draft.images.length > 0 && <div className={s.galleryPreview}>
-            <img src={selectedPreview} className={selectedPreview?.endsWith('#detail') ? s.detailCrop : undefined} alt={`${draft.name[locale] || t.product} · ${selectedPreview?.endsWith('#detail') ? detailView : t.galleryPreview}`} width={800} height={620} />
-            <span>{selectedPreview?.endsWith('#detail') ? detailView : selectedPreview === draft.images[0] ? t.coverImage : t.galleryPreview}</span>
+            <img src={selectedPreview} className={selectedPreview?.includes('#detail') ? `${s.detailCrop} ${selectedPreview.endsWith('#detail-base') ? s.detailBase : ''}` : undefined} alt={`${draft.name[locale] || t.product} · ${selectedPreview?.includes('#detail') ? detailView : t.galleryPreview}`} width={800} height={620} />
+            <span>{selectedPreview?.includes('#detail') ? detailView : selectedPreview === draft.images[0] ? t.coverImage : t.galleryPreview}</span>
           </div>}
           {draft.images.length > 0 && <div className={s.galleryGrid} aria-label={t.galleryTitle}>{draft.images.map((image, index) => <div className={s.galleryCard} key={image}>
-            <button type="button" className={`${s.galleryThumb} ${selectedPreview === image ? s.galleryThumbActive : ''}`} onClick={() => setPreviewImage(image)} aria-label={`${t.galleryPreview} ${index + 1}${image.endsWith('#detail') ? ` · ${detailView}` : ''}`} aria-pressed={selectedPreview === image}><img src={image} className={image.endsWith('#detail') ? s.detailCrop : undefined} alt="" width={240} height={180} />{image.endsWith('#detail') && <span className={s.galleryDetailBadge} aria-hidden="true">{detailBadge}</span>}</button>
+            <button type="button" className={`${s.galleryThumb} ${selectedPreview === image ? s.galleryThumbActive : ''}`} onClick={() => setPreviewImage(image)} aria-label={`${t.galleryPreview} ${index + 1}${image.includes('#detail') ? ` · ${detailView}` : ''}`} aria-pressed={selectedPreview === image}><img src={image} className={image.includes('#detail') ? `${s.detailCrop} ${image.endsWith('#detail-base') ? s.detailBase : ''}` : undefined} alt="" width={240} height={180} />{image.includes('#detail') && <span className={s.galleryDetailBadge} aria-hidden="true">{detailBadge}</span>}</button>
             <div className={s.galleryCardActions}>
               {index === 0 ? <span className={s.coverTag}>{t.coverImage}</span> : <button type="button" className={s.setCover} onClick={() => reorderImage(index, 0)} disabled={preparingImage}>{t.setCover}</button>}
               <button type="button" className={s.galleryIconButton} onClick={() => reorderImage(index, index - 1)} disabled={preparingImage || index === 0} aria-label={`${t.moveEarlier} ${index + 1}`}>←</button>
@@ -271,7 +262,6 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
           </div>
           {preparingImage && <p className={s.imageStatus} role="status">{t.preparingImage}</p>}
           {pendingImages.some(item => draft.images.includes(item.src)) && <p className={s.imageStatus}><Icon name="check" size={17} />{t.imageReady} · {pendingImages.filter(item => draft.images.includes(item.src)).length}</p>}
-          {draft.images.length < 5 && !preparingImage && <div className={s.galleryLibrary}><span>{t.addFromLibrary}</span><CmsImagePicker locale={locale} media={data.media} value="" onChange={selectLibraryImage} /></div>}
           <h3 className={`${s.sectionTitle} ${s.spacedSection}`}>{t.organisation}</h3>
           <Field label={`${t.sku} *`}><input className={u.input} required maxLength={100} value={draft.sku} onChange={event => updateDraft({ sku: event.target.value })} /></Field>
           <div className={u.formGrid}><Field label={`${t.priceLabel} *`}><input className={u.input} inputMode="decimal" type="number" min="0.01" step="0.01" required value={draft.price} onChange={event => updateDraft({ price: event.target.value })} /></Field><Field label={`${t.stockLabel} *`}><input className={u.input} inputMode="numeric" type="number" min="0" step="1" required value={draft.stock} onChange={event => updateDraft({ stock: event.target.value })} /></Field></div>
@@ -342,7 +332,7 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
     {detail && <CmsDialog title={c.details} locale={locale} onClose={() => setDetail(null)} wide><div className={s.editorGrid}>
       <div className={s.confirmationProduct}><img src={detail.image} alt="" /><div><strong>{detail.name[locale]}</strong><p className={u.muted}>{detail.sku}</p><CmsBadge status={detail.status}>{c[detail.status]}</CmsBadge></div></div>
       <div className={u.formStack}>
-        <div className={u.recordField}><span className={u.recordLabel}>{t.galleryTitle}</span><div className={s.detailGallery}>{(detail.images?.length ? detail.images : [detail.image]).map((image, index) => <div key={image}><img src={image} className={image.endsWith('#detail') ? s.detailCrop : undefined} alt={`${detail.name[locale]} ${index + 1}${image.endsWith('#detail') ? ` · ${detailView}` : ''}`} width={140} height={105} />{image.endsWith('#detail') ? <span>{detailBadge}</span> : index === 0 && <span>{t.coverImage}</span>}</div>)}</div></div>
+        <div className={u.recordField}><span className={u.recordLabel}>{t.galleryTitle}</span><div className={s.detailGallery}>{(detail.images?.length ? detail.images : [detail.image]).map((image, index) => <div key={image}><img src={image} className={image.includes('#detail') ? `${s.detailCrop} ${image.endsWith('#detail-base') ? s.detailBase : ''}` : undefined} alt={`${detail.name[locale]} ${index + 1}${image.includes('#detail') ? ` · ${detailView}` : ''}`} width={140} height={105} />{image.includes('#detail') ? <span>{detailBadge}</span> : index === 0 && <span>{t.coverImage}</span>}</div>)}</div></div>
         <div className={u.recordField}><span className={u.recordLabel}>{t.description}</span><p>{detail.description[locale] || '—'}</p></div>
         {detail.capacity && <div className={u.recordField}><span className={u.recordLabel}>{t.capacity}</span><span>{detail.capacity}</span></div>}
         {detail.sizeGroup && <div className={u.recordField}><span className={u.recordLabel}>{t.sizeGroup}</span><span>{detail.sizeGroup}</span></div>}
@@ -361,6 +351,8 @@ export function CmsCollections({ locale, data, save, routeAction, routeItemId, r
   const [search, setSearch] = useState('');
   const [status, setStatus] = useState('all');
   const [editor, setEditor] = useState<CollectionDraft | null>(() => collectionEditorForRoute(data, routeKind || 'categories', routeAction, routeItemId));
+  const [pendingImages, setPendingImages] = useState<CmsMedia[]>([]);
+  const [preparingImage, setPreparingImage] = useState(false);
   const [error, setError] = useState('');
   const query = normalize(search);
   const items = tab === 'categories'
@@ -371,13 +363,13 @@ export function CmsCollections({ locale, data, save, routeAction, routeItemId, r
   function updateCollection(patch: Partial<CollectionDraft>) { setEditor(current => current ? { ...current, ...patch } : null); }
   function submitCollection(event: FormEvent) {
     event.preventDefault();
-    if (!editor) return;
+    if (!editor || preparingImage) return;
     if (editor.kind === 'categories') {
       if (languageConfig.order.some(lang => !editor.name[lang].trim())) { setError(t.categoryNameRequired); return; }
       if (data.categories.some(item => item.id !== editor.id && languageConfig.order.some(lang => normalize(item.name[lang]) === normalize(editor.name[lang])))) { setError(t.duplicateCategory); return; }
       const category = { id: editor.id, name: { th: editor.name.th.trim(), en: editor.name.en.trim() }, image: editor.image, status: editor.status };
       const categories = editor.isNew ? [...data.categories, category] : data.categories.map(item => item.id === category.id ? category : item);
-      if (save({ ...data, categories }, activity('categorySaved'))) closeAction();
+      if (save({ ...data, categories, media: withPreparedCmsMedia(data.media, pendingImages, [category.image], category.name) }, activity('categorySaved'))) closeAction();
     } else {
       const name = editor.brandName.trim();
       if (!name) { setError(t.brandNameRequired); return; }
@@ -386,7 +378,7 @@ export function CmsCollections({ locale, data, save, routeAction, routeItemId, r
       const brand = { id: editor.id, name, image: editor.image, status: editor.status };
       const brands = editor.isNew ? [...data.brands, brand] : data.brands.map(item => item.id === brand.id ? brand : item);
       const products = previous && previous.name !== name ? data.products.map(product => product.brand === previous.name ? { ...product, brand: name } : product) : data.products;
-      if (save({ ...data, brands, products }, activity('brandSaved'))) closeAction();
+      if (save({ ...data, brands, products, media: withPreparedCmsMedia(data.media, pendingImages, [brand.image], { th: brand.name, en: brand.name }) }, activity('brandSaved'))) closeAction();
     }
   }
   function archiveCollection() {
@@ -402,7 +394,7 @@ export function CmsCollections({ locale, data, save, routeAction, routeItemId, r
     {editor.kind === 'categories' ? languageConfig.order.map(lang => <Field key={lang} label={`${c.name} · ${c[lang === 'th' ? 'thai' : 'english']} *`}><input className={u.input} required maxLength={140} value={editor.name[lang]} onChange={event => updateCollection({ name: { ...editor.name, [lang]: event.target.value } })} /></Field>) : <Field label={`${t.brandName} *`} hint={t.brandNameHint}><input className={u.input} required maxLength={100} value={editor.brandName} onChange={event => updateCollection({ brandName: event.target.value })} /></Field>}
     <Field label={c.status}><select className={u.select} value={editor.status} onChange={event => updateCollection({ status: event.target.value as CmsStatus })}>{statuses.map(item => <option key={item} value={item}>{c[item]}</option>)}</select></Field>
     {!editor.isNew && <p className={u.muted}>{t.linkedProducts}: {editor.kind === 'categories' ? data.products.filter(product => product.category === editor.id).length : data.products.filter(product => product.brand === data.brands.find(brand => brand.id === editor.id)?.name).length}</p>}
-  </div><div><h3 className={s.sectionTitle}>{t.collectionImage} <span className={u.muted}>({t.optional})</span></h3><CmsImagePicker locale={locale} media={data.media} value={editor.image} onChange={image => updateCollection({ image })} /></div></div>{error && <p className={u.error} role="alert">{error}</p>}<div className={u.actions}><button className={u.secondary} type="button" onClick={closeAction}>{c.cancel}</button><button className={u.primary} type="submit">{c.save}</button></div></form></CmsActionPage>;
+  </div><div><h3 className={s.sectionTitle}>{t.collectionImage} <span className={u.muted}>({t.optional})</span></h3><CmsImagePicker locale={locale} media={data.media} value={editor.image} onChange={(image, prepared) => { updateCollection({ image }); setPendingImages(prepared ? [prepared] : []); }} onBusyChange={setPreparingImage} /></div></div>{error && <p className={u.error} role="alert">{error}</p>}<div className={u.actions}><button className={u.secondary} type="button" onClick={closeAction}>{c.cancel}</button><button className={u.primary} type="submit" disabled={preparingImage}>{c.save}</button></div></form></CmsActionPage>;
 
   if (archivedItem) return <CmsActionPage title={t.collectionArchive} description={t.collectionArchiveNote} backLabel={c.back} onBack={closeAction} danger><div className={s.confirmationProduct}><div><strong>{archivedItem.label}</strong><p className={u.muted}>{t.linkedProducts}: {archivedItem.count}</p></div></div><div className={u.actions}><button type="button" className={u.secondary} onClick={closeAction}>{c.cancel}</button><button type="button" className={u.danger} onClick={archiveCollection}>{t.archive}</button></div></CmsActionPage>;
 
