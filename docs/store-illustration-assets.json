@@ -1,0 +1,107 @@
+[
+  {
+    "id": "head-office-exterior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-5f60e4e4-08a7-4204-b1e4-e2376c9667e2.png",
+    "destination": "public/images/stores/head-office-exterior.webp"
+  },
+  {
+    "id": "head-office-interior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-4e0b32a1-4c19-479f-9f42-54ef3702cece.png",
+    "destination": "public/images/stores/head-office-interior.webp"
+  },
+  {
+    "id": "head-office-display",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-94f39cbb-b6a0-4f44-ae62-3083f483e9ea.png",
+    "destination": "public/images/stores/head-office-display.webp"
+  },
+  {
+    "id": "bangbon-exterior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-150b2fa3-ca00-48e0-8d1a-0008e5164aa3.png",
+    "destination": "public/images/stores/bangbon-exterior.webp"
+  },
+  {
+    "id": "bangbon-interior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-779bee2d-73ca-470a-ab2b-d31fd517a074.png",
+    "destination": "public/images/stores/bangbon-interior.webp"
+  },
+  {
+    "id": "bangbon-display",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-be45fce1-618b-4d5a-aa0a-6b2d17aaa944.png",
+    "destination": "public/images/stores/bangbon-display.webp"
+  },
+  {
+    "id": "sampheng-exterior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-c0a57064-0817-48b6-80bf-9220786a776b.png",
+    "destination": "public/images/stores/sampheng-exterior.webp"
+  },
+  {
+    "id": "sampheng-interior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-d1b7b0f8-02c5-4405-9b31-47dcda9a647a.png",
+    "destination": "public/images/stores/sampheng-interior.webp"
+  },
+  {
+    "id": "sampheng-display",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-92820dae-fbd0-4984-ba7e-065845d12ad1.png",
+    "destination": "public/images/stores/sampheng-display.webp"
+  },
+  {
+    "id": "plaza-exterior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-6b5b75a0-0db1-486b-9da6-26f31ce43fff.png",
+    "destination": "public/images/stores/plaza-exterior.webp"
+  },
+  {
+    "id": "plaza-interior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-118d9782-2fde-497b-a85a-fadfbf81dd4a.png",
+    "destination": "public/images/stores/plaza-interior.webp"
+  },
+  {
+    "id": "plaza-display",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-79de089b-c40b-4699-bda7-bf02d8a57812.png",
+    "destination": "public/images/stores/plaza-display.webp"
+  },
+  {
+    "id": "section-9-exterior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-8f7c9563-6ef9-4949-a82d-89cec5469ca7.png",
+    "destination": "public/images/stores/section-9-exterior.webp"
+  },
+  {
+    "id": "section-9-interior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-6c0a95a7-b118-4fe3-9e7c-9b4f8718e243.png",
+    "destination": "public/images/stores/section-9-interior.webp"
+  },
+  {
+    "id": "section-9-display",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-80a29934-e13f-4dd0-b49d-1d5efa36f2b8.png",
+    "destination": "public/images/stores/section-9-display.webp"
+  },
+  {
+    "id": "section-7-exterior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-51e17add-c216-4f04-9666-1f2906748cef.png",
+    "destination": "public/images/stores/section-7-exterior.webp"
+  },
+  {
+    "id": "section-7-interior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-b11374d6-c709-411f-926c-07afd6432019.png",
+    "destination": "public/images/stores/section-7-interior.webp"
+  },
+  {
+    "id": "section-7-display",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-08ca4487-a0d3-4528-901d-690f23d9a26c.png",
+    "destination": "public/images/stores/section-7-display.webp"
+  },
+  {
+    "id": "lynx-exterior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-18d95b28-a2ff-4e01-a5fc-1a71d12c30c9.png",
+    "destination": "public/images/stores/lynx-exterior.webp"
+  },
+  {
+    "id": "lynx-interior",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-a404c117-e933-4ded-a693-67c1bf038a32.png",
+    "destination": "public/images/stores/lynx-interior.webp"
+  },
+  {
+    "id": "lynx-display",
+    "source": "C:\\Users\\poomt\\.codex\\generated_images\\01a0d829-68c8-7f12-967d-a21ac6860572\\exec-fea65c6b-b2f2-4bad-b682-50e5a95a5069.png",
+    "destination": "public/images/stores/lynx-display.webp"
+  }
+]

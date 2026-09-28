@@ -1,0 +1,148 @@
+.card {
+  min-width: 0;
+}
+.visual {
+  position: relative;
+  aspect-ratio: 1/1.14;
+  background: #f0efeb;
+  overflow: hidden;
+}
+.visual>a {
+  position: absolute;
+  inset: 0;
+  display: block;
+  margin: 0;
+  padding: 0;
+}
+.visual>a>img {
+  display: block;
+  height: 100%;
+  width: 100%;
+  object-fit: cover;
+  margin: 0;
+  padding: 0;
+  transition: transform .5s;
+}
+.visual:hover img {
+  transform: scale(1.06);
+}
+.brand {
+  position: absolute;
+  top: 18px;
+  left: 18px;
+  font-size: var(--text-xs);
+  letter-spacing: .12em;
+  color: #777c70;
+  text-transform: uppercase;
+}
+.heart {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+  width: 35px;
+  height: 35px;
+  background: #ffffffd9;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.selected {
+  color: var(--orange);
+}
+.selected svg {
+  fill: #df4b1820;
+}
+.info {
+  padding: 18px 0 0;
+}
+.sku {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  letter-spacing: .07em;
+}
+.info h3 {
+  font-size: var(--text-xs);
+  margin: 5px 0 11px;
+  line-height: 1.5;
+  font-weight: 500;
+  min-height: 42px;
+}
+.info h3 a:hover {
+  color: var(--orange);
+}
+.bottom {
+  display: grid;
+  gap: 14px;
+}
+.bottom p {
+  font-size: var(--text-xs);
+}
+.bottom p span {
+  font-size: var(--text-xs);
+  color: var(--muted);
+  font-weight: 400;
+}
+.pricing {
+  min-width: 0;
+}
+.quantityPrice {
+  display: block;
+  color: var(--olive);
+  font-size: var(--text-xs);
+  line-height: 1.45;
+  margin-top: 4px;
+}
+.buy {
+  border: 1px solid var(--orange);
+  background: var(--orange);
+  color: var(--white);
+  width: 100%;
+  min-height: 46px;
+  padding: 10px 14px;
+  font-size: var(--text-xs);
+  line-height: 1.5;
+  display: grid;
+  place-items: center;
+  transition: background .2s, border-color .2s;
+}
+.buy:hover:not(:disabled) {
+  background: var(--orange-hover);
+  border-color: var(--orange-hover);
+}
+.buy:focus-visible {
+  outline: 2px solid var(--olive);
+  outline-offset: 3px;
+}
+@media(max-width:600px) {
+  .brand {
+    font-size: var(--text-xs);
+    top: 14px;
+    left: 12px;
+  }
+  .info {
+    padding-top: 11px;
+  }
+  .info h3 {
+    font-size: var(--text-xs);
+    margin-top: 3px;
+    min-height: 38px;
+  }
+  .bottom p {
+    font-size: var(--text-xs);
+  }
+  .bottom p span {
+    font-size: var(--text-xs);
+  }
+  .quantityPrice {
+    font-size: var(--text-xs);
+  }
+  .heart {
+    width: 29px;
+    height: 29px;
+    top: 8px;
+    right: 8px;
+  }
+  .heart svg {
+    width: 16px;
+  }
+}

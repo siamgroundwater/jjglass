@@ -1,0 +1,132 @@
+{
+  "tool": "Built-in image_gen",
+  "purpose": "Conceptual cartoon illustrations for the seven store sliders; not depictions of the actual branches.",
+  "assets": [
+    {
+      "id": "head-office-exterior",
+      "store": "head-office",
+      "view": "exterior",
+      "prompt": "Use case: illustration-story. Asset: website store-card slider, a single landscape image, 3:2 aspect ratio, full bleed. Create a premium friendly cartoon illustration of an imagined JJGLASS glassware head-office showroom in Bangkok. Exterior view: a spacious low-rise cream building with a terracotta-orange horizontal canopy, tall sage-framed glass windows, neatly displayed glass vases and drinking glasses visible inside, tropical potted plants beside the entrance. Modest clean sign reads exactly JJGLASS. Style: polished hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream, muted terracotta orange and sage green, soft paper grain, gentle sunlight, charming and sophisticated rather than childish. Eye-level three-quarter view, building centered with comfortable margins for responsive crop, store fills frame, background restrained. No people, no cars, no photo realism, no collage, no border, no watermark, no other text. This is a conceptual illustration, not an accurate rendering of the real branch."
+    },
+    {
+      "id": "head-office-interior",
+      "store": "head-office",
+      "view": "interior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS Head Office. Interior view inside a spacious low-rise cream showroom with a terracotta-orange horizontal canopy, tall dark sage framed windows, pale oak shelving and tropical potted plants. Welcoming aisle, orderly shelving of sculptural vases, tumblers and wine glasses, a pale oak central display table and soft pendant lamps. Looking into the shop at eye level, balanced depth, no text or signage."
+    },
+    {
+      "id": "head-office-display",
+      "store": "head-office",
+      "view": "display",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS Head Office. Intimate glassware display inside a spacious low-rise cream showroom with a terracotta-orange horizontal canopy, tall dark sage framed windows, pale oak shelving and tropical potted plants. A carefully composed pale oak counter and shelving with sculptural vases, tumblers and wine glasses. This is a shop display scene with recognizable shop interior behind it, not an isolated product photo. Three-quarter close view, generous breathing room, no text or signage."
+    },
+    {
+      "id": "bangbon-exterior",
+      "store": "bangbon",
+      "view": "exterior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS Bang Bon. Exterior eye-level three-quarter view of a welcoming two-bay neighborhood glassware shop, cream facade, terracotta striped awning, sage-green folding doors, pale wood display shelves. Glassware visible through open entrance. Modest sign reads exactly \"JJGLASS\"."
+    },
+    {
+      "id": "bangbon-interior",
+      "store": "bangbon",
+      "view": "interior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS Bang Bon. Interior view inside a welcoming two-bay neighborhood glassware shop, cream facade, terracotta striped awning, sage-green folding doors, pale wood display shelves. Welcoming aisle, orderly shelving of drinking glasses, pitchers and serving bowls, a pale oak central display table and soft pendant lamps. Looking into the shop at eye level, balanced depth, no text or signage."
+    },
+    {
+      "id": "bangbon-display",
+      "store": "bangbon",
+      "view": "display",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS Bang Bon. Intimate glassware display inside a welcoming two-bay neighborhood glassware shop, cream facade, terracotta striped awning, sage-green folding doors, pale wood display shelves. A carefully composed pale oak counter and shelving with drinking glasses, pitchers and serving bowls. This is a shop display scene with recognizable shop interior behind it, not an isolated product photo. Three-quarter close view, generous breathing room, no text or signage."
+    },
+    {
+      "id": "sampheng-exterior",
+      "store": "sampheng",
+      "view": "exterior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS Sampheng. Exterior eye-level three-quarter view of a compact old-Bangkok shophouse glassware boutique on a quiet narrow shopping lane, warm cream walls, sage wooden shutters and a small rust-orange canvas canopy. Glassware visible through open entrance. Modest sign reads exactly \"JJGLASS\"."
+    },
+    {
+      "id": "sampheng-interior",
+      "store": "sampheng",
+      "view": "interior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS Sampheng. Interior view inside a compact old-Bangkok shophouse glassware boutique on a quiet narrow shopping lane, warm cream walls, sage wooden shutters and a small rust-orange canvas canopy. Welcoming aisle, orderly shelving of glass jars, bottles and bud vases, a pale oak central display table and soft pendant lamps. Looking into the shop at eye level, balanced depth, no text or signage."
+    },
+    {
+      "id": "sampheng-display",
+      "store": "sampheng",
+      "view": "display",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS Sampheng. Intimate glassware display inside a compact old-Bangkok shophouse glassware boutique on a quiet narrow shopping lane, warm cream walls, sage wooden shutters and a small rust-orange canvas canopy. A carefully composed pale oak counter and shelving with glass jars, bottles and bud vases. This is a shop display scene with recognizable shop interior behind it, not an isolated product photo. Three-quarter close view, generous breathing room, no text or signage."
+    },
+    {
+      "id": "plaza-exterior",
+      "store": "plaza",
+      "view": "exterior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS Plaza. Exterior eye-level three-quarter view of a cheerful open-front glassware shop in a low-rise plaza, broad terracotta awning, cream tiled facade and simple sage metal shelving. Glassware visible through open entrance. Modest sign reads exactly \"JJGLASS\"."
+    },
+    {
+      "id": "plaza-interior",
+      "store": "plaza",
+      "view": "interior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS Plaza. Interior view inside a cheerful open-front glassware shop in a low-rise plaza, broad terracotta awning, cream tiled facade and simple sage metal shelving. Welcoming aisle, orderly shelving of serving dishes, pedestal cake stands and glass bowls, a pale oak central display table and soft pendant lamps. Looking into the shop at eye level, balanced depth, no text or signage."
+    },
+    {
+      "id": "plaza-display",
+      "store": "plaza",
+      "view": "display",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS Plaza. Intimate glassware display inside a cheerful open-front glassware shop in a low-rise plaza, broad terracotta awning, cream tiled facade and simple sage metal shelving. A carefully composed pale oak counter and shelving with serving dishes, pedestal cake stands and glass bowls. This is a shop display scene with recognizable shop interior behind it, not an isolated product photo. Three-quarter close view, generous breathing room, no text or signage."
+    },
+    {
+      "id": "section-9-exterior",
+      "store": "section-9",
+      "view": "exterior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS J1 Section 9. Exterior eye-level three-quarter view of a charming compact glassware shop in a covered market lane, terracotta pitched canopy, cream wood facade, sage posts and tidy oak shelves. Glassware visible through open entrance. Modest sign reads exactly \"JJGLASS\"."
+    },
+    {
+      "id": "section-9-interior",
+      "store": "section-9",
+      "view": "interior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS J1 Section 9. Interior view inside a charming compact glassware shop in a covered market lane, terracotta pitched canopy, cream wood facade, sage posts and tidy oak shelves. Welcoming aisle, orderly shelving of decorative vases, glass candle holders and bottles, a pale oak central display table and soft pendant lamps. Looking into the shop at eye level, balanced depth, no text or signage."
+    },
+    {
+      "id": "section-9-display",
+      "store": "section-9",
+      "view": "display",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS J1 Section 9. Intimate glassware display inside a charming compact glassware shop in a covered market lane, terracotta pitched canopy, cream wood facade, sage posts and tidy oak shelves. A carefully composed pale oak counter and shelving with decorative vases, glass candle holders and bottles. This is a shop display scene with recognizable shop interior behind it, not an isolated product photo. Three-quarter close view, generous breathing room, no text or signage."
+    },
+    {
+      "id": "section-7-exterior",
+      "store": "section-7",
+      "view": "exterior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS J2 Section 7. Exterior eye-level three-quarter view of a friendly corner market glassware shop, sage-green awning and terracotta pillars, cream walls, warm wood shelving and small plants. Glassware visible through open entrance. Modest sign reads exactly \"JJGLASS\"."
+    },
+    {
+      "id": "section-7-interior",
+      "store": "section-7",
+      "view": "interior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS J2 Section 7. Interior view inside a friendly corner market glassware shop, sage-green awning and terracotta pillars, cream walls, warm wood shelving and small plants. Welcoming aisle, orderly shelving of stacked tumblers, lidded storage jars and glass pitchers, a pale oak central display table and soft pendant lamps. Looking into the shop at eye level, balanced depth, no text or signage."
+    },
+    {
+      "id": "section-7-display",
+      "store": "section-7",
+      "view": "display",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: JJGLASS J2 Section 7. Intimate glassware display inside a friendly corner market glassware shop, sage-green awning and terracotta pillars, cream walls, warm wood shelving and small plants. A carefully composed pale oak counter and shelving with stacked tumblers, lidded storage jars and glass pitchers. This is a shop display scene with recognizable shop interior behind it, not an isolated product photo. Three-quarter close view, generous breathing room, no text or signage."
+    },
+    {
+      "id": "lynx-exterior",
+      "store": "lynx",
+      "view": "exterior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: LYNX Glassware. Exterior eye-level three-quarter view of a refined contemporary glassware boutique, cream facade, sage frames, slim terracotta trim, light oak plinths and curved display niches. Glassware visible through open entrance. Modest sign reads exactly \"LYNX\"."
+    },
+    {
+      "id": "lynx-interior",
+      "store": "lynx",
+      "view": "interior",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: LYNX Glassware. Interior view inside a refined contemporary glassware boutique, cream facade, sage frames, slim terracotta trim, light oak plinths and curved display niches. Welcoming aisle, orderly shelving of elegant stemware, carafes and modern drinking glasses, a pale oak central display table and soft pendant lamps. Looking into the shop at eye level, balanced depth, no text or signage."
+    },
+    {
+      "id": "lynx-display",
+      "store": "lynx",
+      "view": "display",
+      "prompt": "Use case: illustration-story. Website store slider asset. Single landscape image, 3:2 aspect ratio, full bleed. Premium friendly hand-drawn architectural editorial cartoon, crisp delicate dark olive outlines, warm cream and muted terracotta-orange and sage-green palette, light watercolor paper grain, gentle warm sunlight, charming sophisticated illustration, clearly drawn not photographic. Imagined shop concept for a presentation, NOT a factual depiction. No people, cars, landmarks, temples, skyline, addresses, extra text, collage, panels, borders or watermark. Composition centered, main subject contained with space for responsive crop; reserve lower 10% for slider controls without writing any controls. Location concept: LYNX Glassware. Intimate glassware display inside a refined contemporary glassware boutique, cream facade, sage frames, slim terracotta trim, light oak plinths and curved display niches. A carefully composed pale oak counter and shelving with elegant stemware, carafes and modern drinking glasses. This is a shop display scene with recognizable shop interior behind it, not an isolated product photo. Three-quarter close view, generous breathing room, no text or signage."
+    }
+  ]
+}

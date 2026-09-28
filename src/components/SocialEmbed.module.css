@@ -1,0 +1,97 @@
+.root { width: 100%; min-width: 0; }
+.window {
+  position: relative;
+  height: 562px;
+  width: 100%;
+  overflow: hidden;
+  overscroll-behavior: contain;
+  background: var(--white);
+  border-block: 1px solid var(--line);
+}
+.frame { display: block; max-width: 100%; margin: auto; border: 0; }
+.loadNotice {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  padding: 10px 16px;
+  background: var(--paper);
+  color: var(--olive);
+  font-size: var(--text-xs);
+  text-align: center;
+  pointer-events: none;
+}
+.placeholder {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 18px;
+  padding: 32px;
+  background: var(--paper);
+  text-align: center;
+  color: var(--olive);
+  font-size: var(--text-xs);
+}
+.placeholderMark { font-size: var(--text-xl); letter-spacing: .12em; color: var(--orange-hover); }
+.tiktokWindow {
+  height: auto;
+  min-height: 0;
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  background: #171717;
+}
+.tiktokEmbed {
+  width: 100%;
+  min-width: 0 !important;
+  margin: 0 auto !important;
+}
+.tiktokEmbed section {
+  min-height: 480px;
+  display: grid;
+  place-items: center;
+  padding: 24px;
+  text-align: center;
+}
+.tiktokEmbed section a {
+  color: var(--white);
+  overflow-wrap: anywhere;
+}
+.tiktokFallback {
+  width: 100%;
+  min-height: 360px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 28px;
+  color: var(--white);
+  text-align: center;
+  background: radial-gradient(circle at 24% 18%, #335454 0, transparent 40%), radial-gradient(circle at 78% 82%, #53303e 0, transparent 42%), #171717;
+}
+.tiktokIcon { width: 48px; height: 48px; }
+.tiktokFallback strong { font-size: var(--text-lg); overflow-wrap: anywhere; }
+.tiktokFallback p { max-width: 36ch; font-size: var(--text-xs); line-height: 1.6; }
+.retry {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 8px;
+  padding: 10px 16px;
+  border: 1px solid #b8e5dc;
+  border-radius: 10px;
+  background: #b8e5dc;
+  color: #1d332d;
+  font-size: var(--text-xs);
+  font-weight: 600;
+  transition: background .2s ease, transform .2s ease;
+}
+.retry svg { width: 20px; height: 20px; }
+.retry:hover { background: #d9f3ed; transform: translateY(-1px); }
+@media (prefers-reduced-motion: reduce) { .retry { transition: none; } }

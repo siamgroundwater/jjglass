@@ -1,0 +1,11 @@
+// Google Maps Share embeds for the seven supplied JJGLASS store listings.
+// Four were re-centered using the same listing IDs so each card shows its branch at useful zoom.
+export const storeMapEmbeds: Record<string, string> = {
+  "head-office": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3876.6543788207437!2d100.424072!3d13.678767899999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e2bd000203ba39%3A0xe43f34f908f9d01e!2sJJGLASS%20(Head%20Office)!5e0!3m2!1sth!2sth!4v1745398111092!5m2!1sth!2sth",
+  "bangbon": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3876.6529609850268!2d100.4244382!3d13.678854!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e2bdcc16772d1d%3A0x7d5c94f1900838fc!2zSkogR2xhc3MgQmFuZ2JvbiDguYDguIjguYDguIjguIHguKXguLLguKog4Lia4Liy4LiH4Lia4Lit4LiZ!5e0!3m2!1sth!2sth!4v1790537178348!5m2!1sth!2sth",
+  "sampheng": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3875.6864999857776!2d100.50971109999999!3d13.737420499999997!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e2990008a55483%3A0x7d96182c703f8259!2sJJGLASS%20SAMPHENG!5e0!3m2!1sth!2sth!4v1745398884513!5m2!1sth!2sth",
+  "plaza": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3874.6415278393665!2d100.5484807!3d13.8004704!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29d000056127b%3A0x1760d21d074f1b30!2sJJGLASS%20PLAZA!5e0!3m2!1sth!2sth!4v1745399353142!5m2!1sth!2sth",
+  "section-9": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3874.6271788658305!2d100.5511478!3d13.8013342!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29d0008b8d7b1%3A0xd6de248a3cb3f69a!2sJJGLASS%20SECTION%209!5e0!3m2!1sth!2sth!4v1790537115034!5m2!1sth!2sth",
+  "section-7": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3874.6116461642623!2d100.5517472!3d13.8022692!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29d0042138439%3A0x3f751e5cf1fc2c97!2sJJGLASS%20SECTION%207!5e0!3m2!1sth!2sth!4v1790537127915!5m2!1sth!2sth",
+  "lynx": "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3874.6305560535716!2d100.5485185!3d13.801130899999999!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x30e29d4967743e1b%3A0xa0436c5976f35da0!2sLYNX%20Glassware!5e0!3m2!1sth!2sth!4v1790537151556!5m2!1sth!2sth",
+};

@@ -1,0 +1,27 @@
+.input {
+  width: calc(4ch + 12px);
+  flex-shrink: 0;
+  min-width: 0;
+  height: 100%;
+  padding: 0 2px;
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: var(--text-xs);
+  text-align: center;
+  appearance: textfield;
+  -moz-appearance: textfield;
+}
+.input::-webkit-inner-spin-button,
+.input::-webkit-outer-spin-button {
+  appearance: none;
+  margin: 0;
+}
+.input:focus-visible {
+  outline-offset: -3px;
+}
+.input:disabled {
+  opacity: .5;
+  cursor: not-allowed;
+}

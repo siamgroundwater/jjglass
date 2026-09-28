@@ -1,0 +1,126 @@
+@font-face {
+  font-family: JJ;
+  src: url('/fonts/thai.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+}
+@font-face {
+  font-family: JJ;
+  src: url('/fonts/latin.woff2') format('woff2');
+  font-weight: 100 900;
+  font-display: swap;
+  unicode-range: U+0000-00FF,U+2000-206F;
+}
+:root {
+  --paper: #faf9f6;
+  --white: #fff;
+  --ink: #252820;
+  --muted: #73756d;
+  --orange: #df4b18;
+  --orange-hover: #be3a0d;
+  --line: #e5e4de;
+  --soft: #f0eee8;
+  --olive: #323b2d;
+  --font: JJ,'Tahoma',Arial,sans-serif;
+  --serif: Georgia,'Times New Roman',serif;
+  --max: 1392px;
+  /* All site text sizes are controlled here, from 1rem to 2.4rem. */
+  --text-xs: 1rem;
+  --text-sm: 1.125rem;
+  --text-md: 1.25rem;
+  --text-lg: 1.375rem;
+  --text-xl: 1.5rem;
+  --text-2xl: 1.75rem;
+  --text-3xl: 2rem;
+  --text-4xl: 2.25rem;
+  --text-display: 2.4rem;
+  --text-fluid-heading: clamp(var(--text-2xl), 2.5vw, var(--text-4xl));
+  --text-fluid-display: clamp(var(--text-3xl), 3.8vw, var(--text-display));
+}
+* {
+  box-sizing: border-box;
+}
+html {
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px;
+}
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: var(--text-xs);
+  line-height: 1.65;
+}
+button,input,select,textarea {
+  font: inherit;
+}
+button,a,input,select,textarea {
+  -webkit-tap-highlight-color: transparent;
+}
+button,a {
+  touch-action: manipulation;
+}
+button {
+  cursor: pointer;
+}
+button:disabled {
+  cursor: not-allowed;
+  opacity: .5;
+}
+a {
+  color: inherit;
+  text-decoration: none;
+}
+button {
+  color: inherit;
+}
+img {
+  display: block;
+  max-width: 100%;
+}
+h1,h2,h3,h4,p {
+  margin: 0;
+}
+h1,h2,h3,h4 {
+  font-weight: 500;
+  line-height: 1.35;
+}
+button {
+  border: 0;
+  background: none;
+}
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+input,select,textarea {
+  min-width: 0;
+}
+::selection {
+  background: #f5c8b4;
+}
+a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,summary:focus-visible {
+  outline: 3px solid var(--orange);
+  outline-offset: 5px;
+}
+svg {
+  flex-shrink: 0;
+}
+main {
+  min-height: 60vh;
+}
+hr {
+  border: 0;
+  border-top: 1px solid var(--line);
+}
+@media(prefers-reduced-motion:reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,*::before,*::after {
+    animation: none!important;
+    transition: none!important;
+  }
+}

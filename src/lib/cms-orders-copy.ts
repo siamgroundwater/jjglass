@@ -1,0 +1,71 @@
+import type { Locale } from './i18n';
+import type { OrderStatus, PaymentStatus } from './cms-types';
+
+export const cmsOrdersCopy = {
+  th: {
+    orders: 'คำสั่งซื้อ', ordersDescription: 'จัดการคำสั่งซื้อตัวอย่าง การชำระเงิน และการจัดส่ง',
+    orderSearch: 'ค้นหาเลขคำสั่งซื้อ ลูกค้า หรือเลขพัสดุ', allStatuses: 'ทุกสถานะคำสั่งซื้อ', allPayments: 'ทุกสถานะการชำระเงิน',
+    order: 'คำสั่งซื้อ', customer: 'ลูกค้า', date: 'วันที่', fulfilment: 'การดำเนินการ', payment: 'การชำระเงิน', total: 'ยอดรวม',
+    noOrders: 'ไม่พบคำสั่งซื้อ', noOrdersDescription: 'ลองเปลี่ยนคำค้นหาหรือล้างตัวกรอง', clearFilters: 'ล้างตัวกรอง',
+    orderDetails: 'รายละเอียดคำสั่งซื้อ', sampleOrder: 'คำสั่งซื้อตัวอย่าง', sampleNotice: 'ข้อมูลสำหรับสาธิตเท่านั้น การแก้ไขจะไม่เรียกเก็บเงิน คืนเงิน หรือส่งข้อความถึงลูกค้า',
+    orderItems: 'รายการสินค้า', frozenItems: 'ชื่อสินค้าและราคาบันทึกไว้ตามคำสั่งซื้อ การแก้ไขสินค้าในแคตตาล็อกจะไม่เปลี่ยนยอดนี้',
+    item: 'สินค้า', quantity: 'จำนวน', unitPrice: 'ราคาต่อชิ้น', subtotal: 'รวมค่าสินค้า', delivery: 'ค่าจัดส่ง',
+    updateOrder: 'อัปเดตคำสั่งซื้อ', tracking: 'เลขพัสดุ', trackingPlaceholder: 'ระบุเลขพัสดุสำหรับสาธิต (ไม่บังคับ)',
+    internalNote: 'บันทึกภายใน', notePlaceholder: 'เพิ่มรายละเอียดสำหรับทีมงาน', saveOrder: 'บันทึกคำสั่งซื้อ', cancel: 'ยกเลิก',
+    unknownCustomer: 'ไม่มีข้อมูลลูกค้า', contactDetails: 'ข้อมูลลูกค้า', emptyNote: 'ยังไม่มีบันทึก', saveFailed: 'บันทึกไม่สำเร็จ กรุณาลองอีกครั้ง ข้อมูลที่กรอกยังอยู่',
+    trackingInvalid: 'เลขพัสดุต้องไม่เกิน 80 ตัวอักษร', noteInvalid: 'บันทึกภายในต้องไม่เกิน 2,000 ตัวอักษร',
+    customers: 'ลูกค้า', customersDescription: 'จัดการข้อมูลลูกค้าตัวอย่างและประวัติคำสั่งซื้อ', customerSearch: 'ค้นหาชื่อ บริษัท อีเมล หรือโทรศัพท์',
+    addCustomer: 'เพิ่มลูกค้า',
+    company: 'บริษัท / ร้านค้า', email: 'อีเมล', phone: 'โทรศัพท์', orderCount: 'คำสั่งซื้อ', paidTotal: 'ยอดชำระแล้ว',
+    noCustomers: 'ไม่พบลูกค้า', noCustomersDescription: 'เพิ่มลูกค้าตัวอย่าง หรือลองเปลี่ยนคำค้นหา',
+    newCustomer: 'เพิ่มลูกค้าตัวอย่าง', customerDetails: 'รายละเอียดลูกค้า', customerNotice: 'ใช้ข้อมูลสมมติและอีเมลตัวอย่าง เช่น client@example.com สำหรับการนำเสนอ',
+    name: 'ชื่อลูกค้า', companyPlaceholder: 'ชื่อบริษัทหรือร้านค้า', addressTh: 'ที่อยู่ (ภาษาไทย)', addressEn: 'ที่อยู่ (ภาษาอังกฤษ)',
+    saveCustomer: 'บันทึกลูกค้า', history: 'ประวัติคำสั่งซื้อ', noHistory: 'ลูกค้านี้ยังไม่มีคำสั่งซื้อตัวอย่าง', joined: 'เพิ่มเมื่อ',
+    paidTotalHint: 'รวมคำสั่งซื้อที่ชำระแล้วและยังไม่ยกเลิก', nameRequired: 'กรุณาระบุชื่อลูกค้า (ไม่เกิน 120 ตัวอักษร)',
+    companyInvalid: 'ชื่อบริษัทต้องไม่เกิน 160 ตัวอักษร',
+    emailInvalid: 'กรุณาระบุอีเมลที่ถูกต้อง เช่น client@example.com', emailDuplicate: 'อีเมลนี้มีอยู่ในรายชื่อลูกค้าแล้ว',
+    phoneInvalid: 'กรุณาระบุหมายเลขโทรศัพท์ตัวอย่าง 7–15 หลัก', addressRequired: 'กรุณาระบุที่อยู่ทั้งภาษาไทยและอังกฤษ (ภาษาละไม่เกิน 500 ตัวอักษร)',
+    savedOrder: 'บันทึกคำสั่งซื้อตัวอย่างแล้ว', savedCustomer: 'บันทึกข้อมูลลูกค้าตัวอย่างแล้ว', requiredHint: 'ช่องที่มี * จำเป็นต้องกรอก',
+    noCompany: 'ลูกค้าบุคคล', view: 'ดูรายละเอียด', records: 'รายการ', customerSummary: 'ภาพรวมลูกค้า',
+  },
+  en: {
+    orders: 'Orders', ordersDescription: 'Manage sample orders, payments, and fulfilment.',
+    orderSearch: 'Search order, customer, or tracking number', allStatuses: 'All order statuses', allPayments: 'All payment statuses',
+    order: 'Order', customer: 'Customer', date: 'Date', fulfilment: 'Fulfilment', payment: 'Payment', total: 'Total',
+    noOrders: 'No orders found', noOrdersDescription: 'Try another search or clear your filters.', clearFilters: 'Clear filters',
+    orderDetails: 'Order details', sampleOrder: 'Sample order', sampleNotice: 'Presentation data only. Changes do not charge, refund, or message customers.',
+    orderItems: 'Order items', frozenItems: 'Product names and prices are saved with this order. Catalog edits do not change these totals.',
+    item: 'Item', quantity: 'Quantity', unitPrice: 'Unit price', subtotal: 'Subtotal', delivery: 'Delivery',
+    updateOrder: 'Update order', tracking: 'Tracking number', trackingPlaceholder: 'Demo tracking number (optional)',
+    internalNote: 'Internal note', notePlaceholder: 'Add details for your team', saveOrder: 'Save order', cancel: 'Cancel',
+    unknownCustomer: 'Customer unavailable', contactDetails: 'Customer details', emptyNote: 'No notes yet', saveFailed: 'Could not save. Please try again; your input is still here.',
+    trackingInvalid: 'Tracking number must be 80 characters or fewer.', noteInvalid: 'Internal note must be 2,000 characters or fewer.',
+    customers: 'Customers', customersDescription: 'Manage sample customer profiles and order history.', customerSearch: 'Search name, company, email, or phone',
+    addCustomer: 'Add customer',
+    company: 'Company / shop', email: 'Email', phone: 'Phone', orderCount: 'Orders', paidTotal: 'Paid total',
+    noCustomers: 'No customers found', noCustomersDescription: 'Add a sample customer or try another search.',
+    newCustomer: 'Add sample customer', customerDetails: 'Customer details', customerNotice: 'Use fictional details and example email addresses such as client@example.com for your presentation.',
+    name: 'Customer name', companyPlaceholder: 'Company or shop name', addressTh: 'Address (Thai)', addressEn: 'Address (English)',
+    saveCustomer: 'Save customer', history: 'Order history', noHistory: 'This customer has no sample orders yet.', joined: 'Added on',
+    paidTotalHint: 'Paid orders, excluding cancelled orders', nameRequired: 'Enter a customer name of up to 120 characters.',
+    companyInvalid: 'Company name must be 160 characters or fewer.',
+    emailInvalid: 'Enter a valid email, such as client@example.com.', emailDuplicate: 'This email is already used by another customer.',
+    phoneInvalid: 'Enter a sample phone number with 7–15 digits.', addressRequired: 'Enter both Thai and English addresses, each up to 500 characters.',
+    savedOrder: 'Sample order saved', savedCustomer: 'Sample customer saved', requiredHint: 'Fields marked * are required.',
+    noCompany: 'Individual customer', view: 'View details', records: 'records', customerSummary: 'Customer overview',
+  },
+} satisfies Record<Locale, Record<string, string>>;
+
+export const orderStatusCopy: Record<OrderStatus, Record<Locale, string>> = {
+  pending: { th: 'รอดำเนินการ', en: 'Pending' },
+  processing: { th: 'กำลังเตรียมสินค้า', en: 'Processing' },
+  shipped: { th: 'จัดส่งแล้ว', en: 'Shipped' },
+  completed: { th: 'เสร็จสมบูรณ์', en: 'Completed' },
+  cancelled: { th: 'ยกเลิก', en: 'Cancelled' },
+};
+
+export const paymentStatusCopy: Record<PaymentStatus, Record<Locale, string>> = {
+  unpaid: { th: 'ยังไม่ชำระ', en: 'Unpaid' },
+  paid: { th: 'ชำระแล้ว', en: 'Paid' },
+  refunded: { th: 'คืนเงินแล้ว', en: 'Refunded' },
+};
