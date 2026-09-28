@@ -17,6 +17,7 @@ import s from './CmsProducts.module.css';
 
 const statuses: CmsStatus[] = ['published', 'draft', 'archived'];
 const pageSize = 8;
+const maxGalleryImages = 6;
 type PriceTierDraft = { minQuantity: string; unitPrice: string };
 type ProductDraft = Omit<CmsProduct, 'price' | 'stock' | 'priceTiers' | 'images' | 'sizeGroup'> & { price: string; stock: string; priceTiers: PriceTierDraft[]; images: string[]; sizeGroup: string };
 type ProductEditor = { mode: 'new' | 'edit' | 'duplicate'; draft: ProductDraft };
@@ -126,7 +127,7 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
     const files = Array.from(event.currentTarget.files || []);
     event.currentTarget.value = '';
     if (!files.length || !draft) return;
-    if (draft.images.length + files.length > 5) { setError(t.galleryLimit); return; }
+    if (draft.images.length + files.length > maxGalleryImages) { setError(t.galleryLimit); return; }
     const version = ++imageVersion.current;
     setPreparingImage(true);
     setError('');
@@ -171,6 +172,9 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
     if (!editor || preparingImage) return;
     const draft = editor.draft;
     const existing = editor.mode === 'edit' ? data.products.find(product => product.id === draft.id) : undefined;
+    const importedSourceEdit = Boolean(existing?.slug.startsWith('source-'));
+    const sourceSkuUnchanged = importedSourceEdit && draft.sku.trim() === existing?.sku;
+    const sourceBrandUnchanged = importedSourceEdit && draft.brand === existing?.brand;
     const price = roundCurrency(Number(draft.price));
     const stock = Number(draft.stock);
     const priceTiers: PriceTier[] = draft.priceTiers.map(tier => ({ minQuantity: Number(tier.minQuantity), unitPrice: roundCurrency(Number(tier.unitPrice)) }));
@@ -178,18 +182,19 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
     const pricesValid = draft.priceTiers.every((tier, index) => tier.unitPrice.trim() !== '' && Number.isFinite(priceTiers[index].unitPrice) && priceTiers[index].unitPrice > 0 && priceTiers[index].unitPrice < (index === 0 ? price : priceTiers[index - 1].unitPrice));
     let issue = '';
     if (languageConfig.order.some(lang => !draft.name[lang].trim())) issue = t.nameRequired;
-    else if (!draft.sku.trim()) issue = t.skuRequired;
-    else if (data.products.some(product => product.id !== draft.id && normalize(product.sku) === normalize(draft.sku))) issue = t.duplicateSku;
+    else if (!draft.sku.trim() && !sourceSkuUnchanged) issue = t.skuRequired;
+    else if (!sourceSkuUnchanged && data.products.some(product => product.id !== draft.id && normalize(product.sku) === normalize(draft.sku))) issue = t.duplicateSku;
     else if (!draft.price.trim() || !Number.isFinite(price) || price <= 0) issue = t.priceInvalid;
     else if (!quantitiesValid) issue = t.tierQuantityInvalid;
     else if (!pricesValid) issue = t.tierPriceInvalid;
     else if (!draft.stock.trim() || !Number.isSafeInteger(stock) || stock < 0) issue = t.stockInvalid;
     else if (!data.categories.some(item => item.id === draft.category && (item.status !== 'archived' || existing?.category === item.id))) issue = t.categoryRequired;
-    else if (!data.brands.some(item => item.name === draft.brand && (item.status !== 'archived' || existing?.brand === item.name))) issue = t.brandRequired;
-    else if (draft.images.length < 3 || draft.images.length > 5 || new Set(draft.images).size !== draft.images.length || draft.images.some(image => !image)) issue = t.galleryRequired;
+    else if (!sourceBrandUnchanged && !data.brands.some(item => item.name === draft.brand && (item.status !== 'archived' || existing?.brand === item.name))) issue = t.brandRequired;
+    else if (draft.images.length < (importedSourceEdit ? 1 : 3) || draft.images.length > maxGalleryImages || new Set(draft.images).size !== draft.images.length || draft.images.some(image => !image)) issue = importedSourceEdit ? t.sourceGalleryRequired : t.galleryRequired;
     else if (draft.sizeGroup.trim() && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(draft.sizeGroup.trim().toLowerCase())) issue = t.sizeGroupInvalid;
     if (issue) { setError(issue); return; }
     const product: CmsProduct = {
+      ...existing,
       id: draft.id, sku: draft.sku.trim(), category: draft.category, brand: draft.brand,
       price, priceTiers, stock, image: draft.images[0], images: [...draft.images], status: draft.status, featured: draft.featured,
       name: { th: draft.name.th.trim(), en: draft.name.en.trim() },
@@ -223,6 +228,7 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
     } else setError(c.storageError);
   }
   const draft = editor?.draft;
+  const importedSourceEdit = editor?.mode === 'edit' && draft?.slug.startsWith('source-');
   const selectedPreview = draft && (draft.images.includes(previewImage) ? previewImage : draft.images[0]);
 
   if (editor && draft) return <CmsActionPage title={editor.mode === 'edit' ? t.editProduct : editor.mode === 'duplicate' ? t.duplicateProduct : t.newProduct} description={t.intro} backLabel={c.back} onBack={closeAction}>
@@ -238,7 +244,7 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
           <Field label={t.sizeGroup} hint={t.sizeGroupHint}><input className={u.input} maxLength={80} value={draft.sizeGroup} placeholder={t.sizeGroupPlaceholder} onChange={event => updateDraft({ sizeGroup: event.target.value })} /></Field>
         </div>
         <div className={`${s.editorSide} ${u.formStack}`}>
-          <div className={s.galleryHeading}><div><h3 className={s.sectionTitle}>{t.galleryTitle} *</h3><p>{t.galleryHint}</p></div><span>{draft.images.length} / 5</span></div>
+          <div className={s.galleryHeading}><div><h3 className={s.sectionTitle}>{t.galleryTitle} *</h3><p>{importedSourceEdit ? t.sourceGalleryHint : t.galleryHint}</p></div><span>{draft.images.length} / {maxGalleryImages}</span></div>
           {draft.images.length > 0 && <div className={s.galleryPreview}>
             <img src={selectedPreview} className={selectedPreview?.includes('#detail') ? `${s.detailCrop} ${selectedPreview.endsWith('#detail-base') ? s.detailBase : ''}` : undefined} alt={`${draft.name[locale] || t.product} · ${selectedPreview?.includes('#detail') ? detailView : t.galleryPreview}`} width={800} height={620} />
             <span>{selectedPreview?.includes('#detail') ? detailView : selectedPreview === draft.images[0] ? t.coverImage : t.galleryPreview}</span>
@@ -256,14 +262,14 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
             <label className={s.deviceImageButton}>
               <Icon name="plus" size={19} />
               <span>{t.chooseFromDevice}</span>
-              <input type="file" accept="image/jpeg,image/png,image/webp" multiple aria-label={t.chooseFromDevice} onChange={selectDeviceImage} disabled={preparingImage || draft.images.length >= 5} />
+              <input type="file" accept="image/jpeg,image/png,image/webp" multiple aria-label={t.chooseFromDevice} onChange={selectDeviceImage} disabled={preparingImage || draft.images.length >= maxGalleryImages} />
             </label>
             <p>{t.deviceImageHint}</p>
           </div>
           {preparingImage && <p className={s.imageStatus} role="status">{t.preparingImage}</p>}
           {pendingImages.some(item => draft.images.includes(item.src)) && <p className={s.imageStatus}><Icon name="check" size={17} />{t.imageReady} · {pendingImages.filter(item => draft.images.includes(item.src)).length}</p>}
           <h3 className={`${s.sectionTitle} ${s.spacedSection}`}>{t.organisation}</h3>
-          <Field label={`${t.sku} *`}><input className={u.input} required maxLength={100} value={draft.sku} onChange={event => updateDraft({ sku: event.target.value })} /></Field>
+          <Field label={`${t.sku}${importedSourceEdit && !draft.sku ? '' : ' *'}`}><input className={u.input} required={!importedSourceEdit || Boolean(draft.sku)} maxLength={100} value={draft.sku} onChange={event => updateDraft({ sku: event.target.value })} /></Field>
           <div className={u.formGrid}><Field label={`${t.priceLabel} *`}><input className={u.input} inputMode="decimal" type="number" min="0.01" step="0.01" required value={draft.price} onChange={event => updateDraft({ price: event.target.value })} /></Field><Field label={`${t.stockLabel} *`}><input className={u.input} inputMode="numeric" type="number" min="0" step="1" required value={draft.stock} onChange={event => updateDraft({ stock: event.target.value })} /></Field></div>
           <section className={s.pricingEditor} aria-labelledby="quantity-pricing-title">
             <div className={s.pricingHead}><div><h3 id="quantity-pricing-title">{t.quantityPricing}</h3><p>{t.quantityPricingHint}</p></div><button type="button" className={u.secondary} onClick={addPriceTier}><Icon name="plus" size={16} />{t.addPriceTier}</button></div>
@@ -274,7 +280,7 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
             </div>)}</div> : <p className={s.emptyTiers}>{t.noPriceTiers}</p>}
           </section>
           <Field label={`${t.category} *`}><select className={u.select} required value={draft.category} onChange={event => updateDraft({ category: event.target.value })}><option value="">{t.chooseCategory}</option>{data.categories.filter(item => item.status !== 'archived' || item.id === draft.category).map(item => <option key={item.id} value={item.id}>{item.name[locale]}{item.status === 'archived' ? ` (${t.archivedSelection})` : ''}</option>)}</select></Field>
-          <Field label={`${t.brand} *`}><select className={u.select} required value={draft.brand} onChange={event => updateDraft({ brand: event.target.value })}><option value="">{t.chooseBrand}</option>{data.brands.filter(item => item.status !== 'archived' || item.name === draft.brand).map(item => <option key={item.id} value={item.name}>{item.name}{item.status === 'archived' ? ` (${t.archivedSelection})` : ''}</option>)}</select></Field>
+          <Field label={`${t.brand}${importedSourceEdit && !draft.brand ? '' : ' *'}`}><select className={u.select} required={!importedSourceEdit || Boolean(draft.brand)} value={draft.brand} onChange={event => updateDraft({ brand: event.target.value })}><option value="">{t.chooseBrand}</option>{data.brands.filter(item => item.status !== 'archived' || item.name === draft.brand).map(item => <option key={item.id} value={item.name}>{item.name}{item.status === 'archived' ? ` (${t.archivedSelection})` : ''}</option>)}</select></Field>
           <Field label={c.status}><select className={u.select} value={draft.status} onChange={event => updateDraft({ status: event.target.value as CmsStatus })}>{statuses.map(item => <option key={item} value={item}>{c[item]}</option>)}</select></Field>
           <label className={s.featureToggle}><input type="checkbox" checked={draft.featured} onChange={event => updateDraft({ featured: event.target.checked })} /><div><strong>{t.featured}</strong><span>{t.featuredHint}</span></div></label>
         </div>

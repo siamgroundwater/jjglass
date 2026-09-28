@@ -24,6 +24,7 @@ type ShopContextValue = ShopState & {
 };
 const STORAGE_KEY = 'jjglass-shop-v1';
 const knownIds = new Set(products.map(product => product.id));
+const purchasableIds = new Set(products.filter(product => product.available !== false && !product.hasOptions).map(product => product.id));
 const ShopContext = createContext<ShopContextValue | null>(null);
 const quantityLimit = (value: number) => Math.min(MAX_PRODUCT_QUANTITY, Math.max(1, Math.floor(value)));
 function restoreState(raw: string | null): ShopState {
@@ -44,7 +45,7 @@ function restoreState(raw: string | null): ShopState {
           id,
           quantity
         } = item as Record<string, unknown>;
-        if (typeof id !== 'string' || !knownIds.has(id) || typeof quantity !== 'number' || !Number.isFinite(quantity) || quantity < 1) continue;
+        if (typeof id !== 'string' || !purchasableIds.has(id) || typeof quantity !== 'number' || !Number.isFinite(quantity) || quantity < 1) continue;
         quantities.set(id, quantityLimit((quantities.get(id) ?? 0) + quantity));
       }
     }
@@ -89,7 +90,7 @@ export function ShopProvider({
     return () => window.clearTimeout(timer);
   }, [toast]);
   const add = useCallback((id: string, quantity = 1) => {
-    if (!knownIds.has(id) || !Number.isFinite(quantity) || quantity < 1) return;
+    if (!purchasableIds.has(id) || !Number.isFinite(quantity) || quantity < 1) return;
     setState(previous => {
       const existing = previous.cart.find(item => item.id === id);
       return {
@@ -105,7 +106,7 @@ export function ShopProvider({
     });
   }, []);
   const setQuantity = useCallback((id: string, quantity: number) => {
-    if (!Number.isFinite(quantity) || quantity < 1) return;
+    if (!purchasableIds.has(id) || !Number.isFinite(quantity) || quantity < 1) return;
     setState(previous => ({
       ...previous,
       cart: previous.cart.map(item => item.id === id ? {

@@ -21,6 +21,8 @@ Collected from [JJGLASS Shop](https://jjglass.com/shop/) on **28 September 2026*
 
 All shop IDs match the API collection exactly. No missing pages, duplicate product IDs, or failed requests remain. All 84 existing presentation products are present in the collected source.
 
+The storefront imports a compact derivative at `src/lib/source-products-data.json` for the additional 1,380 products. Run `node scripts/build-source-catalog.mjs` after changing the source collection or its language mapping. Product identity and URLs use source IDs (`source-<ID>`), because source SKUs and slugs are not unique. The existing 84 presentation URLs and local photographs remain intact. New storefront photos use JJGLASS's public image URLs, with supplied thumbnails on listing cards. Browser access to these external images depends on the source website remaining available.
+
 ## Files
 
 - `PRODUCT_INDEX.md`: browsable table of every product, SKU, price, source link, brand category, and gallery count.
@@ -48,7 +50,7 @@ All shop IDs match the API collection exactly. No missing pages, duplicate produ
 
 This is a dated source collection, not a live inventory feed. `lowStockRemaining: null` means unavailable, not zero; the source purchase limit of 9999 is not an inventory count. Price amounts use the API's `currency_minor_unit` (0 in this snapshot), not an assumed two-decimal conversion. Source sale-price fields may equal regular price when `onSale` is false.
 
-Descriptions and names retain their original Thai/English wording. They have not been translated, fact-checked, or promoted into the presentation storefront. Preserve original HTML as source evidence and sanitize it before any future rendering. Brand categories and source tags are preserved separately, without inferring brands from filenames. Related simple products remain distinct; only the source's explicit variable relationship is represented as variations.
+The source files retain original names and descriptions as evidence. A separate derived file supplies bilingual display copy for the presentation storefront; that copy needs editorial review before public launch. Preserve original HTML as source evidence and sanitize it before any future rendering. Brand categories and source tags are preserved separately, without inferring brands from filenames. Related simple products remain distinct; only the source's explicit variable relationship is represented as variations.
 
 ## Reproduce and verify
 

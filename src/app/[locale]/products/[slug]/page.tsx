@@ -4,7 +4,7 @@ import { isLocale, languageConfig } from '@/lib/i18n';
 import { pageMetadata } from '@/lib/metadata';
 import { ProductDetail } from '@/components/ProductDetail';
 export function generateStaticParams() {
-  return languageConfig.order.flatMap(locale => products.map(p => ({
+  return languageConfig.order.flatMap(locale => products.filter(p => !p.slug.startsWith('source-')).map(p => ({
     locale,
     slug: p.slug
   })));
@@ -39,6 +39,7 @@ export default async function Page({
   } = await params;
   const product = products.find(p => p.slug === slug);
   if (!isLocale(locale) || !product) notFound();
+  const siteOrigin = process.env.NEXT_PUBLIC_SITE_URL || 'https://jjglass.com';
   return <>
     <ProductDetail locale={locale} product={product} />
     <script type="application/ld+json" dangerouslySetInnerHTML={{
@@ -47,12 +48,9 @@ export default async function Page({
         '@type': 'Product',
         name: product.name[locale],
         description: product.description[locale],
-        sku: product.sku,
-        image: [...new Set(productGallery(product).map(image => image.split('#')[0]))].map(image => `https://jjglass.com${image}`),
-        brand: {
-          '@type': 'Brand',
-          name: product.brand
-        }
+        ...(product.sku ? { sku: product.sku } : {}),
+        image: [...new Set(productGallery(product).map(image => image.split('#')[0]))].map(image => new URL(image, siteOrigin).href),
+        ...(product.brand ? { brand: { '@type': 'Brand', name: product.brand } } : {})
       }).replace(/</g, '\\u003c')
     }} />
   </>;

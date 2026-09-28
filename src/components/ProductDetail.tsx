@@ -22,6 +22,10 @@ export function ProductDetail({
   const [gallerySelection, setGallerySelection] = useState({ productId: product.id, index: 0 });
   const images = (product.images?.length ? product.images : [product.image]).filter(image => !image.includes('#detail'));
   const activeImage = gallerySelection.productId === product.id ? Math.min(gallerySelection.index, images.length - 1) : 0;
+  const unavailable = product.available === false;
+  const needsOptions = product.hasOptions === true;
+  const purchaseBlocked = unavailable || needsOptions;
+  const optionsUrl = product.sourceProduct?.startsWith('https://jjglass.com/product/') ? product.sourceProduct : null;
   const sizeChoices = product.sizeGroup
     ? products.filter(item => item.sizeGroup === product.sizeGroup).sort((a, b) => {
       const sizeA = Number.parseFloat(a.capacity?.replaceAll(',', '') ?? '');
@@ -57,6 +61,15 @@ export function ProductDetail({
     currentTotal: cartQuantity ? 'Bag total after adding' : 'Selected product total', saved: 'You save',
     next: (count: number, price: string) => `Add ${count} more for ${price} each`,
   };
+  const statusCopy = locale === 'th' ? {
+    unavailable: 'สินค้านี้ระบุว่าหมดสต็อก โปรดสอบถามทีมงานเกี่ยวกับสินค้าล่าสุด',
+    options: 'สินค้านี้มีตัวเลือกขนาด โปรดตรวจสอบตัวเลือกก่อนสั่งซื้อ',
+    viewOptions: 'ดูตัวเลือกบน JJGLASS',
+  } : {
+    unavailable: 'This product is listed as out of stock. Ask our team for current availability.',
+    options: 'This product has size options. Check them before ordering.',
+    viewOptions: 'View options on JJGLASS',
+  };
   const saved = shop.saved.includes(product.id);
   const related = [...products.filter(item => item.id !== product.id && item.category === product.category), ...products.filter(item => item.id !== product.id && item.category !== product.category)].slice(0, 4);
   return <div className={styles.page}>
@@ -70,7 +83,7 @@ export function ProductDetail({
     <section className={styles.product}>
       <div className={styles.gallery} role="group" aria-label={galleryCopy.label}>
         <div className={styles.visual}>
-          <span className={styles.imageBrand}>{product.brand}</span>
+          {product.brand && <span className={styles.imageBrand}>{product.brand}</span>}
           <img
             src={images[activeImage]}
             alt={`${product.name[locale]} (${activeImage + 1}/${images.length})`}
@@ -103,9 +116,9 @@ export function ProductDetail({
         </div>}
       </div>
       <div className={styles.info}>
-        <span className={styles.eyebrow}>{product.brand}</span>
+        {product.brand && <span className={styles.eyebrow}>{product.brand}</span>}
         <h1>{product.name[locale]}</h1>
-        <p className={styles.code}>{c.sku} {product.sku}</p>
+        {product.sku && <p className={styles.code}>{c.sku} {product.sku}</p>}
         {sizeChoices.length > 1 && <section className={styles.sizePicker} aria-label={galleryCopy.size}>
           <h2>{galleryCopy.size}</h2>
           <div className={styles.sizeChoices}>{sizeChoices.map(item => <Link
@@ -117,17 +130,17 @@ export function ProductDetail({
           ><strong>{item.capacity || item.name[locale]}</strong><span>{money(item.price)}</span></Link>)}</div>
         </section>}
         <div className={styles.priceSummary} aria-live="polite">
-          <p className={styles.price}>{money(unitPrice)} <span>/ {priceCopy.each}</span></p>
-          {unitPrice < product.price && <del>{money(product.price)}</del>}
-          <p className={styles.selectionTotal}><span>{priceCopy.currentTotal} · {pricingQuantity} {locale === 'en' && pricingQuantity === 1 ? 'piece' : priceCopy.pieces}</span><strong>{money(lineTotal)}</strong></p>
-          {savings > 0 && <p className={styles.savings}>{priceCopy.saved} {money(savings)}</p>}
+          <p className={styles.price}>{needsOptions && `${c.from} `}{money(purchaseBlocked ? product.price : unitPrice)} <span>/ {priceCopy.each}</span></p>
+          {!purchaseBlocked && unitPrice < product.price && <del>{money(product.price)}</del>}
+          {!purchaseBlocked && <p className={styles.selectionTotal}><span>{priceCopy.currentTotal} · {pricingQuantity} {locale === 'en' && pricingQuantity === 1 ? 'piece' : priceCopy.pieces}</span><strong>{money(lineTotal)}</strong></p>}
+          {!purchaseBlocked && savings > 0 && <p className={styles.savings}>{priceCopy.saved} {money(savings)}</p>}
         </div>
         <p className={styles.description}>{product.description[locale]}</p>
-        <div className={styles.availability}>
+        <div className={`${styles.availability} ${purchaseBlocked ? styles.availabilityAttention : ''}`}>
           <span />
-          {c.availability}
+          {unavailable ? statusCopy.unavailable : needsOptions ? statusCopy.options : c.availability}
         </div>
-        <section className={styles.tierPricing} aria-labelledby="quantity-pricing-title">
+        {!purchaseBlocked && product.priceTiers.length > 0 && <section className={styles.tierPricing} aria-labelledby="quantity-pricing-title">
           <div className={styles.tierHeading}><div><h2 id="quantity-pricing-title">{priceCopy.quantityPricing}</h2><p>{priceCopy.quantityHint}</p></div>{nextTier && <span>{priceCopy.next(nextTier.minQuantity - pricingQuantity, money(nextTier.unitPrice))}</span>}</div>
           <div className={styles.tierGrid}>{priceBands.map(band => {
             const active = pricingQuantity >= band.minQuantity && (band.maxQuantity === undefined || pricingQuantity <= band.maxQuantity);
@@ -137,9 +150,9 @@ export function ProductDetail({
               <small>/ {priceCopy.each}</small>
             </div>;
           })}</div>
-        </section>
+        </section>}
         <div className={styles.buyRow}>
-          <div className={styles.quantity} role="group" aria-label={c.quantity}>
+          {!purchaseBlocked && <div className={styles.quantity} role="group" aria-label={c.quantity}>
             <button aria-label={t(locale, "Decrease quantity")} disabled={selectedQuantity <= 1} onClick={() => setQuantity(selectedQuantity - 1)}>
               <Icon name="minus" size={16} />
             </button>
@@ -147,14 +160,19 @@ export function ProductDetail({
             <button aria-label={t(locale, "Increase quantity")} disabled={selectedQuantity >= availableQuantity} onClick={() => setQuantity(selectedQuantity + 1)}>
               <Icon name="plus" size={16} />
             </button>
-          </div>
-          <button className={styles.add} disabled={!shop.ready || availableQuantity === 0} onClick={() => {
-            shop.add(product.id, selectedQuantity);
-            shop.notify(c.added);
-          }}>
-            <Icon name="bag" size={19} />
-            {availableQuantity === 0 ? t(locale, "Maximum quantity in bag") : c.add}
-          </button>
+          </div>}
+          {purchaseBlocked
+            ? needsOptions && !unavailable && optionsUrl
+              ? <a className={styles.add} href={optionsUrl} target="_blank" rel="noopener noreferrer"><Icon name="arrow" size={19} />{statusCopy.viewOptions}</a>
+              : <Link className={styles.add} href={`${storefrontPrefix(locale)}/contact`}>{c.contactTeam}</Link>
+            : <button className={styles.add} disabled={!shop.ready || availableQuantity === 0} onClick={() => {
+                if (product.available === false || product.hasOptions) return;
+                shop.add(product.id, selectedQuantity);
+                shop.notify(c.added);
+              }}>
+                <Icon name="bag" size={19} />
+                {availableQuantity === 0 ? t(locale, "Maximum quantity in bag") : c.add}
+              </button>}
           <button className={`${styles.save} ${saved ? styles.saved : ''}`} aria-label={saved ? t(locale, "Remove from wishlist") : c.save} aria-pressed={saved} disabled={!shop.ready} onClick={() => {
             shop.toggleSaved(product.id);
             shop.notify(saved ? t(locale, "Removed from wishlist") : t(locale, "Saved to your wishlist"));
@@ -169,14 +187,14 @@ export function ProductDetail({
             <Icon name="plus" size={16} />
           </summary>
           <dl>
-            <div>
+            {product.sku && <div>
               <dt>{c.sku}</dt>
               <dd>{product.sku}</dd>
-            </div>
-            <div>
+            </div>}
+            {product.brand && <div>
               <dt>{c.brand}</dt>
               <dd>{product.brand}</dd>
-            </div>
+            </div>}
             {product.capacity && <div>
               <dt>{t(locale, "Capacity")}</dt>
               <dd>{product.capacity}</dd>
@@ -198,9 +216,9 @@ export function ProductDetail({
       </div>
       <div className={styles.relatedGrid}>{related.map(item => <Link className={styles.relatedCard} key={item.id} href={`${storefrontPrefix(locale)}/products/${item.slug}`}>
           <div>
-            <img src={item.image} alt={item.name[locale]} width={400} height={400} loading="lazy" />
+            <img src={item.thumbnail || item.image} alt={item.name[locale]} width={400} height={400} loading="lazy" />
           </div>
-          <span>{item.brand}</span>
+          {item.brand && <span>{item.brand}</span>}
           <h3>{item.name[locale]}</h3>
           <p>{money(item.price)}{getLowestUnitPrice(item) < item.price && <span>{locale === 'th' ? `ราคาตามจำนวน ${money(getLowestUnitPrice(item))}` : `Quantity price ${money(getLowestUnitPrice(item))}`}</span>}</p>
         </Link>)}</div>

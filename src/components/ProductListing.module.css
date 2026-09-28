@@ -227,6 +227,14 @@
   color: white;
   border-color: var(--olive);
 }
+.ellipsis {
+  width: 20px;
+  text-align: center;
+  color: var(--muted);
+}
+.mobilePage {
+  display: none;
+}
 .empty {
   padding: 45px 20px;
   text-align: center;
@@ -412,5 +420,15 @@
   .pagination button {
     width: 34px;
     height: 34px;
+  }
+  .pagination .pageNumber,
+  .pagination .ellipsis {
+    display: none;
+  }
+  .mobilePage {
+    display: block;
+    margin: 0 10px;
+    white-space: nowrap;
+    font-size: var(--text-xs);
   }
 }

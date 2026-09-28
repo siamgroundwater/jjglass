@@ -9,6 +9,22 @@ import { useShop } from './ShopProvider';
 import ProductCard from './ProductCard';
 import Icon from './Icon';
 import s from './ProductListing.module.css';
+
+function paginationItems(totalPages: number, currentPage: number): (number | 'ellipsis')[] {
+  const pages = totalPages <= 7
+    ? Array.from({ length: totalPages }, (_, index) => index + 1)
+    : [...new Set([1, currentPage - 1, currentPage, currentPage + 1, totalPages]
+      .filter(page => page >= 1 && page <= totalPages))].sort((a, b) => a - b);
+  const items: (number | 'ellipsis')[] = [];
+  pages.forEach((page, index) => {
+    const previous = pages[index - 1];
+    if (previous !== undefined && page - previous === 2) items.push(previous + 1);
+    if (previous !== undefined && page - previous > 2) items.push('ellipsis');
+    items.push(page);
+  });
+  return items;
+}
+
 export default function ProductListing({
   locale,
   wishlist = false
@@ -47,6 +63,11 @@ export default function ProductListing({
   const totalPages = Math.ceil(filtered.length / 12),
     currentPage = Math.min(page, totalPages || 1),
     visible = filtered.slice((currentPage - 1) * 12, currentPage * 12);
+  const pageItems = paginationItems(totalPages, currentPage);
+  const goToPage = (nextPage: number) => {
+    update('page', String(nextPage));
+    document.getElementById('main')?.scrollIntoView({ behavior: 'smooth' });
+  };
   const reset = () => {
     router.replace(`${storefrontPrefix(locale)}/${wishlist ? 'wishlist' : 'products'}`, {
       scroll: false
@@ -144,7 +165,7 @@ export default function ProductListing({
           </label>
         </div>
         <div className={s.resultBar}>
-          <p>{filtered.length} {c.results}{visible.length > 0 && <span> · {(currentPage - 1) * 12 + 1}–{Math.min(currentPage * 12, filtered.length)}</span>}</p>
+          <p>{filtered.length} {filtered.length === 1 ? c.resultSingular : c.results}{visible.length > 0 && <span> · {(currentPage - 1) * 12 + 1}–{Math.min(currentPage * 12, filtered.length)}</span>}</p>
           {(category || brand || search) && <button onClick={reset}>
             {c.clear}
             <Icon name="close" size={13} />
@@ -153,20 +174,16 @@ export default function ProductListing({
         {visible.length > 0 ? <>
           <div className={s.productGrid}>{visible.map(p => <ProductCard key={p.id} product={p} locale={locale} />)}</div>
           {totalPages > 1 && <nav className={s.pagination} aria-label={t(locale, "Product pages")}>
-            <button aria-label={c.previous} disabled={currentPage === 1} onClick={() => update('page', String(currentPage - 1))}>
+            <button aria-label={c.previous} disabled={currentPage === 1} onClick={() => goToPage(currentPage - 1)}>
               <Icon name="chevron" size={16} style={{
                 transform: 'rotate(180deg)'
               }} />
             </button>
-            {Array.from({
-              length: totalPages
-            }, (_, i) => <button key={i} className={currentPage === i + 1 ? s.current : ''} aria-current={currentPage === i + 1 ? 'page' : undefined} onClick={() => {
-              update('page', String(i + 1));
-              document.getElementById('main')?.scrollIntoView({
-                behavior: 'smooth'
-              });
-            }}>{i + 1}</button>)}
-            <button aria-label={c.next} disabled={currentPage === totalPages} onClick={() => update('page', String(currentPage + 1))}>
+            {pageItems.map((item, index) => item === 'ellipsis'
+              ? <span key={`ellipsis-${index}`} className={s.ellipsis} aria-hidden="true">…</span>
+              : <button key={item} className={`${s.pageNumber} ${currentPage === item ? s.current : ''}`} aria-label={locale === 'th' ? `หน้า ${item}` : `Page ${item}`} aria-current={currentPage === item ? 'page' : undefined} onClick={() => goToPage(item)}>{item}</button>)}
+            <span className={s.mobilePage} aria-live="polite">{locale === 'th' ? `หน้า ${currentPage} จาก ${totalPages}` : `Page ${currentPage} of ${totalPages}`}</span>
+            <button aria-label={c.next} disabled={currentPage === totalPages} onClick={() => goToPage(currentPage + 1)}>
               <Icon name="chevron" size={16} />
             </button>
           </nav>}

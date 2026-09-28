@@ -54,7 +54,7 @@ export function Commerce({
   const formRef = useRef<HTMLFormElement>(null);
   const items = shop.cart.flatMap(item => {
     const product = products.find(product => product.id === item.id);
-    if (!product) return [];
+    if (!product || product.available === false || product.hasOptions) return [];
     const unitPrice = getUnitPrice(product, item.quantity);
     const lineTotal = getLineTotal(product, item.quantity);
     const nextTier = getNextPriceTier(product, item.quantity);
@@ -67,6 +67,7 @@ export function Commerce({
       nextTier,
     }];
   });
+  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
   const subtotal = roundCurrency(items.reduce((sum, item) => sum + item.lineTotal, 0));
   const savings = roundCurrency(items.reduce((sum, item) => sum + item.savings, 0));
   function submit(event: FormEvent<HTMLFormElement>) {
@@ -85,7 +86,7 @@ export function Commerce({
     }
     if (!items.length) return;
     setCompleted({
-      count: shop.count,
+      count: itemCount,
       subtotal,
       savings,
     });
@@ -210,14 +211,14 @@ export function Commerce({
           nextTier,
         }) => <article className={styles.cartItem} key={product.id}>
           <Link className={styles.itemImage} href={`${storefrontPrefix(locale)}/products/${product.slug}`}>
-            <img src={product.image} alt={product.name[locale]} width={160} height={160} />
+            <img src={product.thumbnail || product.image} alt={product.name[locale]} width={160} height={160} />
           </Link>
           <div className={styles.itemInfo}>
-            <span>{product.brand}</span>
+            {product.brand && <span>{product.brand}</span>}
             <Link href={`${storefrontPrefix(locale)}/products/${product.slug}`}>
               <h2>{product.name[locale]}</h2>
             </Link>
-            <p>{c.sku} {product.sku}</p>
+            {product.sku && <p>{c.sku} {product.sku}</p>}
             <div className={styles.itemPrice}>
               <strong>{money(unitPrice)} / {pc.each}</strong>
               {lineSavings > 0 && <><del>{money(product.price)}</del><span>{pc.quantityPrice}</span></>}
@@ -295,14 +296,14 @@ export function Commerce({
             lineTotal,
           }) => <div className={styles.miniItem} key={product.id}>
             <div>
-              <img src={product.image} alt={product.name[locale]} width={60} height={60} />
+              <img src={product.thumbnail || product.image} alt={product.name[locale]} width={60} height={60} />
               <span>{quantity}</span>
             </div>
             <p>{product.name[locale]}<small>{money(unitPrice)} / {pc.each}</small></p>
             <strong>{money(lineTotal)}</strong>
           </div>)}</div>}
         <div className={styles.summaryLine}>
-          <span>{c.subtotal} ({shop.count} {c.pieces})</span>
+          <span>{c.subtotal} ({itemCount} {c.pieces})</span>
           <strong>{money(subtotal)}</strong>
         </div>
         {savings > 0 && <div className={styles.savingsLine}><span>{pc.quantitySavings}</span><strong>−{money(savings)}</strong></div>}

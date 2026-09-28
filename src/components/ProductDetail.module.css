@@ -272,6 +272,9 @@
   border-radius: 100%;
   background: var(--olive);
 }
+.availabilityAttention>span {
+  background: var(--orange);
+}
 .tierPricing {
   margin: 20px 0;
   padding: 18px;

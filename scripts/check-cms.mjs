@@ -78,6 +78,9 @@ function publicAssetFilename(src, label) {
 function sourcePhoto(src) {
   return src.split('#', 1)[0];
 }
+function isSourceImport(product) {
+  return product.slug.startsWith('source-');
+}
 
 check('seed and JSON storage round trip satisfy the runtime contract', () => {
   assert.equal(isCmsData(seed), true);
@@ -86,16 +89,21 @@ check('seed and JSON storage round trip satisfy the runtime contract', () => {
   assert.equal(seed.catalogRevision, CATALOG_REVISION);
 });
 
-check('every seeded product has three to five distinct gallery views with its cover first', () => {
+check('seeded galleries keep distinct source photographs and their cover first', () => {
   const media = new Set(seed.media.map(item => item.src));
   for (const product of seed.products) {
     const gallery = productGallery(product);
-    assert.ok(gallery.length >= 3 && gallery.length <= 5, `${product.id}: expected 3–5 images, got ${gallery.length}`);
+    const min = isSourceImport(product) ? 1 : 3;
+    const max = isSourceImport(product) ? 6 : 5;
+    assert.ok(gallery.length >= min && gallery.length <= max, `${product.id}: expected ${min}–${max} images, got ${gallery.length}`);
     assert.equal(gallery[0], product.image, `${product.id}: cover is not the first image`);
     assert.equal(new Set(gallery).size, gallery.length, `${product.id}: duplicate gallery image`);
     for (const src of gallery) {
-      assert.ok(media.has(sourcePhoto(src)), `${product.id}: source photo missing from media library: ${src}`);
-      assert.ok(fs.existsSync(publicAssetFilename(src, product.id)), `${product.id}: gallery file missing: ${src}`);
+      if (isSourceImport(product)) assert.ok(src.startsWith('https://jjglass.com/wp-content/uploads/'), `${product.id}: unexpected source image: ${src}`);
+      else {
+        assert.ok(media.has(sourcePhoto(src)), `${product.id}: source photo missing from media library: ${src}`);
+        assert.ok(fs.existsSync(publicAssetFilename(src, product.id)), `${product.id}: gallery file missing: ${src}`);
+      }
     }
   }
 });
@@ -213,6 +221,82 @@ check('catalog revision migration preserves edits and trash, adds new media, and
   assert.strictEqual(normalizeCmsData(migrated), migrated, 'migration ran again after its revision was saved');
   const deletedAgain = { ...migrated, products: migrated.products.filter(product => product.id !== missingSource.id) };
   assert.strictEqual(normalizeCmsData(deletedAgain), deletedAgain, 'later product deletion was undone');
+});
+check('revision 2 browser snapshot gains all new source IDs without changing saved products', () => {
+  const old = structuredClone(seed);
+  old.catalogRevision = 2;
+  old.products = old.products.filter(product => !isSourceImport(product));
+  assert.equal(old.products.length, 84);
+  old.products[0].name.en = 'Client-edited catalog name';
+  const savedProducts = structuredClone(old.products);
+  const migrated = normalizeCmsData(old);
+  assert.ok(migrated);
+  assert.equal(migrated.products.length, 1464);
+  assert.deepEqual(migrated.products.slice(0, savedProducts.length), savedProducts);
+  unique(migrated.products, product => product.id, 'migrated product IDs');
+  assert.equal(migrated.products.filter(isSourceImport).length, 1380);
+  assert.equal(migrated.products.find(product => product.id === '10221')?.sku, '37216');
+  assert.equal(migrated.products.find(product => product.id === '24390')?.sku, '37216');
+  assert.strictEqual(normalizeCmsData(migrated), migrated);
+});
+check('source import respects trash and custom slug collisions', () => {
+  const old = structuredClone(seed);
+  old.catalogRevision = 2;
+  old.products = old.products.filter(product => !isSourceImport(product));
+  const trashed = seed.products.find(product => product.id === '10221');
+  const blockedBySlug = seed.products.find(product => product.id === '24390');
+  assert.ok(trashed && blockedBySlug);
+  old.trash.push({ id: 'trash-imported-source', kind: 'product', deletedAt: '2026-09-27T09:00:00.000Z', record: structuredClone(trashed) });
+  old.products.push({ ...structuredClone(old.products[0]), id: 'manual-source-slug', slug: blockedBySlug.slug, sku: 'MANUAL-SOURCE-SLUG' });
+  const migrated = normalizeCmsData(old);
+  assert.ok(migrated);
+  assert.equal(migrated.products.some(product => product.id === trashed.id), false);
+  assert.equal(migrated.products.some(product => product.id === blockedBySlug.id), false);
+  assert.equal(migrated.products.filter(product => product.slug === blockedBySlug.slug).length, 1);
+  assert.equal(migrated.trash.some(item => item.record.id === trashed.id), true);
+  assert.equal(migrated.products.length, 1463);
+});
+check('duplicate source SKU does not prevent restoring its original ID', () => {
+  const deleted = moveToTrash(seed, 'product', '10221', new Date('2026-09-27T09:00:00.000Z'));
+  assert.ok(deleted);
+  assert.equal(deleted.products.find(item => item.id === '24390')?.sku, '37216');
+  const item = deleted.trash.find(entry => entry.kind === 'product' && entry.record.id === '10221');
+  assert.ok(item);
+  const restored = restoreFromTrash(deleted, item.id, new Date('2026-09-28T09:00:00.000Z'));
+  assert.ok(restored);
+  assert.equal(restored.products.find(product => product.id === '10221')?.sku, '37216');
+});
+check('revision 3 snapshot gains LUCKY GLASS without reviving deleted products or changing brand edits', () => {
+  const old = structuredClone(seed);
+  old.catalogRevision = 3;
+  old.brands = old.brands.filter(brand => brand.name !== 'LUCKY GLASS');
+  old.brands[0].image = '/images/client-brand.jpg';
+  old.brands[0].status = 'draft';
+  old.products = old.products.filter(product => product.id !== '10221');
+  const before = structuredClone(old);
+  const migrated = normalizeCmsData(old);
+  assert.ok(migrated);
+  assert.equal(migrated.catalogRevision, CATALOG_REVISION);
+  assert.equal(migrated.brands.filter(brand => brand.name === 'LUCKY GLASS').length, 1);
+  assert.equal(migrated.brands.find(brand => brand.name === 'LUCKY GLASS')?.status, 'published');
+  assert.deepEqual(migrated.brands[0], old.brands[0]);
+  assert.equal(migrated.products.some(product => product.id === '10221'), false);
+  assert.ok(migrated.products.some(product => product.brand === 'LUCKY GLASS'));
+  assert.strictEqual(normalizeCmsData(migrated), migrated);
+  assert.deepEqual(old, before);
+});
+check('brand ID collision preserves the custom record and gives source brand a distinct ID', () => {
+  const old = structuredClone(seed);
+  old.catalogRevision = 3;
+  const sourceBrand = old.brands.find(brand => brand.name === 'LUCKY GLASS');
+  assert.ok(sourceBrand);
+  old.brands = old.brands.filter(brand => brand.name !== sourceBrand.name);
+  old.brands.push({ id: sourceBrand.id, name: 'Client brand', image: '/images/client-brand.jpg', status: 'draft' });
+  const migrated = normalizeCmsData(old);
+  assert.ok(migrated);
+  assert.equal(migrated.brands.find(brand => brand.id === sourceBrand.id)?.name, 'Client brand');
+  assert.ok(migrated.brands.some(brand => brand.name === 'LUCKY GLASS' && brand.id !== sourceBrand.id));
+  unique(migrated.brands, brand => brand.id, 'brand IDs after collision');
 });
 check('existing store records gain supplied hours and LINE without replacing edits', () => {
   const old = structuredClone(seed);
@@ -383,7 +467,7 @@ check('optional product capacity rejects values that cannot be edited as text', 
 });
 check('invalid product gallery and size-group fields are rejected', () => {
   const cover = seed.products[0].image;
-  for (const images of [null, {}, [], [cover, cover], ['/images/not-the-cover.jpg', cover], [cover, null], [cover, ' '], [cover, 'a', 'b', 'c', 'd', 'e']]) {
+  for (const images of [null, {}, [], [cover, cover], ['/images/not-the-cover.jpg', cover], [cover, null], [cover, ' '], [cover, 'a', 'b', 'c', 'd', 'e', 'f']]) {
     assert.equal(isCmsData(corrupt(data => { data.products[0].images = images; })), false, `Accepted gallery: ${JSON.stringify(images)}`);
   }
   for (const sizeGroup of [null, 1, false, {}, []]) {
@@ -413,12 +497,23 @@ for (const [collection, field] of [['orders', 'date'], ['customers', 'joined'], 
   });
 }
 
-check('record IDs, product SKUs, slugs, and brand names are unique', () => {
+check('record IDs and slugs are unique; public source SKU exceptions are retained', () => {
   for (const name of collections) unique(seed[name], item => item.id, `${name} IDs`);
-  unique(seed.products, item => item.sku.trim().toLowerCase(), 'product SKUs');
+  unique(seed.products.filter(product => !isSourceImport(product)), item => item.sku.trim().toLowerCase(), 'presentation product SKUs');
   unique(seed.products, item => item.slug, 'product slugs');
   unique(seed.brands, item => item.name.trim().toLowerCase(), 'brand names');
   unique(seed.media, item => item.src, 'media sources');
+  assert.deepEqual(seed.products.filter(item => !item.sku).map(item => item.id), []);
+  for (const id of ['27670', '27671']) assert.equal(seed.products.find(item => item.id === id)?.sku, id, `${id}: existing presentation SKU changed`);
+  const duplicateSkus = [...Map.groupBy(seed.products.filter(item => item.sku), item => item.sku).entries()]
+    .filter(([, items]) => items.length > 1)
+    .map(([sku, items]) => [sku, items.map(item => item.id).sort()])
+    .sort(([a], [b]) => a.localeCompare(b));
+  assert.deepEqual(duplicateSkus, [
+    ['040230', ['19738', '24507']],
+    ['041312', ['19740', '24499']],
+    ['37216', ['10221', '24390']],
+  ]);
 });
 check('source-backed legacy additions appear exactly once in the presentation catalog', () => {
   assert.ok(legacyCatalogProducts.length >= 40, `expected a substantial addition from the archive, got ${legacyCatalogProducts.length}`);
@@ -491,11 +586,17 @@ check('product category and brand relationships resolve', () => {
   const categories = new Set(seed.categories.map(item => item.id));
   const brands = new Set(seed.brands.map(item => item.name));
   for (const product of seed.products) {
+    const imported = isSourceImport(product);
     assert.ok(categories.has(product.category), `${product.id}: missing category ${product.category}`);
-    assert.ok(brands.has(product.brand), `${product.id}: missing brand ${product.brand}`);
+    assert.ok((imported && !product.brand) || brands.has(product.brand), `${product.id}: missing brand ${product.brand}`);
     assert.ok(Number.isFinite(product.price) && product.price > 0, `${product.id}: invalid price`);
     assert.ok(Number.isSafeInteger(product.stock) && product.stock >= 0, `${product.id}: invalid stock`);
-    assert.ok(Array.isArray(product.priceTiers) && product.priceTiers.length > 0, `${product.id}: missing sample price tiers`);
+    assert.ok(Array.isArray(product.priceTiers), `${product.id}: missing price tiers`);
+    if (imported) {
+      assert.deepEqual(product.priceTiers, [], `${product.id}: unsupported quantity price tiers`);
+      assert.equal(product.stock, 0, `${product.id}: invented stock count`);
+      assert.equal(product.status, 'draft', `${product.id}: source product published without inventory confirmation`);
+    } else assert.ok(product.priceTiers.length > 0, `${product.id}: missing presentation price tiers`);
     let previousQuantity = 1;
     let previousPrice = product.price;
     for (const tier of product.priceTiers) {
@@ -559,7 +660,8 @@ check('all referenced images exist in the media library and local public assets'
     ...seed.brands.map(item => item.image), ...seed.content.map(item => item.image),
     ...seed.stores.flatMap(item => item.images), ...seed.orders.flatMap(order => order.items.map(item => item.image)),
   ].filter(Boolean);
-  const missing = [...new Set(references.filter(src => !media.has(sourcePhoto(src))))];
+  for (const src of references.filter(src => src.startsWith('https://'))) assert.ok(src.startsWith('https://jjglass.com/wp-content/uploads/'), `Unexpected external image: ${src}`);
+  const missing = [...new Set(references.filter(src => src.startsWith('/') && !media.has(sourcePhoto(src))))];
   assert.deepEqual(missing, [], `Referenced images absent from media library: ${missing.join(', ')}`);
   for (const item of seed.media) {
     assert.ok(fs.existsSync(publicAssetFilename(item.src, item.id)), `Missing asset: ${item.src}`);
@@ -697,4 +799,5 @@ check('stock workspace has canonical routes in both languages', () => {
 });
 
 console.log(`\nCMS integrity: ${passed} passed, ${failed} failed.`);
+console.log(`CMS seed JSON: ${Buffer.byteLength(JSON.stringify(seed), 'utf8')} bytes.`);
 if (failed) process.exitCode = 1;

@@ -113,6 +113,15 @@
   outline: 2px solid var(--olive);
   outline-offset: 3px;
 }
+.buy:disabled {
+  cursor: not-allowed;
+  opacity: .65;
+}
+.unavailable {
+  background: #e6e3dd;
+  border-color: #e6e3dd;
+  color: var(--muted);
+}
 @media(max-width:600px) {
   .brand {
     font-size: var(--text-xs);

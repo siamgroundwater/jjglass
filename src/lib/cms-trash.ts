@@ -52,7 +52,10 @@ export function restoreFromTrash(data: CmsData, trashId: string, now = new Date(
 
   if (item.kind === 'product') {
     const key = (value: string) => value.trim().toLocaleLowerCase();
-    if (data.products.some(product => product.id === item.record.id || key(product.sku) === key(item.record.sku) || key(product.slug) === key(item.record.slug))) return null;
+    // The public source contains duplicate and missing SKUs. Imported records
+    // retain their source ID, so those SKUs must not prevent restoration.
+    const importedSource = item.record.slug.startsWith('source-');
+    if (data.products.some(product => product.id === item.record.id || key(product.slug) === key(item.record.slug) || (!importedSource && key(product.sku) === key(item.record.sku)))) return null;
     return { ...data, products: [...data.products, structuredClone(item.record)], trash };
   }
   if (item.kind === 'content') {
