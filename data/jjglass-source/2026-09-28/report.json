@@ -1,0 +1,62 @@
+{
+  "source": "https://jjglass.com",
+  "collectedFrom": "2026-09-28T10:21:05.565Z",
+  "collectedThrough": "2026-09-28T10:24:50.511Z",
+  "productCount": 1464,
+  "categoryCount": 105,
+  "attributeCount": 2,
+  "attributeTermCount": 11,
+  "variationCount": 8,
+  "variationsWithDetails": 8,
+  "shopPagesExpected": 92,
+  "shopPagesCollected": 92,
+  "shopUniqueProducts": 1464,
+  "shopOnly": [],
+  "apiOnly": [],
+  "shopCardCount": 1464,
+  "existingProjectProducts": 84,
+  "additionalProducts": 1380,
+  "existingProductsAbsentFromSource": [],
+  "productsWithDescription": 1464,
+  "productsWithSpecificationLines": 1462,
+  "productsWithImages": 1464,
+  "imageReferences": 2924,
+  "uniqueOriginalImageUrls": 2904,
+  "missingSkuIds": [
+    "27670",
+    "27671"
+  ],
+  "missingPriceIds": [],
+  "missingImageIds": [],
+  "duplicateSkus": [
+    {
+      "sku": "37216",
+      "ids": [
+        "10221",
+        "24390"
+      ]
+    },
+    {
+      "sku": "040230",
+      "ids": [
+        "19738",
+        "24507"
+      ]
+    },
+    {
+      "sku": "041312",
+      "ids": [
+        "19740",
+        "24499"
+      ]
+    }
+  ],
+  "types": {
+    "simple": 1463,
+    "variable": 1
+  },
+  "failures": [],
+  "sourceWarnings": [
+    "categories: API header reports 104, but complete pagination returns 105 unique records; all returned records retained."
+  ]
+}

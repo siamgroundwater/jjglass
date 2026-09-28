@@ -1,5 +1,9 @@
 # Supplied source content
 
+## Full live-site source collection — 28 September 2026
+
+The separate source dataset in `data/jjglass-source/2026-09-28/` contains all **1,464 products** verified against **all 92 shop pages**, including **1,380 additional products** beyond the 84 presentation records documented below. It includes original descriptions, prices, SKUs, taxonomy, gallery URLs, source stock flags, and eight complete variation records. See that directory's `README.md`, `PRODUCT_INDEX.md`, and `report.json` for provenance and quality checks. The source has two missing SKUs and three duplicated SKUs; these are preserved and flagged. This collection does not automatically replace or publish the presentation catalog.
+
 This frontend presentation uses the local legacy website snapshots supplied by the user at `C:\Coding\2026\00-Files\jjglass\infomation from old website`. Prices and product records below reproduce those snapshots; they are presentation data, not a live stock or price feed. No prices, sales counts, reviews, stock counts, delivery promises, certifications, founding dates or guarantees have been invented.
 
 ## Scope and translation

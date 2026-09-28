@@ -1,0 +1,36 @@
+{
+  "source": {
+    "url": "https://jjglass.com/wp-json/wc/store/v1/products/attributes/1/terms?per_page=100&page=1&hide_empty=false",
+    "fetchedAt": "2026-09-28T10:24:43.717Z",
+    "status": 200,
+    "sha256": "b4a37037f8be823ed0c2287aaa6276bd10d138085fe5eb1998838d65a6336cd1",
+    "total": null,
+    "totalPages": null
+  },
+  "records": [
+    {
+      "id": 19,
+      "name": "Black",
+      "slug": "black",
+      "description": "",
+      "parent": 0,
+      "count": 0
+    },
+    {
+      "id": 21,
+      "name": "Blue",
+      "slug": "blue",
+      "description": "",
+      "parent": 0,
+      "count": 0
+    },
+    {
+      "id": 30,
+      "name": "Red",
+      "slug": "red",
+      "description": "",
+      "parent": 0,
+      "count": 0
+    }
+  ]
+}

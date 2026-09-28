@@ -1,0 +1,76 @@
+{
+  "source": {
+    "url": "https://jjglass.com/wp-json/wc/store/v1/products/attributes/2/terms?per_page=100&page=1&hide_empty=false",
+    "fetchedAt": "2026-09-28T10:24:44.459Z",
+    "status": 200,
+    "sha256": "990264ee5ec1d19d9fecdcd31ba56126255e9d6808fa7a3042c864308cf25545",
+    "total": null,
+    "totalPages": null
+  },
+  "records": [
+    {
+      "id": 23,
+      "name": "eXtra Large",
+      "slug": "extra-large",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 291,
+      "name": "Height 13 cm.",
+      "slug": "height-13-cm",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 290,
+      "name": "Height 17.3 cm.",
+      "slug": "height-17-3-cm",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 289,
+      "name": "Height 22.5 cm.",
+      "slug": "height-22-5-cm",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 292,
+      "name": "Height 8.5 cm.",
+      "slug": "height-8-5-cm",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 25,
+      "name": "Large",
+      "slug": "large",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 27,
+      "name": "Medium",
+      "slug": "medium",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 32,
+      "name": "Small",
+      "slug": "small",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    }
+  ]
+}

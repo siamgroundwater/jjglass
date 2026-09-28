@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "color",
+    "taxonomy": "pa_color",
+    "type": "select",
+    "order": "menu_order",
+    "has_archives": false,
+    "count": 3
+  },
+  {
+    "id": 2,
+    "name": "size",
+    "taxonomy": "pa_size",
+    "type": "select",
+    "order": "menu_order",
+    "has_archives": false,
+    "count": 8
+  }
+]

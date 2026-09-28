@@ -1,0 +1,94 @@
+{
+  "pa_color": [
+    {
+      "id": 19,
+      "name": "Black",
+      "slug": "black",
+      "description": "",
+      "parent": 0,
+      "count": 0
+    },
+    {
+      "id": 21,
+      "name": "Blue",
+      "slug": "blue",
+      "description": "",
+      "parent": 0,
+      "count": 0
+    },
+    {
+      "id": 30,
+      "name": "Red",
+      "slug": "red",
+      "description": "",
+      "parent": 0,
+      "count": 0
+    }
+  ],
+  "pa_size": [
+    {
+      "id": 23,
+      "name": "eXtra Large",
+      "slug": "extra-large",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 291,
+      "name": "Height 13 cm.",
+      "slug": "height-13-cm",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 290,
+      "name": "Height 17.3 cm.",
+      "slug": "height-17-3-cm",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 289,
+      "name": "Height 22.5 cm.",
+      "slug": "height-22-5-cm",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 292,
+      "name": "Height 8.5 cm.",
+      "slug": "height-8-5-cm",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 25,
+      "name": "Large",
+      "slug": "large",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 27,
+      "name": "Medium",
+      "slug": "medium",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    },
+    {
+      "id": 32,
+      "name": "Small",
+      "slug": "small",
+      "description": "",
+      "parent": 0,
+      "count": 1
+    }
+  ]
+}

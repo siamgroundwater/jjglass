@@ -20,10 +20,8 @@ export function ProductDetail({
   const shop = useShop();
   const [quantity, setQuantity] = useState(1);
   const [gallerySelection, setGallerySelection] = useState({ productId: product.id, index: 0 });
-  const images = product.images?.length ? product.images : [product.image];
+  const images = (product.images?.length ? product.images : [product.image]).filter(image => !image.includes('#detail'));
   const activeImage = gallerySelection.productId === product.id ? Math.min(gallerySelection.index, images.length - 1) : 0;
-  const isDetailImage = images[activeImage].includes('#detail');
-  const isBaseDetail = images[activeImage].endsWith('#detail-base');
   const sizeChoices = product.sizeGroup
     ? products.filter(item => item.sizeGroup === product.sizeGroup).sort((a, b) => {
       const sizeA = Number.parseFloat(a.capacity?.replaceAll(',', '') ?? '');
@@ -33,12 +31,10 @@ export function ProductDetail({
     : [];
   const galleryCopy = locale === 'th' ? {
     label: 'รูปภาพสินค้า', previous: 'รูปก่อนหน้า', next: 'รูปถัดไป',
-    show: (number: number) => `ดูรูปภาพที่ ${number}`,
-    detailView: 'ภาพขยายรายละเอียด', detailBadge: 'ขยาย', size: 'เลือกขนาด',
+    show: (number: number) => `ดูรูปภาพที่ ${number}`, size: 'เลือกขนาด',
   } : {
     label: 'Product photos', previous: 'Previous photo', next: 'Next photo',
-    show: (number: number) => `Show photo ${number}`,
-    detailView: 'Detail view', detailBadge: 'Detail', size: 'Choose a size',
+    show: (number: number) => `Show photo ${number}`, size: 'Choose a size',
   };
   function moveImage(direction: number) {
     setGallerySelection({ productId: product.id, index: (activeImage + direction + images.length) % images.length });
@@ -77,8 +73,7 @@ export function ProductDetail({
           <span className={styles.imageBrand}>{product.brand}</span>
           <img
             src={images[activeImage]}
-            className={isDetailImage ? `${styles.detailImage} ${isBaseDetail ? styles.detailBase : ''}` : undefined}
-            alt={`${product.name[locale]}${isDetailImage ? ` — ${galleryCopy.detailView}` : ''} (${activeImage + 1}/${images.length})`}
+            alt={`${product.name[locale]} (${activeImage + 1}/${images.length})`}
             width={800}
             height={800}
             fetchPriority="high"
@@ -92,7 +87,7 @@ export function ProductDetail({
             </button>
             <span className={styles.galleryCount} aria-live="polite">{activeImage + 1} / {images.length}</span>
           </>}
-          <span className={`${styles.imageCaption} ${isDetailImage ? styles.detailCaption : ''}`}>{isDetailImage ? galleryCopy.detailView : t(locale, "Made for your everyday moments")}</span>
+          <span className={styles.imageCaption}>{t(locale, "Made for your everyday moments")}</span>
         </div>
         {images.length > 1 && <div className={styles.thumbnails} role="group" aria-label={galleryCopy.label}>
           {images.map((image, index) => <button
@@ -100,11 +95,10 @@ export function ProductDetail({
             type="button"
             className={`${styles.thumbnail} ${index === activeImage ? styles.thumbnailActive : ''}`}
             onClick={() => setGallerySelection({ productId: product.id, index })}
-            aria-label={`${galleryCopy.show(index + 1)}: ${product.name[locale]}${image.includes('#detail') ? ` — ${galleryCopy.detailView}` : ''}`}
+            aria-label={`${galleryCopy.show(index + 1)}: ${product.name[locale]}`}
             aria-pressed={index === activeImage}
           >
-            <img src={image} className={image.includes('#detail') ? `${styles.detailImage} ${image.endsWith('#detail-base') ? styles.detailBase : ''}` : undefined} alt="" width={120} height={120} loading="lazy" />
-            {image.includes('#detail') && <span className={styles.detailBadge} aria-hidden="true">{galleryCopy.detailBadge}</span>}
+            <img src={image} alt="" width={120} height={120} loading="lazy" />
           </button>)}
         </div>}
       </div>

@@ -1,0 +1,1048 @@
+{
+  "requests": [
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=1&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:05.565Z",
+      "status": 200,
+      "sha256": "ae7103f84a83c87bc6ba141ae7b92a03a1a468d5df98fd461b5e620008d88aaf",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=2&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:08.218Z",
+      "status": 200,
+      "sha256": "ced53dc23c7593b972569848823812353b99589067b14fb62f646ec70c4c395e",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=3&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:10.896Z",
+      "status": 200,
+      "sha256": "769a2bef335e212d2e25c25d817d56287d8f61426343f3d8c7cf6f7207bfeeb3",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=4&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:13.708Z",
+      "status": 200,
+      "sha256": "a4d6c9c41aeceb53f0e6db3947052dbdda7436e37193ef7bd25e6b4dc31231e9",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=5&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:16.320Z",
+      "status": 200,
+      "sha256": "20e6b0597ce22be3854af3cef61626251052e788dbb339b805b89ab683713314",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=6&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:18.763Z",
+      "status": 200,
+      "sha256": "5adaa321ec343b9e0d8c26d243bcd0aa65920e8e769b27ed3b535e833a0fe40c",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=7&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:21.080Z",
+      "status": 200,
+      "sha256": "34779f1f5d90908b99ac5393575b41f936de1f2991457bbeaf0cf9296d111a7e",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=8&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:23.147Z",
+      "status": 200,
+      "sha256": "3771782564652cab0935f2bc4956e05e7aadcd9245eaf0dbfea493c99983866b",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=9&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:24.874Z",
+      "status": 200,
+      "sha256": "d16ad400a6b517f7f4eedc29d1896f320e3bc9824702b0a0307fdc4f89b10b3e",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=10&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:26.662Z",
+      "status": 200,
+      "sha256": "4072d4de201a57825e7517081133c0aeff66f5cfec6e521bacf1bbea4e2ac77e",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=11&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:28.379Z",
+      "status": 200,
+      "sha256": "d028f630c9beb8746f88184525c27a3fb8763a78fabf4d747ef1532c604a41b0",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=12&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:29.917Z",
+      "status": 200,
+      "sha256": "674e32196829a9cbd85324e2ddb97cae1603f3392c4106da4d548c4f332061bf",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=13&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:31.561Z",
+      "status": 200,
+      "sha256": "7aa9484b20b95fb67981f6ab94472020cea389c0ed71ec0ef2f006b29d20ff8e",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=14&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:33.336Z",
+      "status": 200,
+      "sha256": "e947398b9b85fc94d2bc2cc8abd5e5807e6e00367aa2a7af314de499c7195aa7",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products?per_page=100&page=15&orderby=id&order=asc",
+      "fetchedAt": "2026-09-28T10:21:34.705Z",
+      "status": 200,
+      "sha256": "acb1cf4ed2299c3580916077667dc1d18c04e7911814cfbdc12291888d8c21e4",
+      "total": "1464",
+      "totalPages": "15"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/categories?per_page=100&page=1",
+      "fetchedAt": "2026-09-28T10:22:12.883Z",
+      "status": 200,
+      "sha256": "23eea26d86ba860871134f969994b1fb398a865adb94dafa6cd8e5425400a7ca",
+      "total": "104",
+      "totalPages": "2"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/categories?per_page=100&page=2",
+      "fetchedAt": "2026-09-28T10:22:13.654Z",
+      "status": 200,
+      "sha256": "ce5d974a648d3692a2f40a0c680531ff35c117e41d9bd8179e8f0fd2f0991e03",
+      "total": "104",
+      "totalPages": "2"
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/attributes?per_page=100&page=1",
+      "fetchedAt": "2026-09-28T10:22:47.381Z",
+      "status": 200,
+      "sha256": "27f8bea74161e41c7fa35c9d2484882c42be6e486755bc8881adbc4b47b8aca1",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/",
+      "fetchedAt": "2026-09-28T10:22:47.615Z",
+      "status": 200,
+      "sha256": "b2a68673e05f91a3acca52df1638248fd95e70385de949d62707a04203c4ff9b",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/2/",
+      "fetchedAt": "2026-09-28T10:22:47.641Z",
+      "status": 200,
+      "sha256": "6fa7890fd303ce9a70ff5f44bf8e5e512b60e62ca987d2e0e0d8e45798616ed8",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/3/",
+      "fetchedAt": "2026-09-28T10:22:47.668Z",
+      "status": 200,
+      "sha256": "774b7f5ba0a6aebd28798338a357f82c38b4673044fec8ce2492a56259e17fb5",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/5/",
+      "fetchedAt": "2026-09-28T10:22:47.899Z",
+      "status": 200,
+      "sha256": "b601a019bd4d6ac921ae89b2094561c1e402c387cb70ee5e7a337855b1e0a1e2",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/4/",
+      "fetchedAt": "2026-09-28T10:22:47.903Z",
+      "status": 200,
+      "sha256": "3a86101046d4138dd3cb6d9b2ea1eea9b149464a98612449bf8785e697076cf8",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/6/",
+      "fetchedAt": "2026-09-28T10:22:48.135Z",
+      "status": 200,
+      "sha256": "980e4c129c7b8a4cabc0beb62c44ae6c7400494f8e2d7b4a4eb17509ed828071",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/7/",
+      "fetchedAt": "2026-09-28T10:22:48.140Z",
+      "status": 200,
+      "sha256": "f2390c27a56c937b62b5d2099b2217e5a250e9658b029ed146fb9973f17b4e82",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/8/",
+      "fetchedAt": "2026-09-28T10:22:48.371Z",
+      "status": 200,
+      "sha256": "ed263459f109d48a16c561aa18eb02b77ae41b174b017e2c2539bf47fb444ff7",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/9/",
+      "fetchedAt": "2026-09-28T10:22:48.377Z",
+      "status": 200,
+      "sha256": "21d2f9a50663355f2ad7388031bee7e71c473ff8bfe96b691c2cb255289c445f",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/10/",
+      "fetchedAt": "2026-09-28T10:22:48.611Z",
+      "status": 200,
+      "sha256": "caa15b461279b23d9c03f0239f9333b49afcb1597446c60b647c5fa0ec5b9c4b",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/11/",
+      "fetchedAt": "2026-09-28T10:22:48.618Z",
+      "status": 200,
+      "sha256": "180e184925163d23c0f8ac7d1a1f30800b21cc746afdc5a7c4d08116d516b92a",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/12/",
+      "fetchedAt": "2026-09-28T10:22:48.847Z",
+      "status": 200,
+      "sha256": "f18f9071f3fe05681c5c10a57da998763436a878cc9c9315fa6d55a24e50338a",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/13/",
+      "fetchedAt": "2026-09-28T10:22:48.850Z",
+      "status": 200,
+      "sha256": "532fae978e5297f9430134586a842f93643dc4d22b65c17c7ef57fcc864ba548",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/14/",
+      "fetchedAt": "2026-09-28T10:22:49.090Z",
+      "status": 200,
+      "sha256": "88edbaaa60f057d22fb0092369bfbedc406b08caff62a0eff391657db79b90e9",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/15/",
+      "fetchedAt": "2026-09-28T10:22:49.097Z",
+      "status": 200,
+      "sha256": "5219f4ad3796f9c29f47cdff3920a70120321128f5e903e2fb17b13d271ee3b4",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/16/",
+      "fetchedAt": "2026-09-28T10:22:49.337Z",
+      "status": 200,
+      "sha256": "8fb2fe1671d8d2d67ac37633caa7d0c1ba8516128ca3719fa402aedfb7fb6a5f",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/17/",
+      "fetchedAt": "2026-09-28T10:22:49.339Z",
+      "status": 200,
+      "sha256": "4c5a2c78edb2b1430fc92e4ae05ecca1f3f06d3d900f83ea8edb98e81ed06abf",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/18/",
+      "fetchedAt": "2026-09-28T10:22:49.578Z",
+      "status": 200,
+      "sha256": "572e61e2ecfcd177cb9a3fb790f67e1fa7efe1faf19ea2999092b3c14868b5de",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/19/",
+      "fetchedAt": "2026-09-28T10:22:49.584Z",
+      "status": 200,
+      "sha256": "e3bd2f8f81c7a8cf5231a3c16e1c914d9d5584641d6273023b97bfa256d8cab2",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/20/",
+      "fetchedAt": "2026-09-28T10:22:49.813Z",
+      "status": 200,
+      "sha256": "0f0eae6702fd0ab780f5926c6ae3c261b4a95fc6e943f36388d66e42e13e5a89",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/21/",
+      "fetchedAt": "2026-09-28T10:22:49.816Z",
+      "status": 200,
+      "sha256": "82578cf5b4bfd88bd48793135d10218a94dee91e69993b2cc0d915a6cef87304",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/23/",
+      "fetchedAt": "2026-09-28T10:22:50.049Z",
+      "status": 200,
+      "sha256": "467be6f3ea1a467d9cf201be46ad27a69d5944ff95b7f2f23ed27e8d6288718e",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/22/",
+      "fetchedAt": "2026-09-28T10:22:50.050Z",
+      "status": 200,
+      "sha256": "694b9dc566d6c96ea40f0706289cd62b4d29a4f1cf19a88f2b77ccae9eb40dac",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/24/",
+      "fetchedAt": "2026-09-28T10:22:50.278Z",
+      "status": 200,
+      "sha256": "40d7c6097d497e739b389409ee190fbf6cad14c5e352a4b1bd6c3f914c81c51d",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/25/",
+      "fetchedAt": "2026-09-28T10:22:50.283Z",
+      "status": 200,
+      "sha256": "0f97f68cfa5ffd802a1d6dee6208820ab80426462f76a85e46bd604460ee1489",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/26/",
+      "fetchedAt": "2026-09-28T10:22:50.511Z",
+      "status": 200,
+      "sha256": "bb1baadd3701bacfac9b1c712337212221401a12e4f4be6403a6245a34c2cf0f",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/27/",
+      "fetchedAt": "2026-09-28T10:22:50.515Z",
+      "status": 200,
+      "sha256": "172dc5d4b3b427c3167addd8a73b556e162d1c08b896eed6b9092e182721a352",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/28/",
+      "fetchedAt": "2026-09-28T10:22:50.745Z",
+      "status": 200,
+      "sha256": "1f9facad99f59f7ce05fb6726a1ee293be09be2f870b4e707715c34f5f4c8beb",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/29/",
+      "fetchedAt": "2026-09-28T10:22:50.749Z",
+      "status": 200,
+      "sha256": "92ed22646392d0aab2e018736da1a8d9bb84a7f7fdbc90b529b8c3f57db565e2",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/31/",
+      "fetchedAt": "2026-09-28T10:22:50.987Z",
+      "status": 200,
+      "sha256": "7468d867ec8eb1de2caecd89fccdb3a2a975eb30972bae61a27ac56f97331f10",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/30/",
+      "fetchedAt": "2026-09-28T10:22:50.988Z",
+      "status": 200,
+      "sha256": "6271ff1d8976983fb9c0ffe6f7a6adc108b685696039df6cce20581e034aeed5",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/32/",
+      "fetchedAt": "2026-09-28T10:22:51.219Z",
+      "status": 200,
+      "sha256": "324ca28d58b723c08a79142c1d8e4c18bfcbd491ff1523e6848330d4cbf0fac5",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/33/",
+      "fetchedAt": "2026-09-28T10:22:51.226Z",
+      "status": 200,
+      "sha256": "18623465661c01e8ff213578712f59a356eee9c62469f9fb2c7a02dacdd55959",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/34/",
+      "fetchedAt": "2026-09-28T10:22:51.455Z",
+      "status": 200,
+      "sha256": "11fefcbdd7ae3ec20ec0a02489d378186ad0e093e2016a5011c890a1a4ae316d",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/35/",
+      "fetchedAt": "2026-09-28T10:22:51.460Z",
+      "status": 200,
+      "sha256": "98d391a0da40c1daf1896651a3d453d0e7be7ec04b92df362b8b0c562b4a5e0a",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/36/",
+      "fetchedAt": "2026-09-28T10:22:51.687Z",
+      "status": 200,
+      "sha256": "d635069716847fe84c7b94775f46264067ef22c254dd7b3cdefae2a73617e975",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/37/",
+      "fetchedAt": "2026-09-28T10:22:51.691Z",
+      "status": 200,
+      "sha256": "a54cbbd6ab4d2fd6a370d8783ce7fdb5e9316a28ef6157ae93e06309ed976cf8",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/38/",
+      "fetchedAt": "2026-09-28T10:22:51.919Z",
+      "status": 200,
+      "sha256": "380582d448e481838c26e22a287a33f1ec06ddc46f10fbab87f47c84d12464c8",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/39/",
+      "fetchedAt": "2026-09-28T10:22:51.923Z",
+      "status": 200,
+      "sha256": "e97642199041b099e9a2b753502d6d037de09e72430f4bbd6e8c23e601a1dd5d",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/40/",
+      "fetchedAt": "2026-09-28T10:22:52.156Z",
+      "status": 200,
+      "sha256": "81f445bcff70499238227402c3f492af9870206ffaaa66defffb1d0a2a723475",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/41/",
+      "fetchedAt": "2026-09-28T10:22:52.160Z",
+      "status": 200,
+      "sha256": "15cbc6b8d00aa51903fb28b4a6a8c97bed9bc7e6f0cf5bfb8eac5b1293dcfd18",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/42/",
+      "fetchedAt": "2026-09-28T10:22:52.389Z",
+      "status": 200,
+      "sha256": "5c530d16454fc33b411eb386c15fa55ab8f4429d45d41206c1225214cd8ffc94",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/43/",
+      "fetchedAt": "2026-09-28T10:22:52.394Z",
+      "status": 200,
+      "sha256": "74537707868ef22b35e3e980dfd234aae81215f252f490f8a316ff7923e74e24",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/44/",
+      "fetchedAt": "2026-09-28T10:22:52.624Z",
+      "status": 200,
+      "sha256": "26de151424f55e048f3f9f5082017b199e678af5a55fcaa07245801c8b469448",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/45/",
+      "fetchedAt": "2026-09-28T10:22:52.629Z",
+      "status": 200,
+      "sha256": "f0f6ddf3d0847546dddd5f3694bc0643509ef01786fd61b94fa33369e6416ade",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/46/",
+      "fetchedAt": "2026-09-28T10:22:52.870Z",
+      "status": 200,
+      "sha256": "15da16f3a05e7a0992d1ab8665e26276d0c9fa72f1171198dde057398152eaee",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/47/",
+      "fetchedAt": "2026-09-28T10:22:52.872Z",
+      "status": 200,
+      "sha256": "8b654e65ac268ad4273853781dc2d7327cdea330ca4ffaa3626da02ee2d265b7",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/48/",
+      "fetchedAt": "2026-09-28T10:22:53.104Z",
+      "status": 200,
+      "sha256": "e434ded31f0ef1146375c0bc013ced4c9636633be912829cb91c2578235a5bbd",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/49/",
+      "fetchedAt": "2026-09-28T10:22:53.141Z",
+      "status": 200,
+      "sha256": "dd73b4281ef053d215206e0f8082e524398ded4f98c896d0cebfdb75a7096096",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/51/",
+      "fetchedAt": "2026-09-28T10:22:53.370Z",
+      "status": 200,
+      "sha256": "0f4a4e2f6e519ffb0a954e390db10b02bb0a432467620b9f1752e0514ff5bea7",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/50/",
+      "fetchedAt": "2026-09-28T10:22:53.372Z",
+      "status": 200,
+      "sha256": "11fb066b31c92c55f0d6c6927923ed580cccf97b201ef59d146a73e652f983dd",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/52/",
+      "fetchedAt": "2026-09-28T10:22:53.612Z",
+      "status": 200,
+      "sha256": "d151ff8a256d2bed702b95423fe4a72e4ac80874a5f99827b433db5cc90bae41",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/53/",
+      "fetchedAt": "2026-09-28T10:22:53.616Z",
+      "status": 200,
+      "sha256": "ecbb8d226a174803d89cc842bffb05e35748e172b2ea83819a3e78cca6e682e4",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/54/",
+      "fetchedAt": "2026-09-28T10:22:53.853Z",
+      "status": 200,
+      "sha256": "b85eabde2eef75827a864b746ef031500ace6d2e5ec93b8d21d1a0472ca2ec25",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/55/",
+      "fetchedAt": "2026-09-28T10:22:53.859Z",
+      "status": 200,
+      "sha256": "87b5558d4460002d3034632e0d13ea9149f690e73e69ff1a51d32f2276049cc6",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/56/",
+      "fetchedAt": "2026-09-28T10:22:54.089Z",
+      "status": 200,
+      "sha256": "70dd70653434b0d6de191321fae456605ff0433a095ad31f929bd5e87ce3568e",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/57/",
+      "fetchedAt": "2026-09-28T10:22:54.094Z",
+      "status": 200,
+      "sha256": "f55a32bc8a8d00c23d1b947d815a105dda6a26fffd286c6cfd196c55109fba82",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/58/",
+      "fetchedAt": "2026-09-28T10:22:54.322Z",
+      "status": 200,
+      "sha256": "b0be8e27cb74e69ad25cd4eeee87ed4299ce6d9bb9f2043c983531f8eb7ea96b",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/59/",
+      "fetchedAt": "2026-09-28T10:22:54.328Z",
+      "status": 200,
+      "sha256": "4f71307f3e608d55370f92d79b01e3be8adeeda104103a17b3dc5c21d1788585",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/60/",
+      "fetchedAt": "2026-09-28T10:22:54.566Z",
+      "status": 200,
+      "sha256": "2e663582f158d852ee195bd5ab5abc37810a096c4ce63c698f41315926805b38",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/61/",
+      "fetchedAt": "2026-09-28T10:22:54.570Z",
+      "status": 200,
+      "sha256": "e9c3eba6b29f6cb385bf5184df6f29c25f6861bb1f82f75f1b3bdbea847e3e7f",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/62/",
+      "fetchedAt": "2026-09-28T10:22:54.805Z",
+      "status": 200,
+      "sha256": "059c5cebc610c309389d8b23bfa520c391d5f8e113208bc46d8fae303190c08b",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/63/",
+      "fetchedAt": "2026-09-28T10:22:54.809Z",
+      "status": 200,
+      "sha256": "49a009bb2df22fecb8d129479656bccda76f989315cba61c087e05a29569dc4e",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/65/",
+      "fetchedAt": "2026-09-28T10:22:55.037Z",
+      "status": 200,
+      "sha256": "72603a4f684b87c32ecf1589c84c2ffc5c09a533729a0975b3c63f60f477687c",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/64/",
+      "fetchedAt": "2026-09-28T10:22:55.039Z",
+      "status": 200,
+      "sha256": "4626e1b30acebece4739629043e8a56ea2f4d9b66a0d271625408c9d2685b0ed",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/66/",
+      "fetchedAt": "2026-09-28T10:22:55.270Z",
+      "status": 200,
+      "sha256": "4c769f92b1e32fcc3da13ac6a9dc4010b0e9c217c12ff56412992bca58775bab",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/67/",
+      "fetchedAt": "2026-09-28T10:22:55.274Z",
+      "status": 200,
+      "sha256": "f5961b8ffc3147e2e99e79a9285f34b72a3334f89962633f1c2964f4274ecf09",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/68/",
+      "fetchedAt": "2026-09-28T10:22:55.510Z",
+      "status": 200,
+      "sha256": "3e24d75fcd41c5e18f9ca5e42077399e442a8593ea507f689e56451f81d7d3d5",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/69/",
+      "fetchedAt": "2026-09-28T10:22:55.516Z",
+      "status": 200,
+      "sha256": "28fd2c953bab62dfb29b9e19c6f0e65d082c743b50881c386789092dddf2676e",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/70/",
+      "fetchedAt": "2026-09-28T10:22:55.746Z",
+      "status": 200,
+      "sha256": "12817704c99a1c46a110fec498d965fa8928510b01c2a4a22f5210212c4949ed",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/71/",
+      "fetchedAt": "2026-09-28T10:22:55.750Z",
+      "status": 200,
+      "sha256": "1abd7a86eff6309ff8d766c017553b0af689ba67ea8127bf714fc15050339bd4",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/73/",
+      "fetchedAt": "2026-09-28T10:22:55.987Z",
+      "status": 200,
+      "sha256": "c712e43275220ec2fe91a14de2d9a2994038427761519f2a8c4f30a929362a87",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/72/",
+      "fetchedAt": "2026-09-28T10:22:55.991Z",
+      "status": 200,
+      "sha256": "5c64cf0e748f38ce3a73e01271594d57e3fe0b282448f402449346271e9c0c18",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/75/",
+      "fetchedAt": "2026-09-28T10:22:56.222Z",
+      "status": 200,
+      "sha256": "99c4626570dfeb0522a169675bd13ef0d2ca0a619056802b7a6225247f7ab33a",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/74/",
+      "fetchedAt": "2026-09-28T10:22:56.226Z",
+      "status": 200,
+      "sha256": "139378e2d0844a62e29c062ed1282ab19ac5577944657cd9bce7b819e871b6b6",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/76/",
+      "fetchedAt": "2026-09-28T10:22:56.454Z",
+      "status": 200,
+      "sha256": "644b2eefbb959e710688b7a9dbe21bc38e9cda136bf7cbe5a7a3089d773c97ef",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/77/",
+      "fetchedAt": "2026-09-28T10:22:56.460Z",
+      "status": 200,
+      "sha256": "52ae9814def84a9ee4d8b43988ed050b5aa0ac17a3360332d0aa7aab1dd50846",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/78/",
+      "fetchedAt": "2026-09-28T10:22:56.687Z",
+      "status": 200,
+      "sha256": "21c28188bbbf7d4e2fff0c7ab244841c976a267e0a411b3f3e3646fbdfb80761",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/79/",
+      "fetchedAt": "2026-09-28T10:22:56.690Z",
+      "status": 200,
+      "sha256": "956fbc74ce7207a5eab20ef2c488d417892f96bbac00a923f8599c7a0af6edb5",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/80/",
+      "fetchedAt": "2026-09-28T10:22:56.934Z",
+      "status": 200,
+      "sha256": "85a28b22702f706ab2ea20aab5720931ee276e2300d43e376ec142caab3d75a1",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/81/",
+      "fetchedAt": "2026-09-28T10:22:56.937Z",
+      "status": 200,
+      "sha256": "c243a50e7c286b7a5b6713eeb5740a16be0aabafa7ed7f4fd700b680254a6e5e",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/82/",
+      "fetchedAt": "2026-09-28T10:22:57.177Z",
+      "status": 200,
+      "sha256": "204c45b653a37fe655896ec82f36b761779ce1661ebf1bcf08ab1a33d9545d6b",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/83/",
+      "fetchedAt": "2026-09-28T10:22:57.183Z",
+      "status": 200,
+      "sha256": "d84889ea61104b86b95a5d828bc964fc9f9a95761fc1c64c5f4b9d8fa6b793b7",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/84/",
+      "fetchedAt": "2026-09-28T10:22:57.413Z",
+      "status": 200,
+      "sha256": "3fad263bf0e0ba4c191ea4988f261baf3291d92c240e513d1806ec027bb76643",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/85/",
+      "fetchedAt": "2026-09-28T10:22:57.418Z",
+      "status": 200,
+      "sha256": "d8e0b4ce2001098ecb354d7cb82e7dc297764256161dbf702b8965cb2a7b4339",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/86/",
+      "fetchedAt": "2026-09-28T10:22:57.646Z",
+      "status": 200,
+      "sha256": "30f2747fd2e54f5b40a23d2ce080be757148d3049c7b90e8eb062c759a67c3f5",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/87/",
+      "fetchedAt": "2026-09-28T10:22:57.652Z",
+      "status": 200,
+      "sha256": "237ce7db4cd03ac92b05cbde2b10d2f240b04bcaa2f4a42dcfb98da693be5900",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/88/",
+      "fetchedAt": "2026-09-28T10:22:57.879Z",
+      "status": 200,
+      "sha256": "d0a9f395bbf10f68e5b957f628cf07a37a302b6416356b5f246277466f6f4248",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/89/",
+      "fetchedAt": "2026-09-28T10:22:57.911Z",
+      "status": 200,
+      "sha256": "91cac10210565cc7a1f45111716debfcd6cd3ad149a006fd80ec8da578feff0f",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/90/",
+      "fetchedAt": "2026-09-28T10:22:58.147Z",
+      "status": 200,
+      "sha256": "d22c443f189660abda660644c0d30917424e6dd7feebea9dcb51e020d694dadf",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/91/",
+      "fetchedAt": "2026-09-28T10:22:58.170Z",
+      "status": 200,
+      "sha256": "58e9ae1358879efd951c2ebefc79987e85b495e9f04d5e46f12f2d081e96ce87",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/shop/page/92/",
+      "fetchedAt": "2026-09-28T10:22:58.401Z",
+      "status": 200,
+      "sha256": "42bf49a784e63fe2aef11238b6d77ce4757de8425914f0a3acb27a690304e2bb",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/attributes/1/terms?per_page=100&page=1",
+      "fetchedAt": "2026-09-28T10:24:00.451Z",
+      "status": 200,
+      "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/attributes/2/terms?per_page=100&page=1",
+      "fetchedAt": "2026-09-28T10:24:01.263Z",
+      "status": 200,
+      "sha256": "990264ee5ec1d19d9fecdcd31ba56126255e9d6808fa7a3042c864308cf25545",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31381",
+      "fetchedAt": "2026-09-28T10:24:02.196Z",
+      "status": 200,
+      "sha256": "6ef4ceb3986d6d26e7374097805c88ba585e45b8d98ff93c4566f3938f9e756b",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31382",
+      "fetchedAt": "2026-09-28T10:24:03.008Z",
+      "status": 200,
+      "sha256": "417b10528951e98208479027459489f576d50689d894bb45c7963e8c028a35ee",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31383",
+      "fetchedAt": "2026-09-28T10:24:03.805Z",
+      "status": 200,
+      "sha256": "77999f6e6cc23490cc5b4a24710eea948b5a56cff2832e3f76a54fdc7c82f36e",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31384",
+      "fetchedAt": "2026-09-28T10:24:04.625Z",
+      "status": 200,
+      "sha256": "ad7c2f4fce4af4673cd16899646039bce0e576a50ec4fc5e5a885eea38a726c4",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31385",
+      "fetchedAt": "2026-09-28T10:24:05.418Z",
+      "status": 200,
+      "sha256": "36c0ccb0610e095f7dad4ccbbf8cbda6bacc9a61ef2fadc9d9f25e8db56cad10",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31386",
+      "fetchedAt": "2026-09-28T10:24:06.191Z",
+      "status": 200,
+      "sha256": "9cdd9191d6b1fcf4af3ef9ff4dc42c754afaf6706821883aa4c96ce125b6c09a",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31387",
+      "fetchedAt": "2026-09-28T10:24:06.938Z",
+      "status": 200,
+      "sha256": "846a7c2fe1ec49f030072b46f8c2370b55c7e968d3c769ec3be7e0d3c1e2b03a",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31388",
+      "fetchedAt": "2026-09-28T10:24:07.711Z",
+      "status": 200,
+      "sha256": "b63c23dc113f9034008bab07698ca75dcb3f36c0df11fba7875a70b0f3b0622d",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/attributes/1/terms?per_page=100&page=1&hide_empty=false",
+      "fetchedAt": "2026-09-28T10:24:43.717Z",
+      "status": 200,
+      "sha256": "b4a37037f8be823ed0c2287aaa6276bd10d138085fe5eb1998838d65a6336cd1",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/attributes/2/terms?per_page=100&page=1&hide_empty=false",
+      "fetchedAt": "2026-09-28T10:24:44.459Z",
+      "status": 200,
+      "sha256": "990264ee5ec1d19d9fecdcd31ba56126255e9d6808fa7a3042c864308cf25545",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31381",
+      "fetchedAt": "2026-09-28T10:24:45.287Z",
+      "status": 200,
+      "sha256": "6ef4ceb3986d6d26e7374097805c88ba585e45b8d98ff93c4566f3938f9e756b",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31382",
+      "fetchedAt": "2026-09-28T10:24:46.104Z",
+      "status": 200,
+      "sha256": "417b10528951e98208479027459489f576d50689d894bb45c7963e8c028a35ee",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31383",
+      "fetchedAt": "2026-09-28T10:24:46.838Z",
+      "status": 200,
+      "sha256": "77999f6e6cc23490cc5b4a24710eea948b5a56cff2832e3f76a54fdc7c82f36e",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31384",
+      "fetchedAt": "2026-09-28T10:24:47.586Z",
+      "status": 200,
+      "sha256": "ad7c2f4fce4af4673cd16899646039bce0e576a50ec4fc5e5a885eea38a726c4",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31385",
+      "fetchedAt": "2026-09-28T10:24:48.302Z",
+      "status": 200,
+      "sha256": "36c0ccb0610e095f7dad4ccbbf8cbda6bacc9a61ef2fadc9d9f25e8db56cad10",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31386",
+      "fetchedAt": "2026-09-28T10:24:49.030Z",
+      "status": 200,
+      "sha256": "9cdd9191d6b1fcf4af3ef9ff4dc42c754afaf6706821883aa4c96ce125b6c09a",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31387",
+      "fetchedAt": "2026-09-28T10:24:49.747Z",
+      "status": 200,
+      "sha256": "846a7c2fe1ec49f030072b46f8c2370b55c7e968d3c769ec3be7e0d3c1e2b03a",
+      "total": null,
+      "totalPages": null
+    },
+    {
+      "url": "https://jjglass.com/wp-json/wc/store/v1/products/31388",
+      "fetchedAt": "2026-09-28T10:24:50.511Z",
+      "status": 200,
+      "sha256": "b63c23dc113f9034008bab07698ca75dcb3f36c0df11fba7875a70b0f3b0622d",
+      "total": null,
+      "totalPages": null
+    }
+  ],
+  "failures": [],
+  "sourceWarnings": [
+    "categories: API header reports 104, but complete pagination returns 105 unique records; all returned records retained."
+  ]
+}

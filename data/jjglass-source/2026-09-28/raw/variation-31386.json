@@ -1,0 +1,76 @@
+{
+  "source": {
+    "url": "https://jjglass.com/wp-json/wc/store/v1/products/31386",
+    "fetchedAt": "2026-09-28T10:24:49.030Z",
+    "status": 200,
+    "sha256": "9cdd9191d6b1fcf4af3ef9ff4dc42c754afaf6706821883aa4c96ce125b6c09a",
+    "total": null,
+    "totalPages": null
+  },
+  "record": {
+    "id": 31386,
+    "name": "ขวด Mason 990ML. ลาย LF6382 ฝาทอง",
+    "slug": "%e0%b8%82%e0%b8%a7%e0%b8%94-mason-990ml-%e0%b8%a5%e0%b8%b2%e0%b8%a2-lf6382-%e0%b8%9d%e0%b8%b2%e0%b8%97%e0%b8%ad%e0%b8%87-large",
+    "parent": 27565,
+    "type": "variation",
+    "variation": "size: Large",
+    "permalink": "https://jjglass.com/product/%e0%b8%82%e0%b8%a7%e0%b8%94-mason-990ml-%e0%b8%a5%e0%b8%b2%e0%b8%a2-lf6382-%e0%b8%9d%e0%b8%b2%e0%b8%97%e0%b8%ad%e0%b8%87/?attribute_pa_size=large",
+    "sku": "070541",
+    "short_description": "",
+    "description": "",
+    "on_sale": false,
+    "prices": {
+      "price": "150",
+      "regular_price": "150",
+      "sale_price": "150",
+      "price_range": null,
+      "currency_code": "THB",
+      "currency_symbol": "฿",
+      "currency_minor_unit": 0,
+      "currency_decimal_separator": ".",
+      "currency_thousand_separator": ",",
+      "currency_prefix": "฿",
+      "currency_suffix": ""
+    },
+    "price_html": "<span class=\"woocommerce-Price-amount amount\"><span class=\"woocommerce-Price-currencySymbol\">&#3647;</span>150</span>",
+    "average_rating": "0",
+    "review_count": 0,
+    "images": [
+      {
+        "id": 16699,
+        "src": "https://jjglass.com/wp-content/uploads/2022/01/AMORN_0003_Mason-990ML.-ลาย-LF6382-ฝาทอง-2-scaled.jpg",
+        "thumbnail": "https://jjglass.com/wp-content/uploads/2022/01/AMORN_0003_Mason-990ML.-ลาย-LF6382-ฝาทอง-2-300x394.jpg",
+        "srcset": "https://jjglass.com/wp-content/uploads/2022/01/AMORN_0003_Mason-990ML.-ลาย-LF6382-ฝาทอง-2-scaled.jpg 1558w, https://jjglass.com/wp-content/uploads/2022/01/AMORN_0003_Mason-990ML.-ลาย-LF6382-ฝาทอง-2-228x300.jpg 228w, https://jjglass.com/wp-content/uploads/2022/01/AMORN_0003_Mason-990ML.-ลาย-LF6382-ฝาทอง-2-779x1024.jpg 779w, https://jjglass.com/wp-content/uploads/2022/01/AMORN_0003_Mason-990ML.-ลาย-LF6382-ฝาทอง-2-768x1010.jpg 768w, https://jjglass.com/wp-content/uploads/2022/01/AMORN_0003_Mason-990ML.-ลาย-LF6382-ฝาทอง-2-1168x1536.jpg 1168w, https://jjglass.com/wp-content/uploads/2022/01/AMORN_0003_Mason-990ML.-ลาย-LF6382-ฝาทอง-2-640x842.jpg 640w, https://jjglass.com/wp-content/uploads/2022/01/AMORN_0003_Mason-990ML.-ลาย-LF6382-ฝาทอง-2-400x526.jpg 400w, https://jjglass.com/wp-content/uploads/2022/01/AMORN_0003_Mason-990ML.-ลาย-LF6382-ฝาทอง-2-300x394.jpg 300w, https://jjglass.com/wp-content/uploads/2022/01/AMORN_0003_Mason-990ML.-ลาย-LF6382-ฝาทอง-2-600x789.jpg 600w",
+        "sizes": "(max-width: 1558px) 100vw, 1558px",
+        "name": "AMORN_0003_Mason 990ML. ลาย LF6382 ฝาทอง-2",
+        "alt": ""
+      }
+    ],
+    "categories": [],
+    "tags": [],
+    "brands": [],
+    "attributes": [],
+    "variations": [],
+    "grouped_products": [],
+    "has_options": false,
+    "is_purchasable": true,
+    "is_in_stock": true,
+    "is_on_backorder": false,
+    "low_stock_remaining": null,
+    "stock_availability": {
+      "text": "",
+      "class": "in-stock"
+    },
+    "sold_individually": false,
+    "add_to_cart": {
+      "text": "Add to cart",
+      "description": "Add to cart: &ldquo;ขวด Mason 990ML. ลาย LF6382 ฝาทอง &#8211; Large&rdquo;",
+      "url": "https://jjglass.com/product/%e0%b8%82%e0%b8%a7%e0%b8%94-mason-990ml-%e0%b8%a5%e0%b8%b2%e0%b8%a2-lf6382-%e0%b8%9d%e0%b8%b2%e0%b8%97%e0%b8%ad%e0%b8%87/?attribute_pa_size=large&#038;variation_id=31386&#038;add-to-cart=27565",
+      "single_text": "Add to cart",
+      "minimum": 1,
+      "maximum": 9999,
+      "multiple_of": 1
+    },
+    "extensions": {}
+  }
+}

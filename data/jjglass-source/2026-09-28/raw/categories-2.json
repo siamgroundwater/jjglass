@@ -1,0 +1,67 @@
+{
+  "source": {
+    "url": "https://jjglass.com/wp-json/wc/store/v1/products/categories?per_page=100&page=2",
+    "fetchedAt": "2026-09-28T10:22:13.654Z",
+    "status": 200,
+    "sha256": "ce5d974a648d3692a2f40a0c680531ff35c117e41d9bd8179e8f0fd2f0991e03",
+    "total": "104",
+    "totalPages": "2"
+  },
+  "records": [
+    {
+      "id": 106,
+      "name": "WATER DROP",
+      "slug": "water-drop",
+      "description": "",
+      "parent": 97,
+      "count": 4,
+      "image": null,
+      "review_count": 0,
+      "permalink": "https://jjglass.com/product-category/hanging/water-drop/"
+    },
+    {
+      "id": 51,
+      "name": "WHISKEY",
+      "slug": "whiskey",
+      "description": "",
+      "parent": 36,
+      "count": 14,
+      "image": null,
+      "review_count": 0,
+      "permalink": "https://jjglass.com/product-category/drinkware/whiskey/"
+    },
+    {
+      "id": 113,
+      "name": "WHISKY BOTTLE",
+      "slug": "whisky-bottle",
+      "description": "",
+      "parent": 45,
+      "count": 19,
+      "image": null,
+      "review_count": 0,
+      "permalink": "https://jjglass.com/product-category/bottle/whisky-bottle/"
+    },
+    {
+      "id": 55,
+      "name": "WINE",
+      "slug": "wine",
+      "description": "",
+      "parent": 37,
+      "count": 23,
+      "image": null,
+      "review_count": 0,
+      "permalink": "https://jjglass.com/product-category/stemware/wine/"
+    },
+    {
+      "id": 112,
+      "name": "WINE BOTTLE",
+      "slug": "wine-bottle",
+      "description": "",
+      "parent": 45,
+      "count": 1,
+      "image": null,
+      "review_count": 0,
+      "permalink": "https://jjglass.com/product-category/bottle/wine-bottle/"
+    }
+  ]
+}

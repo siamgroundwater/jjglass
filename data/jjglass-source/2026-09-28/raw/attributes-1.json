@@ -1,0 +1,30 @@
+{
+  "source": {
+    "url": "https://jjglass.com/wp-json/wc/store/v1/products/attributes?per_page=100&page=1",
+    "fetchedAt": "2026-09-28T10:22:47.381Z",
+    "status": 200,
+    "sha256": "27f8bea74161e41c7fa35c9d2484882c42be6e486755bc8881adbc4b47b8aca1",
+    "total": null,
+    "totalPages": null
+  },
+  "records": [
+    {
+      "id": 1,
+      "name": "color",
+      "taxonomy": "pa_color",
+      "type": "select",
+      "order": "menu_order",
+      "has_archives": false,
+      "count": 3
+    },
+    {
+      "id": 2,
+      "name": "size",
+      "taxonomy": "pa_size",
+      "type": "select",
+      "order": "menu_order",
+      "has_archives": false,
+      "count": 8
+    }
+  ]
+}
