@@ -4,16 +4,25 @@ import { messages } from './messages';
 import { createStoreIllustrationMedia, enrichStoreIllustrations } from './store-art';
 import { createDemoPriceTiers, getUnitPrice, MAX_PRODUCT_QUANTITY } from './pricing';
 import { legacyCatalogProducts } from './legacy-products';
+import sourceImageUrlMap from './source-image-url-map.json';
 import type { LocalizedText } from './i18n';
 import type { CmsBrand, CmsContent, CmsCustomer, CmsData, CmsMedia, CmsOrder, CmsTrashItem } from './cms-types';
 
 export const CMS_STORAGE_KEY = 'jjglass-cms-presentation-v3';
 export const PREVIOUS_CMS_STORAGE_KEY = 'jjglass-cms-presentation-v2';
 export const LEGACY_CMS_STORAGE_KEY = 'jjglass-cms-presentation-v1';
-export const CATALOG_REVISION = 4;
+export const CATALOG_REVISION = 5;
 const addedLegacyIds = new Set(legacyCatalogProducts.map(product => product.id));
 const lastPresentationProductId = legacyCatalogProducts.at(-1)?.id;
 const isSourceImport = (product: { slug: string }) => product.slug.startsWith('source-');
+const sourceImagePaths: Record<string, string> = sourceImageUrlMap;
+const canonicalSourceImagePaths = new Map(Object.entries(sourceImagePaths).map(([url, local]) => [new URL(url).href, local]));
+const localSourceImage = (src: string) => {
+  if (sourceImagePaths[src]) return sourceImagePaths[src];
+  if (!/^https?:\/\//i.test(src)) return src;
+  try { return canonicalSourceImagePaths.get(new URL(src).href) || src; }
+  catch { return src; }
+};
 const phrase = (key: keyof typeof messages.en): LocalizedText => ({ th: messages.th[key], en: messages.en[key] });
 
 export function createCmsTrashSample(now = new Date(), sampleKey = crypto.randomUUID()): CmsTrashItem {
@@ -73,9 +82,10 @@ export function createCmsSeed(): CmsData {
     ...stories.map((story): CmsContent => ({ id: `story-${story.id}`, kind: 'story', title: { ...story.title }, subtitle: { ...story.label }, body: { ...story.text }, image: story.image, link: `/products?category=${story.category}`, status: 'published', seoTitle: { ...story.title }, seoDescription: { ...story.text } })),
     ...catalogs.map((catalog, index): CmsContent => ({ id: `catalog-${index + 1}`, kind: 'catalog', title: { th: catalog.title, en: catalog.title }, subtitle: { ...catalog.description }, body: { ...catalog.description }, image: catalog.image, link: catalog.url, status: 'published', seoTitle: { th: catalog.title, en: catalog.title }, seoDescription: { ...catalog.description } }))
   ];
-  // External source photographs stay on products; indexing thousands of URLs
-  // as browser-local media records would needlessly enlarge every CMS save.
-  const sourceImages = [...products.flatMap(p => productGallery(p).map(image => ({ src: productImageAsset(image), alt: p.name }))), ...categories.map(p => ({ src: p.image, alt: p.name })), ...content.filter(p => p.image).map(p => ({ src: p.image, alt: p.title })), ...Object.entries(brandImages).map(([brand, image]) => ({ src: `/images/${image}`, alt: { th: brand, en: brand } }))].filter(item => item.src.startsWith('/'));
+  // Source catalog photos live in public but stay on their product records.
+  // Indexing thousands of them as browser-local media records would enlarge
+  // every CMS save without making those photos editable in the media library.
+  const sourceImages = [...products.filter(p => !isSourceImport(p)).flatMap(p => productGallery(p).map(image => ({ src: productImageAsset(image), alt: p.name }))), ...categories.map(p => ({ src: p.image, alt: p.name })), ...content.filter(p => p.image).map(p => ({ src: p.image, alt: p.title })), ...Object.entries(brandImages).map(([brand, image]) => ({ src: `/images/${image}`, alt: { th: brand, en: brand } }))].filter(item => item.src.startsWith('/'));
   const media: CmsMedia[] = Array.from(new Map(sourceImages.map(item => [item.src, item])).values()).map((item, index) => ({ id: `media-${index + 1}`, name: item.src.split('/').pop() || 'Image', src: item.src, alt: { ...item.alt }, uploaded: false, created: '2026-09-01T09:00:00+07:00' }));
   return {
     version: 3,
@@ -165,7 +175,26 @@ function enrichProductCatalog(data: CmsData): CmsData {
     presentSlugs.add(product.slug);
     return true;
   });
-  const nextProducts = [...updated, ...appended];
+  // Revision 5 replaces only photographs that still use known source URLs.
+  // Preserve every other field, custom image, gallery order, and deleted record.
+  const localizeProductImages = <T extends { slug: string; image: string; images?: string[]; thumbnail?: string }>(product: T): T => {
+    if (!isSourceImport(product)) return product;
+    const image = localSourceImage(product.image);
+    const images = product.images?.map(localSourceImage);
+    const thumbnail = product.thumbnail ? localSourceImage(product.thumbnail) : product.thumbnail;
+    if (image === product.image && (!images || images.every((src, index) => src === product.images?.[index])) && thumbnail === product.thumbnail) return product;
+    return { ...product, image, ...(images ? { images } : {}), ...(thumbnail !== undefined ? { thumbnail } : {}) };
+  };
+  const nextProducts = [...updated.map(localizeProductImages), ...appended];
+  const nextTrash = data.trash.map(item => item.kind === 'product' ? { ...item, record: localizeProductImages(item.record) } : item);
+  const sourceIds = new Set(products.filter(isSourceImport).map(product => product.id));
+  const nextOrders = data.orders.map(order => {
+    const items = order.items.map(item => {
+      const image = sourceIds.has(item.productId) ? localSourceImage(item.image) : item.image;
+      return image === item.image ? item : { ...item, image };
+    });
+    return items.some((item, index) => item !== order.items[index]) ? { ...order, items } : order;
+  });
   const brandIds = new Set(data.brands.map(brand => brand.id));
   const brandNames = new Set(data.brands.map(brand => brand.name));
   const newBrands: CmsBrand[] = [];
@@ -183,6 +212,7 @@ function enrichProductCatalog(data: CmsData): CmsData {
   const existingMedia = new Set(data.media.map(item => item.src));
   const newMedia: CmsMedia[] = [];
   for (const product of nextProducts) {
+    if (isSourceImport(product)) continue;
     const source = catalogById.get(product.id);
     if (!source) continue;
     const sourcedAssets = new Set(productGallery(source).map(productImageAsset));
@@ -201,7 +231,7 @@ function enrichProductCatalog(data: CmsData): CmsData {
       });
     }
   }
-  return { ...data, catalogRevision: CATALOG_REVISION, products: nextProducts, brands: [...data.brands, ...newBrands], media: [...data.media, ...newMedia] };
+  return { ...data, catalogRevision: CATALOG_REVISION, products: nextProducts, brands: [...data.brands, ...newBrands], media: [...data.media, ...newMedia], trash: nextTrash, orders: nextOrders };
 }
 
 function enrichStoreDetails(data: CmsData): CmsData {

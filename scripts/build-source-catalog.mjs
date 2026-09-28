@@ -1,17 +1,33 @@
 import assert from 'node:assert/strict';
-import { readFile, writeFile } from 'node:fs/promises';
+import { createHash } from 'node:crypto';
+import { access, readFile, writeFile } from 'node:fs/promises';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { localizeSourceProduct } from './source-product-language.mjs';
 
 const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const sourceDir = path.join(root, 'data/jjglass-source/2026-09-28');
-const [sourceProducts, sourceCategories, legacy, catalog] = await Promise.all([
+const [sourceProducts, sourceCategories, legacy, catalog, localImages] = await Promise.all([
   readFile(path.join(sourceDir, 'products.json'), 'utf8').then(JSON.parse),
   readFile(path.join(sourceDir, 'categories.json'), 'utf8').then(JSON.parse),
   readFile(path.join(root, 'src/lib/legacy-products-data.json'), 'utf8').then(JSON.parse),
   readFile(path.join(root, 'src/lib/catalog.ts'), 'utf8'),
+  readFile(path.join(sourceDir, 'image-manifest.json'), 'utf8').then(JSON.parse),
 ]);
+
+const localByUrl = new Map(localImages.map(image => {
+  const key = new URL(image.url).href;
+  const digest = createHash('sha256').update(key).digest('hex');
+  assert.equal(image.path, `downloaded-images/${digest.slice(0, 2)}/${digest}.jpg`, `Unexpected backup image path for ${key}`);
+  return [key, `/images/source/${digest.slice(0, 2)}/${digest}.jpg`];
+}));
+const sourceImageUrlMap = {};
+function localImage(url) {
+  const local = localByUrl.get(new URL(url).href);
+  assert.ok(local, `Source image was not included in the local backup: ${url}`);
+  sourceImageUrlMap[url] = local;
+  return local;
+}
 
 const existingIds = new Set([...catalog.matchAll(/"id": "(\d+)"/g)].map(match => match[1]).concat(legacy.map(product => product.id)));
 assert.equal(existingIds.size, 84, 'Expected 84 existing storefront products');
@@ -51,9 +67,9 @@ const generated = sourceProducts.filter(product => !existingIds.has(product.id))
     category,
     brand: brand.toUpperCase() === 'OCEAN' ? 'Ocean' : brand,
     price: product.price,
-    image: firstImage.src,
-    thumbnail: firstImage.thumbnail || firstImage.src,
-    images: [...new Set(product.images.map(image => image.src))],
+    image: localImage(firstImage.src),
+    thumbnail: localImage(firstImage.thumbnail || firstImage.src),
+    images: [...new Set(product.images.map(image => localImage(image.src)))],
     ...(match ? { capacity: `${match[1]} ${match[2].replace(/\.$/, '')}` } : {}),
     available: product.availability.inStock,
     hasOptions: product.hasOptions,
@@ -67,5 +83,7 @@ assert.equal(new Set(generated.map(product => product.id)).size, generated.lengt
 assert.equal(new Set(generated.map(product => product.slug)).size, generated.length);
 assert.ok(generated.every(product => Number.isFinite(product.price) && product.price > 0));
 assert.ok(generated.every(product => product.images.length > 0));
+await Promise.all([...new Set(Object.values(sourceImageUrlMap))].map(image => access(path.join(root, 'public', image.slice(1)))));
 await writeFile(path.join(root, 'src/lib/source-products-data.json'), `${JSON.stringify(generated)}\n`, 'utf8');
+await writeFile(path.join(root, 'src/lib/source-image-url-map.json'), `${JSON.stringify(sourceImageUrlMap)}\n`, 'utf8');
 console.log(`Built ${generated.length} storefront products from the dated source; preserved ${existingIds.size} existing product IDs.`);

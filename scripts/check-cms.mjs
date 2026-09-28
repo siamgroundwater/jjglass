@@ -45,6 +45,8 @@ const { getUnitPrice, getLineTotal, getLowestUnitPrice, getNextPriceTier, MAX_PR
 const { applyStockChanges, stockResult, matchesStock, productCsv, csvCell } = loadTypeScript(path.join(root, 'src/lib/cms-inventory.ts'));
 const { productGallery } = loadTypeScript(path.join(root, 'src/lib/catalog.ts'));
 const { legacyCatalogProducts } = loadTypeScript(path.join(root, 'src/lib/legacy-products.ts'));
+const sourceImageUrlMap = JSON.parse(fs.readFileSync(path.join(root, 'src/lib/source-image-url-map.json'), 'utf8'));
+const sourceUrlByLocalPath = new Map(Object.entries(sourceImageUrlMap).map(([url, src]) => [src, url]));
 const seed = createCmsSeed();
 const { legacyStoreGalleries, illustratedStoreGalleries } = loadTypeScript(path.join(root, 'src/lib/store-art.ts'));
 const collections = ['products', 'categories', 'brands', 'orders', 'customers', 'content', 'stores', 'media', 'activity', 'trash'];
@@ -99,12 +101,24 @@ check('seeded galleries keep distinct source photographs and their cover first',
     assert.equal(gallery[0], product.image, `${product.id}: cover is not the first image`);
     assert.equal(new Set(gallery).size, gallery.length, `${product.id}: duplicate gallery image`);
     for (const src of gallery) {
-      if (isSourceImport(product)) assert.ok(src.startsWith('https://jjglass.com/wp-content/uploads/'), `${product.id}: unexpected source image: ${src}`);
-      else {
+      if (isSourceImport(product)) {
+        assert.ok(src.startsWith('/images/source/'), `${product.id}: unexpected source image: ${src}`);
+        assert.ok(fs.existsSync(publicAssetFilename(src, product.id)), `${product.id}: source image file missing: ${src}`);
+      } else {
         assert.ok(media.has(sourcePhoto(src)), `${product.id}: source photo missing from media library: ${src}`);
         assert.ok(fs.existsSync(publicAssetFilename(src, product.id)), `${product.id}: gallery file missing: ${src}`);
       }
     }
+    if (isSourceImport(product)) {
+      assert.ok(product.thumbnail?.startsWith('/images/source/'), `${product.id}: missing local thumbnail`);
+      assert.ok(fs.existsSync(publicAssetFilename(product.thumbnail, product.id)), `${product.id}: thumbnail file missing: ${product.thumbnail}`);
+    }
+  }
+});
+check('source product images stay out of the browser-local CMS media index', () => {
+  const media = new Set(seed.media.map(item => item.src));
+  for (const product of seed.products.filter(isSourceImport)) {
+    for (const src of productGallery(product)) assert.equal(media.has(src), false, `${product.id}: source image indexed in media library`);
   }
 });
 check('seed media contains source photos rather than CSS gallery views', () => {
@@ -297,6 +311,67 @@ check('brand ID collision preserves the custom record and gives source brand a d
   assert.equal(migrated.brands.find(brand => brand.id === sourceBrand.id)?.name, 'Client brand');
   assert.ok(migrated.brands.some(brand => brand.name === 'LUCKY GLASS' && brand.id !== sourceBrand.id));
   unique(migrated.brands, brand => brand.id, 'brand IDs after collision');
+});
+check('revision 4 source image migration preserves edited products, gallery order, trash, and order data', () => {
+  const remote = src => {
+    const url = sourceUrlByLocalPath.get(src);
+    assert.ok(url, `No original source URL for ${src}`);
+    return url;
+  };
+  const old = structuredClone(seed);
+  old.catalogRevision = 4;
+  const source = old.products.filter(product => isSourceImport(product) && productGallery(product).length >= 2);
+  const untouched = source.find(product => /[^\x00-\x7f]/.test(remote(product.image)));
+  const [customized, deleted] = source.filter(product => product.id !== untouched?.id);
+  assert.ok(untouched && customized && deleted);
+  const savedName = 'Client-edited imported product';
+  const sourceCover = remote(untouched.image);
+  untouched.image = encodeURI(sourceCover);
+  assert.notEqual(untouched.image, sourceCover, 'test needs a percent-encoded source URL');
+  untouched.images = untouched.images.map(remote);
+  untouched.images[0] = untouched.image;
+  untouched.thumbnail = remote(untouched.thumbnail);
+  untouched.name.en = savedName;
+  untouched.stock = 17;
+  customized.image = '/images/lifestyle-cafe.jpg';
+  customized.images = [customized.image, remote(customized.images[1]), 'https://example.test/client-photo.jpg'];
+  customized.thumbnail = customized.image;
+  const deletedId = deleted.id;
+  deleted.image = remote(deleted.image);
+  deleted.images = deleted.images.map(remote);
+  deleted.thumbnail = remote(deleted.thumbnail);
+  old.products = old.products.filter(product => product.id !== deletedId);
+  old.trash.push({ id: 'trash-source-image-migration', kind: 'product', deletedAt: '2026-09-27T09:00:00.000Z', record: structuredClone(deleted) });
+  old.orders[0].items[0].productId = untouched.id;
+  old.orders[0].items[0].image = untouched.image;
+  const savedOrderPrice = old.orders[0].items[0].price;
+  assert.equal(isCmsData(old), true);
+  const before = structuredClone(old);
+  const migrated = normalizeCmsData(old);
+  assert.ok(migrated);
+  assert.equal(migrated.catalogRevision, CATALOG_REVISION);
+  assert.equal(migrated.products.length, old.products.length, 'deleted source product was revived');
+  const restored = migrated.products.find(product => product.id === untouched.id);
+  assert.ok(restored);
+  const seededOriginal = seed.products.find(product => product.id === untouched.id);
+  assert.equal(restored.image, seededOriginal.image);
+  assert.deepEqual(restored.images, seededOriginal.images);
+  assert.equal(restored.thumbnail, seededOriginal.thumbnail);
+  assert.equal(restored.name.en, savedName);
+  assert.equal(restored.stock, 17);
+  const edited = migrated.products.find(product => product.id === customized.id);
+  assert.equal(edited.image, customized.image);
+  assert.deepEqual(edited.images, [customized.image, sourceImageUrlMap[customized.images[1]], customized.images[2]]);
+  assert.equal(edited.thumbnail, customized.thumbnail);
+  const trashed = migrated.trash.find(item => item.id === 'trash-source-image-migration');
+  assert.ok(trashed);
+  assert.equal(trashed.record.image, seed.products.find(product => product.id === deletedId).image);
+  assert.equal(migrated.products.some(product => product.id === deletedId), false);
+  assert.equal(migrated.orders[0].items[0].image, restored.image);
+  assert.equal(migrated.orders[0].items[0].price, savedOrderPrice);
+  assert.deepEqual(old, before, 'migration mutated saved browser data');
+  assert.equal(isCmsData(migrated), true);
+  assert.strictEqual(normalizeCmsData(migrated), migrated, 'migration ran twice');
 });
 check('existing store records gain supplied hours and LINE without replacing edits', () => {
   const old = structuredClone(seed);
@@ -656,7 +731,7 @@ check('historical order totals remain frozen after catalog pricing changes', () 
 check('all referenced images exist in the media library and local public assets', () => {
   const media = new Set(seed.media.map(item => item.src));
   const references = [
-    ...seed.products.flatMap(productGallery), ...seed.categories.map(item => item.image),
+    ...seed.products.filter(product => !isSourceImport(product)).flatMap(productGallery), ...seed.categories.map(item => item.image),
     ...seed.brands.map(item => item.image), ...seed.content.map(item => item.image),
     ...seed.stores.flatMap(item => item.images), ...seed.orders.flatMap(order => order.items.map(item => item.image)),
   ].filter(Boolean);

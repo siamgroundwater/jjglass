@@ -21,13 +21,13 @@ Collected from [JJGLASS Shop](https://jjglass.com/shop/) on **28 September 2026*
 
 All shop IDs match the API collection exactly. No missing pages, duplicate product IDs, or failed requests remain. All 84 existing presentation products are present in the collected source.
 
-The storefront imports a compact derivative at `src/lib/source-products-data.json` for the additional 1,380 products. Run `node scripts/build-source-catalog.mjs` after changing the source collection or its language mapping. Product identity and URLs use source IDs (`source-<ID>`), because source SKUs and slugs are not unique. The existing 84 presentation URLs and local photographs remain intact. New storefront photos use JJGLASS's public image URLs, with supplied thumbnails on listing cards. Browser access to these external images depends on the source website remaining available.
+The storefront imports a compact derivative at `src/lib/source-products-data.json` for the additional 1,380 products. Product identity and URLs use source IDs (`source-<ID>`), because source SKUs and slugs are not unique. The existing 84 presentation URLs and local photographs remain intact. The additional products now use locally stored full-size photos and thumbnails in `public/images/source/`; their source URLs remain in this dataset as provenance. `image-manifest.json` records the checksum and local path for every imported original, thumbnail, and category photo, and `product-image-map.json` links them to product IDs. To repeat the import from the backup, run `node scripts/import-backed-up-images.mjs ABSOLUTE_BACKUP_DIRECTORY`, then `node scripts/build-source-catalog.mjs` after changing the source collection or its language mapping. The builder refuses to emit product paths when a referenced local image is missing.
 
 ## Files
 
 - `PRODUCT_INDEX.md`: browsable table of every product, SKU, price, source link, brand category, and gallery count.
 - `products.json`: normalized product records with original names, SKUs, descriptions (text and original HTML), specification-related source lines, prices and currency precision, taxonomy, images and responsive sizes, variations, stock flags, ratings, and source shop-page URLs.
-- `images.json`: deduplicated image URL manifest with product associations, thumbnails, responsive candidates, names, and alt text. Image binaries have not been downloaded or checked for availability.
+- `images.json`: deduplicated source URL manifest with product associations, thumbnails, responsive candidates, names, and alt text. Original photos and thumbnails are now stored under `public/images/source/`; extra responsive resize variants remain recorded as URLs only.
 - `categories.json`: original category records, parent IDs, descriptions, category images where supplied, and source counts.
 - `attributes.json` and `attribute-terms.json`: source attribute definitions and all public terms, including unused colors.
 - `variations.json`: all eight variation records, including prices, descriptions, stock flags, and fetch provenance.
