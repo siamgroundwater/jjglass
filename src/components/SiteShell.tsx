@@ -20,6 +20,9 @@ export default function SiteShell({
   const [menu, setMenu] = useState(false),
     [search, setSearch] = useState(false);
   const dialog = useRef<HTMLDialogElement>(null);
+  const menuDialog = useRef<HTMLDialogElement>(null);
+  const menuTrigger = useRef<HTMLButtonElement>(null);
+  const menuClose = useRef<HTMLButtonElement>(null);
   const searchTrigger = useRef<HTMLButtonElement>(null);
   const nav = [['', c.home], ['products', c.products], ['brands', c.brands], ['inspiration', c.inspiration], ['catalog', c.catalog], ['stores', c.stores]];
   useEffect(() => {
@@ -38,24 +41,24 @@ export default function SiteShell({
     }
   }, [search]);
   useEffect(() => {
-    document.body.style.overflow = menu ? 'hidden' : '';
-    if (!menu) return;
+    const element = menuDialog.current;
+    if (!element) return;
+    if (!menu) {
+      if (element.open) element.close();
+      return;
+    }
+    if (!element.open) element.showModal();
+    menuClose.current?.focus();
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = 'hidden';
     const media = window.matchMedia('(min-width: 1001px)');
     const closeOnDesktop = () => {
       if (media.matches) setMenu(false);
     };
-    const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setMenu(false);
-        document.querySelector<HTMLButtonElement>('[aria-controls="mobile-menu"]')?.focus();
-      }
-    };
     media.addEventListener('change', closeOnDesktop);
-    document.addEventListener('keydown', onKeyDown);
     return () => {
-      document.body.style.overflow = '';
+      document.body.style.overflow = previousOverflow;
       media.removeEventListener('change', closeOnDesktop);
-      document.removeEventListener('keydown', onKeyDown);
     };
   }, [menu]);
   const switchLanguage = () => {
@@ -85,39 +88,51 @@ export default function SiteShell({
             <Icon name="bag" />
             <span className={s.badge}>{shop.count}</span>
           </Link>
-          <button className={s.menuButton} onClick={() => setMenu(!menu)} aria-expanded={menu} aria-controls="mobile-menu" aria-label={menu ? c.close : c.menu}>
-            <Icon name={menu ? 'close' : 'menu'} />
+          <button ref={menuTrigger} className={s.menuButton} onClick={() => setMenu(true)} aria-expanded={menu} aria-controls="mobile-menu" aria-label={c.menu}>
+            <Icon name="menu" />
           </button>
         </div>
       </div>
     </header>
-    {menu && <div className={s.mobileMenu} id="mobile-menu">
-      <nav>
-        {nav.map(([href, label]) => <Link key={href} href={localizedPath(href ? `/${href}` : '/', locale)} onClick={() => setMenu(false)}>
-          {label}
-          <Icon name="arrow" />
-        </Link>)}
-        <Link href={`${storefrontPrefix(locale)}/about`}>
-          {c.about}
-          <Icon name="arrow" />
-        </Link>
-        <Link href={`${storefrontPrefix(locale)}/contact`}>
-          {c.contact}
-          <Icon name="arrow" />
-        </Link>
-        <Link href={`${storefrontPrefix(locale)}/wishlist`}>
-          {c.saved}
-          <Icon name="heart" />
-        </Link>
-      </nav>
-      <p>
-        {t(locale, "MORE THAN GLASS.")}
-        <br />
-        {t(locale, "A BRIGHTER EVERYDAY.")}
-      </p>
-    </div>}
-    <main id="main" inert={menu}>{children}</main>
-    <footer className={s.footer} inert={menu}>
+    <dialog ref={menuDialog} className={s.mobileMenu} id="mobile-menu" aria-labelledby="mobile-menu-title" onCancel={event => {
+      event.preventDefault();
+      setMenu(false);
+    }} onClose={() => {
+      setMenu(false);
+      menuTrigger.current?.focus();
+    }} onClick={event => {
+      if (event.target === event.currentTarget) setMenu(false);
+    }}>
+      <div className={s.drawerPanel}>
+        <div className={s.drawerHeader}>
+          <Link href={storefrontPrefix(locale) || '/'} aria-label="JJGLASS" className={s.drawerLogo} onClick={() => setMenu(false)}>
+            <img src="/images/logo.png" alt="" width="500" height="151" />
+          </Link>
+          <button ref={menuClose} type="button" className={s.drawerClose} aria-label={c.close} onClick={() => setMenu(false)}><Icon name="close" /></button>
+        </div>
+        <div className={s.drawerScroll}>
+          <h2 id="mobile-menu-title" className={s.drawerTitle}>{c.menu}</h2>
+          <nav aria-label={c.menu} className={s.drawerNav}>
+            {nav.map(([href, label]) => {
+              const target = localizedPath(href ? `/${href}` : '/', locale);
+              return <Link key={href} href={target} aria-current={path === target || (href !== '' && path.startsWith(`${target}/`)) ? 'page' : undefined} onClick={() => setMenu(false)}>{label}</Link>;
+            })}
+          </nav>
+          <nav aria-label={t(locale, 'Here to help')} className={s.drawerSecondary}>
+            {[[`${storefrontPrefix(locale)}/about`, c.about], [`${storefrontPrefix(locale)}/contact`, c.contact], [`${storefrontPrefix(locale)}/wishlist`, c.saved]].map(([href, label]) => <Link key={href} href={href} aria-current={path === href ? 'page' : undefined} onClick={() => setMenu(false)}>{label}</Link>)}
+          </nav>
+          <div className={s.drawerBottom}>
+            <p>{t(locale, 'MORE THAN GLASS.')}<br />{t(locale, 'A BRIGHTER EVERYDAY.')}</p>
+            <button type="button" onClick={switchLanguage} aria-label={languageConfig.switchLabels[nextLocale(locale)]}>
+              <Icon name="globe" size={19} />
+              {languageConfig.labels[nextLocale(locale)]}
+            </button>
+          </div>
+        </div>
+      </div>
+    </dialog>
+    <main id="main">{children}</main>
+    <footer className={s.footer}>
       <div className={s.footerTop}>
         <div className={s.footerBrand}>
           <img src="/images/logo.png" width="500" height="151" alt="JJGLASS" />

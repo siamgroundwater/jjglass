@@ -1,6 +1,6 @@
 import { cmsId, type CmsMedia } from './cms-types';
 
-export async function prepareCmsImage(file: File): Promise<CmsMedia> {
+export async function prepareCmsImage(file: File, options: { maxDataUrlLength?: number } = {}): Promise<CmsMedia> {
   if (!['image/jpeg', 'image/png', 'image/webp'].includes(file.type) || !file.size || file.size > 10 * 1024 * 1024) throw new Error('Invalid image');
   const objectUrl = URL.createObjectURL(file);
   try {
@@ -15,8 +15,18 @@ export async function prepareCmsImage(file: File): Promise<CmsMedia> {
     const context = canvas.getContext('2d');
     if (!context) throw new Error('Image conversion unavailable');
     context.drawImage(image, 0, 0, canvas.width, canvas.height);
-    const src = canvas.toDataURL('image/webp', .8);
-    if (src.length > 1500000) throw new Error('Compressed image too large');
+    const limit = options.maxDataUrlLength ?? 1500000;
+    let src = canvas.toDataURL('image/webp', .8);
+    let quality = .8;
+    for (let attempt = 0; src.length > limit && attempt < 8; attempt += 1) {
+      if (Math.max(canvas.width, canvas.height) > 700) {
+        canvas.width = Math.max(1, Math.round(canvas.width * .82));
+        canvas.height = Math.max(1, Math.round(canvas.height * .82));
+        context.drawImage(image, 0, 0, canvas.width, canvas.height);
+      } else quality = Math.max(.55, quality - .08);
+      src = canvas.toDataURL('image/webp', quality);
+    }
+    if (src.length > limit) throw new Error('Compressed image too large');
     return { id: cmsId('media'), name: file.name.replace(/\.[^.]+$/, '') + '.webp', src, alt: { th: '', en: '' }, uploaded: true, created: new Date().toISOString() };
   } finally {
     URL.revokeObjectURL(objectUrl);

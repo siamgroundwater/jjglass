@@ -1,5 +1,5 @@
 import { notFound } from 'next/navigation';
-import { products } from '@/lib/catalog';
+import { productGallery, products } from '@/lib/catalog';
 import { isLocale, languageConfig } from '@/lib/i18n';
 import { pageMetadata } from '@/lib/metadata';
 import { ProductDetail } from '@/components/ProductDetail';
@@ -48,7 +48,7 @@ export default async function Page({
         name: product.name[locale],
         description: product.description[locale],
         sku: product.sku,
-        image: `https://jjglass.com${product.image}`,
+        image: [...new Set(productGallery(product).map(image => image.split('#')[0]))].map(image => `https://jjglass.com${image}`),
         brand: {
           '@type': 'Brand',
           name: product.brand

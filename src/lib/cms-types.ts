@@ -23,7 +23,7 @@ export type CmsTrashItem =
   | { id: string; kind: 'content'; deletedAt: string; record: CmsContent }
   | { id: string; kind: 'store'; deletedAt: string; record: CmsStore }
   | { id: string; kind: 'media'; deletedAt: string; record: CmsMedia };
-export type CmsData = { version: 3; products: CmsProduct[]; categories: CmsCategory[]; brands: CmsBrand[]; orders: CmsOrder[]; customers: CmsCustomer[]; content: CmsContent[]; stores: CmsStore[]; media: CmsMedia[]; trash: CmsTrashItem[]; settings: CmsSettings; activity: CmsActivity[] };
+export type CmsData = { version: 3; catalogRevision?: number; products: CmsProduct[]; categories: CmsCategory[]; brands: CmsBrand[]; orders: CmsOrder[]; customers: CmsCustomer[]; content: CmsContent[]; stores: CmsStore[]; media: CmsMedia[]; trash: CmsTrashItem[]; settings: CmsSettings; activity: CmsActivity[] };
 export const cmsViews = ['overview', 'products', 'inventory', 'collections', 'orders', 'customers', 'content', 'stores', 'media', 'trash', 'settings'] as const;
 export type CmsView = typeof cmsViews[number];
 export function isCmsView(value: string): value is CmsView {

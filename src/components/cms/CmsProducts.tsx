@@ -18,7 +18,7 @@ import s from './CmsProducts.module.css';
 const statuses: CmsStatus[] = ['published', 'draft', 'archived'];
 const pageSize = 8;
 type PriceTierDraft = { minQuantity: string; unitPrice: string };
-type ProductDraft = Omit<CmsProduct, 'price' | 'stock' | 'priceTiers'> & { price: string; stock: string; priceTiers: PriceTierDraft[] };
+type ProductDraft = Omit<CmsProduct, 'price' | 'stock' | 'priceTiers' | 'images' | 'sizeGroup'> & { price: string; stock: string; priceTiers: PriceTierDraft[]; images: string[]; sizeGroup: string };
 type ProductEditor = { mode: 'new' | 'edit' | 'duplicate'; draft: ProductDraft };
 type CollectionDraft = { kind: 'categories' | 'brands'; id: string; name: LocalizedText; brandName: string; image: string; status: CmsStatus; isNew: boolean };
 const activity = (key: keyof typeof cmsProductsCopy.en): LocalizedText => ({ th: cmsProductsCopy.th[key], en: cmsProductsCopy.en[key] });
@@ -26,7 +26,7 @@ const normalize = (value: string) => value.trim().toLocaleLowerCase();
 const priceFormat = (price: number, locale: CmsPanelProps['locale']) => new Intl.NumberFormat(locale === 'th' ? 'th-TH' : 'en-TH', { style: 'currency', currency: 'THB', maximumFractionDigits: 2 }).format(price);
 
 function productEditorForRoute(data: CmsPanelProps['data'], action?: CmsAction, itemId?: string): ProductEditor | null {
-  if (action === 'new') return { mode: 'new', draft: { id: cmsId('product'), slug: '', sku: '', name: { th: '', en: '' }, description: { th: '', en: '' }, category: '', brand: '', image: '', price: '', priceTiers: [], stock: '0', capacity: '', status: 'draft', featured: false } };
+  if (action === 'new') return { mode: 'new', draft: { id: cmsId('product'), slug: '', sku: '', name: { th: '', en: '' }, description: { th: '', en: '' }, category: '', brand: '', image: '', images: [], price: '', priceTiers: [], stock: '0', capacity: '', sizeGroup: '', status: 'draft', featured: false } };
   if (!itemId || !['edit', 'duplicate'].includes(action || '')) return null;
   const product = data.products.find(item => item.id === itemId);
   if (!product) return null;
@@ -44,6 +44,8 @@ function productEditorForRoute(data: CmsPanelProps['data'], action?: CmsAction, 
     sku,
     name: duplicate ? { th: `${product.name.th} (${cmsProductsCopy.th.copySuffix})`, en: `${product.name.en} (${cmsProductsCopy.en.copySuffix})` } : { ...product.name },
     description: { ...product.description },
+    images: product.images?.length ? [...product.images] : product.image ? [product.image] : [],
+    sizeGroup: product.sizeGroup || '',
     status: duplicate ? 'draft' : product.status,
     price: String(product.price), priceTiers: product.priceTiers.map(tier => ({ minQuantity: String(tier.minQuantity), unitPrice: String(tier.unitPrice) })), stock: String(duplicate ? 0 : product.stock),
   } };
@@ -69,6 +71,8 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
   const c = cmsCopy[locale];
   const t = cmsProductsCopy[locale];
   const it = cmsInventoryCopy[locale];
+  const detailView = locale === 'th' ? 'ภาพขยายรายละเอียด' : 'Detail view';
+  const detailBadge = locale === 'th' ? 'ภาพขยาย' : 'Detail';
   const [search, setSearch] = useState('');
   const [category, setCategory] = useState('all');
   const [status, setStatus] = useState('all');
@@ -80,8 +84,9 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
   const initialDraft = useRef(JSON.stringify(editor?.draft));
   const dirty = Boolean(editor && JSON.stringify(editor.draft) !== initialDraft.current);
   const errorRef = useRef<HTMLParagraphElement>(null);
-  const [pendingImage, setPendingImage] = useState<CmsMedia | null>(null);
+  const [pendingImages, setPendingImages] = useState<CmsMedia[]>([]);
   const [preparingImage, setPreparingImage] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
   const imageVersion = useRef(0);
   const [error, setError] = useState('');
   const [detail, setDetail] = useState<CmsProduct | null>(null);
@@ -118,17 +123,26 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
     updateDraft({ priceTiers: [...draft.priceTiers, { minQuantity: String(suggested), unitPrice: '' }] });
   }
   async function selectDeviceImage(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.currentTarget.files?.[0];
+    const files = Array.from(event.currentTarget.files || []);
     event.currentTarget.value = '';
-    if (!file) return;
+    if (!files.length || !draft) return;
+    if (draft.images.length + files.length > 5) { setError(t.galleryLimit); return; }
     const version = ++imageVersion.current;
     setPreparingImage(true);
     setError('');
     try {
-      const prepared = await prepareCmsImage(file);
+      const prepared: CmsMedia[] = [];
+      for (const file of files) {
+        const image = await prepareCmsImage(file, { maxDataUrlLength: 500_000 });
+        if (version !== imageVersion.current) return;
+        if (draft.images.includes(image.src) || prepared.some(item => item.src === image.src)) { setError(t.imageAlreadyAdded); return; }
+        prepared.push(image);
+      }
       if (version !== imageVersion.current) return;
-      setPendingImage(prepared);
-      updateDraft({ image: prepared.src });
+      const images = [...draft.images, ...prepared.map(item => item.src)];
+      setPendingImages(current => [...current, ...prepared]);
+      updateDraft({ images, image: images[0] || '' });
+      if (!previewImage) setPreviewImage(images[0] || '');
     } catch {
       if (version === imageVersion.current) setError(c.uploadError);
     } finally {
@@ -136,10 +150,30 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
     }
   }
   function selectLibraryImage(image: string) {
-    imageVersion.current += 1;
-    setPendingImage(null);
-    setPreparingImage(false);
-    updateDraft({ image });
+    if (!draft || !image || preparingImage) return;
+    if (draft.images.length >= 5) { setError(t.galleryLimit); return; }
+    if (draft.images.includes(image)) { setError(t.imageAlreadyAdded); return; }
+    const images = [...draft.images, image];
+    updateDraft({ images, image: images[0] });
+    if (!previewImage) setPreviewImage(images[0]);
+    setError('');
+  }
+  function reorderImage(from: number, to: number) {
+    if (!draft || preparingImage || to < 0 || to >= draft.images.length) return;
+    const images = [...draft.images];
+    const [moved] = images.splice(from, 1);
+    images.splice(to, 0, moved);
+    updateDraft({ images, image: images[0] });
+    if (to === 0) setPreviewImage(images[0]);
+    setError('');
+  }
+  function removeImage(src: string) {
+    if (!draft || preparingImage) return;
+    const images = draft.images.filter(image => image !== src);
+    updateDraft({ images, image: images[0] || '' });
+    setPendingImages(current => current.filter(image => image.src !== src));
+    if (previewImage === src) setPreviewImage(images[0] || '');
+    setError('');
   }
   function submitProduct(event: FormEvent) {
     event.preventDefault();
@@ -161,20 +195,20 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
     else if (!draft.stock.trim() || !Number.isSafeInteger(stock) || stock < 0) issue = t.stockInvalid;
     else if (!data.categories.some(item => item.id === draft.category && (item.status !== 'archived' || existing?.category === item.id))) issue = t.categoryRequired;
     else if (!data.brands.some(item => item.name === draft.brand && (item.status !== 'archived' || existing?.brand === item.name))) issue = t.brandRequired;
-    else if (!draft.image) issue = t.imageRequired;
+    else if (draft.images.length < 3 || draft.images.length > 5 || new Set(draft.images).size !== draft.images.length || draft.images.some(image => !image)) issue = t.galleryRequired;
+    else if (draft.sizeGroup.trim() && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(draft.sizeGroup.trim().toLowerCase())) issue = t.sizeGroupInvalid;
     if (issue) { setError(issue); return; }
     const product: CmsProduct = {
       id: draft.id, sku: draft.sku.trim(), category: draft.category, brand: draft.brand,
-      price, priceTiers, stock, image: draft.image, status: draft.status, featured: draft.featured,
+      price, priceTiers, stock, image: draft.images[0], images: [...draft.images], status: draft.status, featured: draft.featured,
       name: { th: draft.name.th.trim(), en: draft.name.en.trim() },
       description: { th: draft.description.th.trim(), en: draft.description.en.trim() },
       capacity: draft.capacity?.trim(),
+      sizeGroup: draft.sizeGroup.trim().toLowerCase() || undefined,
       slug: draft.slug || `${draft.name.en.trim().toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '').slice(0, 90) || 'product'}-${draft.id.slice(-8)}`,
     };
     const products = existing ? data.products.map(item => item.id === product.id ? product : item) : [product, ...data.products];
-    const media = pendingImage && pendingImage.src === product.image && !data.media.some(item => item.src === pendingImage.src)
-      ? [{ ...pendingImage, alt: { ...product.name } }, ...data.media]
-      : data.media;
+    const media = [...pendingImages.filter(item => product.images?.includes(item.src) && !data.media.some(saved => saved.src === item.src)).map(item => ({ ...item, alt: { ...product.name } })), ...data.media];
     const stockActivity = existing && existing.stock !== stock ? [{ id: cmsId('stock'), date: new Date().toISOString(), text: {
       th: `${cmsInventoryCopy.th.saved} · ${product.sku}: ${existing.stock} → ${stock} · ${cmsProductsCopy.th.editProduct}`,
       en: `${cmsInventoryCopy.en.saved} · ${product.sku}: ${existing.stock} → ${stock} · ${cmsProductsCopy.en.editProduct}`,
@@ -198,6 +232,7 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
     } else setError(c.storageError);
   }
   const draft = editor?.draft;
+  const selectedPreview = draft && (draft.images.includes(previewImage) ? previewImage : draft.images[0]);
 
   if (editor && draft) return <CmsActionPage title={editor.mode === 'edit' ? t.editProduct : editor.mode === 'duplicate' ? t.duplicateProduct : t.newProduct} description={t.intro} backLabel={c.back} onBack={closeAction}>
     <form onSubmit={submitProduct} noValidate>
@@ -209,20 +244,34 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
           {languageConfig.order.map(lang => <Field key={`name-${lang}`} label={`${c.name} · ${c[lang === 'th' ? 'thai' : 'english']} *`}><input className={u.input} required maxLength={180} value={draft.name[lang]} onChange={event => updateDraft({ name: { ...draft.name, [lang]: event.target.value } })} /></Field>)}
           {languageConfig.order.map(lang => <Field key={`description-${lang}`} label={`${t.description} · ${c[lang === 'th' ? 'thai' : 'english']}`}><textarea className={u.textarea} rows={4} maxLength={4000} value={draft.description[lang]} onChange={event => updateDraft({ description: { ...draft.description, [lang]: event.target.value } })} /></Field>)}
           <Field label={t.capacity} hint={t.capacityHint}><input className={u.input} maxLength={100} value={draft.capacity || ''} onChange={event => updateDraft({ capacity: event.target.value })} /></Field>
+          <Field label={t.sizeGroup} hint={t.sizeGroupHint}><input className={u.input} maxLength={80} value={draft.sizeGroup} placeholder={t.sizeGroupPlaceholder} onChange={event => updateDraft({ sizeGroup: event.target.value })} /></Field>
         </div>
         <div className={`${s.editorSide} ${u.formStack}`}>
-          <h3 className={s.sectionTitle}>{c.image} *</h3>
+          <div className={s.galleryHeading}><div><h3 className={s.sectionTitle}>{t.galleryTitle} *</h3><p>{t.galleryHint}</p></div><span>{draft.images.length} / 5</span></div>
+          {draft.images.length > 0 && <div className={s.galleryPreview}>
+            <img src={selectedPreview} className={selectedPreview?.endsWith('#detail') ? s.detailCrop : undefined} alt={`${draft.name[locale] || t.product} · ${selectedPreview?.endsWith('#detail') ? detailView : t.galleryPreview}`} width={800} height={620} />
+            <span>{selectedPreview?.endsWith('#detail') ? detailView : selectedPreview === draft.images[0] ? t.coverImage : t.galleryPreview}</span>
+          </div>}
+          {draft.images.length > 0 && <div className={s.galleryGrid} aria-label={t.galleryTitle}>{draft.images.map((image, index) => <div className={s.galleryCard} key={image}>
+            <button type="button" className={`${s.galleryThumb} ${selectedPreview === image ? s.galleryThumbActive : ''}`} onClick={() => setPreviewImage(image)} aria-label={`${t.galleryPreview} ${index + 1}${image.endsWith('#detail') ? ` · ${detailView}` : ''}`} aria-pressed={selectedPreview === image}><img src={image} className={image.endsWith('#detail') ? s.detailCrop : undefined} alt="" width={240} height={180} />{image.endsWith('#detail') && <span className={s.galleryDetailBadge} aria-hidden="true">{detailBadge}</span>}</button>
+            <div className={s.galleryCardActions}>
+              {index === 0 ? <span className={s.coverTag}>{t.coverImage}</span> : <button type="button" className={s.setCover} onClick={() => reorderImage(index, 0)} disabled={preparingImage}>{t.setCover}</button>}
+              <button type="button" className={s.galleryIconButton} onClick={() => reorderImage(index, index - 1)} disabled={preparingImage || index === 0} aria-label={`${t.moveEarlier} ${index + 1}`}>←</button>
+              <button type="button" className={s.galleryIconButton} onClick={() => reorderImage(index, index + 1)} disabled={preparingImage || index === draft.images.length - 1} aria-label={`${t.moveLater} ${index + 1}`}>→</button>
+              <button type="button" className={`${s.galleryIconButton} ${s.galleryRemove}`} onClick={() => removeImage(image)} disabled={preparingImage} aria-label={`${c.remove} ${index + 1}`}><Icon name="close" size={16} /></button>
+            </div>
+          </div>)}</div>}
           <div className={s.deviceImagePicker}>
             <label className={s.deviceImageButton}>
               <Icon name="plus" size={19} />
               <span>{t.chooseFromDevice}</span>
-              <input type="file" accept="image/jpeg,image/png,image/webp" aria-label={t.chooseFromDevice} onChange={selectDeviceImage} disabled={preparingImage} />
+              <input type="file" accept="image/jpeg,image/png,image/webp" multiple aria-label={t.chooseFromDevice} onChange={selectDeviceImage} disabled={preparingImage || draft.images.length >= 5} />
             </label>
             <p>{t.deviceImageHint}</p>
           </div>
           {preparingImage && <p className={s.imageStatus} role="status">{t.preparingImage}</p>}
-          {pendingImage && draft.image === pendingImage.src && <p className={s.imageStatus}><Icon name="check" size={17} />{t.imageReady} · {pendingImage.name}</p>}
-          <CmsImagePicker locale={locale} media={data.media} value={draft.image} onChange={selectLibraryImage} />
+          {pendingImages.some(item => draft.images.includes(item.src)) && <p className={s.imageStatus}><Icon name="check" size={17} />{t.imageReady} · {pendingImages.filter(item => draft.images.includes(item.src)).length}</p>}
+          {draft.images.length < 5 && !preparingImage && <div className={s.galleryLibrary}><span>{t.addFromLibrary}</span><CmsImagePicker locale={locale} media={data.media} value="" onChange={selectLibraryImage} /></div>}
           <h3 className={`${s.sectionTitle} ${s.spacedSection}`}>{t.organisation}</h3>
           <Field label={`${t.sku} *`}><input className={u.input} required maxLength={100} value={draft.sku} onChange={event => updateDraft({ sku: event.target.value })} /></Field>
           <div className={u.formGrid}><Field label={`${t.priceLabel} *`}><input className={u.input} inputMode="decimal" type="number" min="0.01" step="0.01" required value={draft.price} onChange={event => updateDraft({ price: event.target.value })} /></Field><Field label={`${t.stockLabel} *`}><input className={u.input} inputMode="numeric" type="number" min="0" step="1" required value={draft.stock} onChange={event => updateDraft({ stock: event.target.value })} /></Field></div>
@@ -290,7 +339,18 @@ export function CmsProducts({ locale, data, save, routeAction, routeItemId, open
         <div className={s.footer}><p className={u.muted}>{t.resultCount.replace('{from}', String((activePage - 1) * pageSize + 1)).replace('{to}', String(Math.min(activePage * pageSize, filtered.length))).replace('{count}', String(filtered.length))}</p><CmsPagination page={activePage} pages={pages} onChange={setPage} locale={locale} /></div>
       </> : <CmsEmpty title={data.products.length ? c.noResults : t.noProducts} description={data.products.length ? t.noResultsHint : t.noProductsHint} action={<button type="button" className={u.secondary} onClick={data.products.length ? clearFilters : () => openAction('new')}>{data.products.length ? c.clear : t.addProduct}</button>} />}
     </section>
-    {detail && <CmsDialog title={c.details} locale={locale} onClose={() => setDetail(null)} wide><div className={s.editorGrid}><div className={s.confirmationProduct}><img src={detail.image} alt="" /><div><strong>{detail.name[locale]}</strong><p className={u.muted}>{detail.sku}</p><CmsBadge status={detail.status}>{c[detail.status]}</CmsBadge></div></div><div className={u.formStack}><div className={u.recordField}><span className={u.recordLabel}>{t.description}</span><p>{detail.description[locale] || '—'}</p></div><div className={u.recordField}><span className={u.recordLabel}>{t.price}</span><strong>{priceFormat(detail.price, locale)}</strong></div><div className={u.recordField}><span className={u.recordLabel}>{t.quantityPricing}</span>{detail.priceTiers.length ? <div className={s.detailTiers}>{detail.priceTiers.map(tier => <span key={tier.minQuantity}><b>{tier.minQuantity}+ {t.units}</b><strong>{priceFormat(tier.unitPrice, locale)}</strong></span>)}</div> : <p className={u.muted}>{t.noPriceTiers}</p>}</div><div className={u.recordField}><span className={u.recordLabel}>{t.stock}</span><span>{detail.stock} {t.units}</span></div></div></div></CmsDialog>}
+    {detail && <CmsDialog title={c.details} locale={locale} onClose={() => setDetail(null)} wide><div className={s.editorGrid}>
+      <div className={s.confirmationProduct}><img src={detail.image} alt="" /><div><strong>{detail.name[locale]}</strong><p className={u.muted}>{detail.sku}</p><CmsBadge status={detail.status}>{c[detail.status]}</CmsBadge></div></div>
+      <div className={u.formStack}>
+        <div className={u.recordField}><span className={u.recordLabel}>{t.galleryTitle}</span><div className={s.detailGallery}>{(detail.images?.length ? detail.images : [detail.image]).map((image, index) => <div key={image}><img src={image} className={image.endsWith('#detail') ? s.detailCrop : undefined} alt={`${detail.name[locale]} ${index + 1}${image.endsWith('#detail') ? ` · ${detailView}` : ''}`} width={140} height={105} />{image.endsWith('#detail') ? <span>{detailBadge}</span> : index === 0 && <span>{t.coverImage}</span>}</div>)}</div></div>
+        <div className={u.recordField}><span className={u.recordLabel}>{t.description}</span><p>{detail.description[locale] || '—'}</p></div>
+        {detail.capacity && <div className={u.recordField}><span className={u.recordLabel}>{t.capacity}</span><span>{detail.capacity}</span></div>}
+        {detail.sizeGroup && <div className={u.recordField}><span className={u.recordLabel}>{t.sizeGroup}</span><span>{detail.sizeGroup}</span></div>}
+        <div className={u.recordField}><span className={u.recordLabel}>{t.price}</span><strong>{priceFormat(detail.price, locale)}</strong></div>
+        <div className={u.recordField}><span className={u.recordLabel}>{t.quantityPricing}</span>{detail.priceTiers.length ? <div className={s.detailTiers}>{detail.priceTiers.map(tier => <span key={tier.minQuantity}><b>{tier.minQuantity}+ {t.units}</b><strong>{priceFormat(tier.unitPrice, locale)}</strong></span>)}</div> : <p className={u.muted}>{t.noPriceTiers}</p>}</div>
+        <div className={u.recordField}><span className={u.recordLabel}>{t.stock}</span><span>{detail.stock} {t.units}</span></div>
+      </div>
+    </div></CmsDialog>}
   </div>;
 }
 

@@ -1,14 +1,17 @@
-import { brands, categories, contact, products, stores } from './catalog';
+import { brands, categories, contact, productGallery, products, stores } from './catalog';
 import { brandImages, catalogs, pageIntro, stories, storePreviewGalleries } from './content';
 import { messages } from './messages';
 import { createStoreIllustrationMedia, enrichStoreIllustrations } from './store-art';
 import { createDemoPriceTiers, getUnitPrice, MAX_PRODUCT_QUANTITY } from './pricing';
+import { legacyCatalogProducts } from './legacy-products';
 import type { LocalizedText } from './i18n';
 import type { CmsContent, CmsCustomer, CmsData, CmsMedia, CmsOrder, CmsTrashItem } from './cms-types';
 
 export const CMS_STORAGE_KEY = 'jjglass-cms-presentation-v3';
 export const PREVIOUS_CMS_STORAGE_KEY = 'jjglass-cms-presentation-v2';
 export const LEGACY_CMS_STORAGE_KEY = 'jjglass-cms-presentation-v1';
+export const CATALOG_REVISION = 2;
+const addedLegacyIds = new Set(legacyCatalogProducts.map(product => product.id));
 const phrase = (key: keyof typeof messages.en): LocalizedText => ({ th: messages.th[key], en: messages.en[key] });
 
 export function createCmsTrashSample(now = new Date(), sampleKey = crypto.randomUUID()): CmsTrashItem {
@@ -25,6 +28,7 @@ export function createCmsTrashSample(now = new Date(), sampleKey = crypto.random
       sku: `DEMO-${id.slice(-8).toUpperCase()}`,
       name: { th: `${source.name.th} (ตัวอย่าง)`, en: `${source.name.en} (Demo)` },
       description: { ...source.description },
+      images: source.images ? [...source.images] : undefined,
       priceTiers: source.priceTiers.map(tier => ({ ...tier })),
       stock: 0,
       status: 'draft',
@@ -67,11 +71,12 @@ export function createCmsSeed(): CmsData {
     ...stories.map((story): CmsContent => ({ id: `story-${story.id}`, kind: 'story', title: { ...story.title }, subtitle: { ...story.label }, body: { ...story.text }, image: story.image, link: `/products?category=${story.category}`, status: 'published', seoTitle: { ...story.title }, seoDescription: { ...story.text } })),
     ...catalogs.map((catalog, index): CmsContent => ({ id: `catalog-${index + 1}`, kind: 'catalog', title: { th: catalog.title, en: catalog.title }, subtitle: { ...catalog.description }, body: { ...catalog.description }, image: catalog.image, link: catalog.url, status: 'published', seoTitle: { th: catalog.title, en: catalog.title }, seoDescription: { ...catalog.description } }))
   ];
-  const sourceImages = [...products.map(p => ({ src: p.image, alt: p.name })), ...categories.map(p => ({ src: p.image, alt: p.name })), ...content.filter(p => p.image).map(p => ({ src: p.image, alt: p.title })), ...Object.entries(brandImages).map(([brand, image]) => ({ src: `/images/${image}`, alt: { th: brand, en: brand } }))];
+  const sourceImages = [...products.flatMap(p => productGallery(p).map(src => ({ src, alt: p.name }))), ...categories.map(p => ({ src: p.image, alt: p.name })), ...content.filter(p => p.image).map(p => ({ src: p.image, alt: p.title })), ...Object.entries(brandImages).map(([brand, image]) => ({ src: `/images/${image}`, alt: { th: brand, en: brand } }))];
   const media: CmsMedia[] = Array.from(new Map(sourceImages.map(item => [item.src, item])).values()).map((item, index) => ({ id: `media-${index + 1}`, name: item.src.split('/').pop() || 'Image', src: item.src, alt: { ...item.alt }, uploaded: false, created: '2026-09-01T09:00:00+07:00' }));
   return {
     version: 3,
-    products: products.map((product, index) => ({ ...product, name: { ...product.name }, description: { ...product.description }, priceTiers: product.priceTiers.map(tier => ({ ...tier })), status: index === products.length - 1 ? 'draft' : 'published', stock: index % 7 === 0 ? 3 + index % 6 : 24 + index * 3, featured: ['13156', '13157', '19833', '15276'].includes(product.id) })),
+    catalogRevision: CATALOG_REVISION,
+    products: products.map((product, index) => ({ ...product, images: product.images ? [...product.images] : undefined, name: { ...product.name }, description: { ...product.description }, priceTiers: product.priceTiers.map(tier => ({ ...tier })), status: index === products.length - 1 ? 'draft' : 'published', stock: index % 7 === 0 ? 3 + index % 6 : 24 + index * 3, featured: ['13156', '13157', '19833', '15276'].includes(product.id) })),
     categories: categories.map(category => ({ ...category, name: { ...category.name }, status: 'published' })),
     brands: brands.map((name, index) => ({ id: `brand-${index + 1}`, name, image: brandImages[name] ? `/images/${brandImages[name]}` : '', status: 'published' })),
     orders, customers, content,
@@ -84,16 +89,16 @@ export function createCmsSeed(): CmsData {
 }
 
 export function mediaIsUsed(data: CmsData, src: string): boolean {
-  return data.products.some(item => item.image === src) || data.categories.some(item => item.image === src) || data.brands.some(item => item.image === src) || data.content.some(item => item.image === src) || data.stores.some(item => item.images.includes(src)) || data.orders.some(item => item.items.some(product => product.image === src)) || data.trash.some(item => (item.kind === 'product' || item.kind === 'content') ? item.record.image === src : item.kind === 'store' ? item.record.images.includes(src) : false);
+  return data.products.some(item => productGallery(item).includes(src)) || data.categories.some(item => item.image === src) || data.brands.some(item => item.image === src) || data.content.some(item => item.image === src) || data.stores.some(item => item.images.includes(src)) || data.orders.some(item => item.items.some(product => product.image === src)) || data.trash.some(item => item.kind === 'product' ? productGallery(item.record).includes(src) : item.kind === 'content' ? item.record.image === src : item.kind === 'store' ? item.record.images.includes(src) : false);
 }
 
 export function normalizeCmsData(value: unknown): CmsData | null {
-  if (isCmsData(value)) return enrichStoreDetails(value);
+  if (isCmsData(value)) return enrichStoreDetails(enrichProductCatalog(value));
   if (!value || typeof value !== 'object' || Array.isArray(value)) return null;
   const legacy = value as Record<string, unknown>;
   if (legacy.version === 2) {
     const migrated = { ...legacy, version: 3, trash: [] };
-    return isCmsData(migrated) ? enrichStoreDetails(migrated) : null;
+    return isCmsData(migrated) ? enrichStoreDetails(enrichProductCatalog(migrated)) : null;
   }
   if (legacy.version !== 1 || !Array.isArray(legacy.products) || !Array.isArray(legacy.customers)) return null;
   const migrated = {
@@ -117,7 +122,60 @@ export function normalizeCmsData(value: unknown): CmsData | null {
       return customer;
     })
   };
-  return isCmsData(migrated) ? enrichStoreDetails(migrated) : null;
+  return isCmsData(migrated) ? enrichStoreDetails(enrichProductCatalog(migrated)) : null;
+}
+
+// Add new presentation records to existing browser snapshots once, without
+// overwriting CMS edits or resurrecting a product the user has moved to trash.
+function enrichProductCatalog(data: CmsData): CmsData {
+  if ((data.catalogRevision ?? 0) >= CATALOG_REVISION) return data;
+  const seed = createCmsSeed();
+  const catalogById = new Map(products.map(product => [product.id, product]));
+  const presentIds = new Set(data.products.map(product => product.id));
+  const presentSkus = new Set(data.products.map(product => product.sku.toLowerCase()));
+  const presentSlugs = new Set(data.products.map(product => product.slug));
+  for (const item of data.trash) {
+    if (item.kind !== 'product') continue;
+    presentIds.add(item.record.id);
+    presentSkus.add(item.record.sku.toLowerCase());
+    presentSlugs.add(item.record.slug);
+  }
+
+  const updated = data.products.map(product => {
+    const source = catalogById.get(product.id);
+    if (!source) return product;
+    const sourceImages = productGallery(source);
+    const hasOriginalCoverOnly = product.image === source.image && (!product.images || (product.images.length === 1 && product.images[0] === product.image));
+    const gallery = hasOriginalCoverOnly && sourceImages.length >= 3 ? { images: [...sourceImages] } : {};
+    const sizeGroup = !product.sizeGroup && source.sizeGroup && product.capacity === source.capacity ? { sizeGroup: source.sizeGroup } : {};
+    return Object.keys(gallery).length || Object.keys(sizeGroup).length ? { ...product, ...gallery, ...sizeGroup } : product;
+  });
+
+  const appended = seed.products.filter(product => {
+    if (!addedLegacyIds.has(product.id) || presentIds.has(product.id) || presentSkus.has(product.sku.toLowerCase()) || presentSlugs.has(product.slug)) return false;
+    presentIds.add(product.id);
+    presentSkus.add(product.sku.toLowerCase());
+    presentSlugs.add(product.slug);
+    return true;
+  });
+  const nextProducts = [...updated, ...appended];
+  const existingMedia = new Set(data.media.map(item => item.src));
+  const newMedia: CmsMedia[] = [];
+  for (const product of nextProducts) {
+    for (const [index, src] of productGallery(product).entries()) {
+      if (existingMedia.has(src)) continue;
+      existingMedia.add(src);
+      newMedia.push({
+        id: `media-catalog-${product.id}-${index + 1}`,
+        name: src.split('/').pop() || 'Image',
+        src,
+        alt: { ...product.name },
+        uploaded: false,
+        created: '2026-09-28T09:00:00+07:00',
+      });
+    }
+  }
+  return { ...data, catalogRevision: CATALOG_REVISION, products: nextProducts, media: [...data.media, ...newMedia] };
 }
 
 function enrichStoreDetails(data: CmsData): CmsData {
@@ -165,7 +223,7 @@ export function isCmsData(value: unknown): value is CmsData {
       return true;
     });
   };
-  const product = (p: Record<string, unknown>) => strings(p, ['id', 'slug', 'sku', 'brand', 'category', 'image']) && localized(p.name) && localized(p.description) && positiveNumber(p.price) && priceTiers(p.priceTiers, p.price) && nonnegativeInteger(p.stock) && status(p.status) && typeof p.featured === 'boolean' && (p.capacity === undefined || text(p.capacity));
+  const product = (p: Record<string, unknown>) => strings(p, ['id', 'slug', 'sku', 'brand', 'category', 'image']) && String(p.image).trim().length > 0 && localized(p.name) && localized(p.description) && positiveNumber(p.price) && priceTiers(p.priceTiers, p.price) && nonnegativeInteger(p.stock) && status(p.status) && typeof p.featured === 'boolean' && (p.capacity === undefined || text(p.capacity)) && (p.sizeGroup === undefined || text(p.sizeGroup)) && (p.images === undefined || (Array.isArray(p.images) && p.images.length >= 1 && p.images.length <= 5 && p.images.every(image => text(image) && image.trim().length > 0) && p.images[0] === p.image && new Set(p.images).size === p.images.length));
   const content = (p: Record<string, unknown>) => strings(p, ['id', 'image', 'link']) && ['page', 'banner', 'story', 'catalog'].includes(String(p.kind)) && localized(p.title) && localized(p.subtitle) && localized(p.body) && localized(p.seoTitle) && localized(p.seoDescription) && status(p.status);
   const store = (p: Record<string, unknown>) => strings(p, ['id', 'phone', 'mapUrl']) && (p.lineId === undefined || text(p.lineId)) && localized(p.name) && localized(p.address) && localized(p.hours) && Array.isArray(p.images) && p.images.every(text) && status(p.status);
   const media = (p: Record<string, unknown>) => strings(p, ['id', 'name', 'src', 'created']) && date(p.created) && localized(p.alt) && typeof p.uploaded === 'boolean';
@@ -176,6 +234,7 @@ export function isCmsData(value: unknown): value is CmsData {
     p.kind === 'media' ? media(p.record) : false
   );
   return x.version === 3
+    && (x.catalogRevision === undefined || nonnegativeInteger(x.catalogRevision))
     && list(x.products, product)
     && list(x.categories, p => strings(p, ['id', 'image']) && localized(p.name) && status(p.status))
     && list(x.brands, p => strings(p, ['id', 'name', 'image']) && status(p.status))

@@ -89,7 +89,7 @@ export default function CmsApp({ locale, view: routeView = 'overview', action, i
         if (normalized) {
           const cleaned = purgeExpiredTrash(normalized);
           setData(cleaned);
-          if (current === null || cleaned !== normalized) {
+          if (current === null || cleaned !== parsed) {
             if (localStorage.getItem(CMS_STORAGE_KEY) !== current) {
               changedInAnotherTab.current = true;
               setError(c.staleData);

@@ -13,8 +13,13 @@ export type Product = {
   price: number;
   priceTiers: PriceTier[];
   image: string;
+  images?: string[];
   capacity?: string;
+  sizeGroup?: string;
 };
+export function productGallery(product: Pick<Product, 'image' | 'images'>): string[] {
+  return product.images?.length ? product.images : product.image ? [product.image] : [];
+}
 export type Category = {
   id: string;
   name: LocalizedText;

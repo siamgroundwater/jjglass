@@ -37,12 +37,14 @@ function loadTypeScript(filename) {
   return module.exports;
 }
 
-const { createCmsSeed, createCmsPresentationSeed, createCmsTrashSample, isCmsData, mediaIsUsed, normalizeCmsData, CMS_STORAGE_KEY, LEGACY_CMS_STORAGE_KEY } = loadTypeScript(path.join(root, 'src/lib/cms-data.ts'));
+const { createCmsSeed, createCmsPresentationSeed, createCmsTrashSample, isCmsData, mediaIsUsed, normalizeCmsData, CATALOG_REVISION, CMS_STORAGE_KEY, LEGACY_CMS_STORAGE_KEY } = loadTypeScript(path.join(root, 'src/lib/cms-data.ts'));
 const { moveToTrash, restoreFromTrash, permanentlyDeleteFromTrash, purgeExpiredTrash, TRASH_RETENTION_MS } = loadTypeScript(path.join(root, 'src/lib/cms-trash.ts'));
 const { orderTotal } = loadTypeScript(path.join(root, 'src/lib/cms-types.ts'));
 const { cmsRoutePath, parseCmsRoute } = loadTypeScript(path.join(root, 'src/lib/cms-routing.ts'));
 const { getUnitPrice, getLineTotal, getLowestUnitPrice, getNextPriceTier, MAX_PRODUCT_QUANTITY } = loadTypeScript(path.join(root, 'src/lib/pricing.ts'));
 const { applyStockChanges, stockResult, matchesStock, productCsv, csvCell } = loadTypeScript(path.join(root, 'src/lib/cms-inventory.ts'));
+const { productGallery } = loadTypeScript(path.join(root, 'src/lib/catalog.ts'));
+const { legacyCatalogProducts } = loadTypeScript(path.join(root, 'src/lib/legacy-products.ts'));
 const seed = createCmsSeed();
 const { legacyStoreGalleries, illustratedStoreGalleries } = loadTypeScript(path.join(root, 'src/lib/store-art.ts'));
 const collections = ['products', 'categories', 'brands', 'orders', 'customers', 'content', 'stores', 'media', 'activity', 'trash'];
@@ -66,11 +68,33 @@ function unique(items, value, label) {
   assert.ok(values.every(item => typeof item === 'string' && item.trim()), `${label}: blank value`);
   assert.equal(new Set(values).size, values.length, `${label}: duplicate value`);
 }
+function publicAssetFilename(src, label) {
+  assert.ok(src.startsWith('/images/'), `${label}: unexpected local image source: ${src}`);
+  const assetPath = src.split(/[?#]/, 1)[0];
+  const filename = path.resolve(root, 'public', assetPath.slice(1));
+  assert.ok(filename.startsWith(`${path.join(root, 'public')}${path.sep}`), `${label}: image path escapes public folder: ${src}`);
+  return filename;
+}
 
 check('seed and JSON storage round trip satisfy the runtime contract', () => {
   assert.equal(isCmsData(seed), true);
   assert.equal(isCmsData(JSON.parse(JSON.stringify(seed))), true);
   assert.ok(CMS_STORAGE_KEY.endsWith(`v${seed.version}`));
+  assert.equal(seed.catalogRevision, CATALOG_REVISION);
+});
+
+check('every seeded product has three to five distinct gallery views with its cover first', () => {
+  const media = new Set(seed.media.map(item => item.src));
+  for (const product of seed.products) {
+    const gallery = productGallery(product);
+    assert.ok(gallery.length >= 3 && gallery.length <= 5, `${product.id}: expected 3–5 images, got ${gallery.length}`);
+    assert.equal(gallery[0], product.image, `${product.id}: cover is not the first image`);
+    assert.equal(new Set(gallery).size, gallery.length, `${product.id}: duplicate gallery image`);
+    for (const src of gallery) {
+      assert.ok(media.has(src), `${product.id}: gallery image missing from media library: ${src}`);
+      assert.ok(fs.existsSync(publicAssetFilename(src, product.id)), `${product.id}: gallery file missing: ${src}`);
+    }
+  }
 });
 
 check('presentation trash sample is restorable, removable, and isolated from fresh seeds', () => {
@@ -128,18 +152,61 @@ check('legacy browser data migrates without retaining customer segments', () => 
   assert.ok(LEGACY_CMS_STORAGE_KEY.endsWith('v1'));
   assert.ok(legacy.customers.every(customer => Object.hasOwn(customer, 'type')), 'migration mutated the source snapshot');
 });
-check('version 2 browser data migrates to an empty trash without changing records', () => {
+check('version 2 browser data gains missing catalog records without changing saved records', () => {
   const legacy = structuredClone(seed);
   legacy.version = 2;
   delete legacy.trash;
+  delete legacy.catalogRevision;
+  const missingId = legacyCatalogProducts[0].id;
+  legacy.products = legacy.products.filter(product => product.id !== missingId);
+  const savedProducts = structuredClone(legacy.products);
   const migrated = normalizeCmsData(legacy);
   assert.ok(migrated);
   assert.equal(migrated.version, 3);
+  assert.equal(migrated.catalogRevision, CATALOG_REVISION);
   assert.deepEqual(migrated.trash, []);
-  assert.deepEqual(migrated.products, legacy.products);
+  assert.deepEqual(migrated.products.slice(0, savedProducts.length), savedProducts);
+  assert.equal(migrated.products.filter(product => product.id === missingId).length, 1);
   assert.deepEqual(migrated.orders, legacy.orders);
   assert.equal(isCmsData(migrated), true);
   assert.equal(Object.hasOwn(legacy, 'trash'), false, 'migration mutated source data');
+});
+check('catalog revision migration preserves edits and trash, adds new media, and runs once', () => {
+  assert.ok(legacyCatalogProducts.length >= 2, 'need distinct new source products for migration checks');
+  const [missingSource, trashedSource] = legacyCatalogProducts;
+  const old = structuredClone(seed);
+  delete old.catalogRevision;
+  const custom = old.products.find(product => product.id !== missingSource.id && product.id !== trashedSource.id);
+  assert.ok(custom);
+  custom.name.en = 'Client-edited name';
+  custom.stock = 71;
+  custom.image = '/images/lifestyle-cafe.jpg';
+  custom.images = [custom.image];
+  const missingProduct = seed.products.find(product => product.id === missingSource.id);
+  const trashedProduct = seed.products.find(product => product.id === trashedSource.id);
+  assert.ok(missingProduct && trashedProduct);
+  old.products = old.products.filter(product => product.id !== missingSource.id && product.id !== trashedSource.id);
+  old.trash.push({ id: 'trash-pre-catalog-upgrade', kind: 'product', deletedAt: '2026-09-27T09:00:00.000Z', record: structuredClone(trashedProduct) });
+  const missingPhoto = productGallery(missingProduct).find(src => !old.products.some(product => productGallery(product).includes(src)));
+  assert.ok(missingPhoto, 'new product needs one unique image for media migration check');
+  old.media = old.media.filter(item => item.src !== missingPhoto);
+  assert.equal(isCmsData(old), true);
+  const before = structuredClone(old);
+  const migrated = normalizeCmsData(old);
+  assert.ok(migrated);
+  assert.equal(migrated.catalogRevision, CATALOG_REVISION);
+  assert.equal(migrated.products.filter(product => product.id === missingSource.id).length, 1, 'new source product was not appended exactly once');
+  assert.equal(migrated.products.some(product => product.id === trashedSource.id), false, 'trashed product was resurrected');
+  assert.deepEqual(migrated.trash, old.trash);
+  assert.deepEqual(migrated.products.find(product => product.id === custom.id), custom, 'saved product edits were overwritten');
+  assert.ok(migrated.media.some(item => item.src === missingPhoto), 'new product image was not added to media library');
+  unique(migrated.media, item => item.id, 'migrated media IDs');
+  unique(migrated.media, item => item.src, 'migrated media sources');
+  assert.equal(isCmsData(migrated), true);
+  assert.deepEqual(old, before, 'normalization mutated saved data');
+  assert.strictEqual(normalizeCmsData(migrated), migrated, 'migration ran again after its revision was saved');
+  const deletedAgain = { ...migrated, products: migrated.products.filter(product => product.id !== missingSource.id) };
+  assert.strictEqual(normalizeCmsData(deletedAgain), deletedAgain, 'later product deletion was undone');
 });
 check('existing store records gain supplied hours and LINE without replacing edits', () => {
   const old = structuredClone(seed);
@@ -268,6 +335,7 @@ check('invalid trash entries fail runtime validation', () => {
 });
 check('invalid root snapshots and versions are rejected', () => {
   for (const value of [null, undefined, [], {}, false, 'bad data', { ...seed, version: 0 }, { ...seed, version: '1' }]) assert.equal(isCmsData(value), false);
+  for (const value of [-1, 1.5, null, '2']) assert.equal(isCmsData({ ...seed, catalogRevision: value }), false, `Accepted catalog revision: ${JSON.stringify(value)}`);
 });
 check('every required collection is checked before rendering', () => {
   for (const name of collections) {
@@ -277,6 +345,7 @@ check('every required collection is checked before rendering', () => {
 });
 rejects('incomplete product translations are rejected', data => { delete data.products[0].name.en; });
 rejects('missing product image fields are rejected', data => { delete data.products[0].image; });
+rejects('blank product cover is rejected', data => { data.products[0].image = ' '; });
 rejects('invalid product numeric values are rejected', data => { data.products[0].price = Number.NaN; });
 rejects('missing product price tiers are rejected', data => { delete data.products[0].priceTiers; });
 check('malformed product price tiers are rejected', () => {
@@ -304,6 +373,15 @@ check('optional product capacity rejects values that cannot be edited as text', 
   }
   for (const value of [undefined, '', '350 ml']) {
     assert.equal(isCmsData(corrupt(data => { data.products[0].capacity = value; })), true, `Rejected valid capacity: ${String(value)}`);
+  }
+});
+check('invalid product gallery and size-group fields are rejected', () => {
+  const cover = seed.products[0].image;
+  for (const images of [null, {}, [], [cover, cover], ['/images/not-the-cover.jpg', cover], [cover, null], [cover, ' '], [cover, 'a', 'b', 'c', 'd', 'e']]) {
+    assert.equal(isCmsData(corrupt(data => { data.products[0].images = images; })), false, `Accepted gallery: ${JSON.stringify(images)}`);
+  }
+  for (const sizeGroup of [null, 1, false, {}, []]) {
+    assert.equal(isCmsData(corrupt(data => { data.products[0].sizeGroup = sizeGroup; })), false, `Accepted size group: ${JSON.stringify(sizeGroup)}`);
   }
 });
 rejects('incomplete category translations are rejected', data => { delete data.categories[0].name.th; });
@@ -335,6 +413,15 @@ check('record IDs, product SKUs, slugs, and brand names are unique', () => {
   unique(seed.products, item => item.slug, 'product slugs');
   unique(seed.brands, item => item.name.trim().toLowerCase(), 'brand names');
   unique(seed.media, item => item.src, 'media sources');
+});
+check('source-backed legacy additions appear exactly once in the presentation catalog', () => {
+  assert.ok(legacyCatalogProducts.length >= 40, `expected a substantial addition from the archive, got ${legacyCatalogProducts.length}`);
+  unique(legacyCatalogProducts, item => item.id, 'additional legacy IDs');
+  for (const source of legacyCatalogProducts) {
+    const matches = seed.products.filter(product => product.id === source.id);
+    assert.equal(matches.length, 1, `${source.id}: missing or duplicated source product`);
+    assert.equal(matches[0].sku, source.sku, `${source.id}: source SKU changed`);
+  }
 });
 check('quantity pricing selects the correct tier at every boundary', () => {
   const product = {
@@ -413,6 +500,26 @@ check('product category and brand relationships resolve', () => {
     }
   }
 });
+check('sourced size groups contain distinct labeled variants of one product family', () => {
+  const groups = new Map();
+  for (const product of seed.products) {
+    if (!product.sizeGroup) continue;
+    assert.equal(product.sizeGroup.trim(), product.sizeGroup, `${product.id}: size group has outer whitespace`);
+    assert.ok(product.capacity?.trim(), `${product.id}: grouped product has no size label`);
+    const members = groups.get(product.sizeGroup) || [];
+    members.push(product);
+    groups.set(product.sizeGroup, members);
+  }
+  assert.ok(groups.size > 0, 'the catalog has no size choices');
+  for (const [group, members] of groups) {
+    assert.ok(members.length >= 2, `${group}: group has only one product`);
+    assert.equal(new Set(members.map(item => item.brand)).size, 1, `${group}: mixed brands`);
+    assert.equal(new Set(members.map(item => item.category)).size, 1, `${group}: mixed categories`);
+    unique(members, item => item.id, `${group} IDs`);
+    unique(members, item => item.sku, `${group} SKUs`);
+    unique(members, item => item.capacity.trim().toLowerCase(), `${group} size labels`);
+  }
+});
 check('orders reference valid customers and products with valid totals', () => {
   const customerIds = new Set(seed.customers.map(item => item.id));
   const productsById = new Map(seed.products.map(item => [item.id, item]));
@@ -442,17 +549,14 @@ check('historical order totals remain frozen after catalog pricing changes', () 
 check('all referenced images exist in the media library and local public assets', () => {
   const media = new Set(seed.media.map(item => item.src));
   const references = [
-    ...seed.products.map(item => item.image), ...seed.categories.map(item => item.image),
+    ...seed.products.flatMap(productGallery), ...seed.categories.map(item => item.image),
     ...seed.brands.map(item => item.image), ...seed.content.map(item => item.image),
     ...seed.stores.flatMap(item => item.images), ...seed.orders.flatMap(order => order.items.map(item => item.image)),
   ].filter(Boolean);
   const missing = [...new Set(references.filter(src => !media.has(src)))];
   assert.deepEqual(missing, [], `Referenced images absent from media library: ${missing.join(', ')}`);
   for (const item of seed.media) {
-    assert.ok(item.src.startsWith('/images/'), `${item.id}: unexpected seed image source`);
-    const filename = path.resolve(root, 'public', item.src.slice(1));
-    assert.ok(filename.startsWith(`${path.join(root, 'public')}${path.sep}`), `${item.id}: image path escapes public folder`);
-    assert.ok(fs.existsSync(filename), `Missing asset: ${item.src}`);
+    assert.ok(fs.existsSync(publicAssetFilename(item.src, item.id)), `Missing asset: ${item.src}`);
   }
 });
 check('every store has three distinct illustrations with localized media descriptions', () => {
@@ -497,6 +601,20 @@ check('media usage protects images referenced only by historical orders or store
   assert.equal(mediaIsUsed(historical, '/images/check-historical-only.jpg'), true);
   assert.equal(mediaIsUsed(historical, '/images/check-store-only.jpg'), true);
   assert.equal(mediaIsUsed(historical, '/images/check-unused.jpg'), false);
+});
+check('media usage protects a non-cover product image in the catalog and trash', () => {
+  const source = structuredClone(seed);
+  const photo = '/images/check-gallery-reference.jpg';
+  const product = source.products[0];
+  product.images = [product.image, photo];
+  source.media.push({ id: 'media-gallery-reference', name: 'Gallery photo', src: photo, alt: { th: 'ภาพสินค้า', en: 'Product photo' }, uploaded: true, created: '2026-09-26T09:00:00.000Z' });
+  assert.equal(isCmsData(source), true);
+  assert.equal(mediaIsUsed(source, photo), true, 'active product did not protect its alternate photo');
+  assert.equal(moveToTrash(source, 'media', 'media-gallery-reference'), null, 'active product photo entered trash');
+  const moved = moveToTrash(source, 'product', product.id, new Date('2026-09-26T09:00:00.000Z'));
+  assert.ok(moved);
+  assert.equal(mediaIsUsed(moved, photo), true, 'product in trash did not protect its alternate photo');
+  assert.equal(moveToTrash(moved, 'media', 'media-gallery-reference'), null, 'restorable product photo entered trash');
 });
 check('fresh seeds do not share mutable data with previous demo sessions', () => {
   const first = createCmsSeed();
